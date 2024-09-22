@@ -3,8 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-<title inertia>{{ config('app.name', 'Laravel') }}</title>
-<!-- Scripts -->
+        <title inertia>{{ config('app.name', 'AEMINA') }}</title>
+        <!-- Scripts -->
         @routes
         @viteReactRefresh
         @vite('resources/js/app.jsx')
