@@ -9,5 +9,14 @@
         "axios": "^1.7.4",
         "laravel-vite-plugin": "^1.0",
         "vite": "^5.0"
+    },
+    "dependencies": {
+        "@inertiajs/inertia": "^0.11.1",
+        "@inertiajs/inertia-react": "^0.8.1",
+        "@inertiajs/progress": "^0.2.7",
+        "@vitejs/plugin-react": "^4.3.1",
+        "jsconfig.json": "^2.3.3",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1"
     }
 }
