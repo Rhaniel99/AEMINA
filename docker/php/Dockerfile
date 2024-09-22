@@ -37,7 +37,7 @@ RUN mkdir -p /usr/src/php/ext/redis \
 # Establecer permisos
 RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chown -R ${UID}:${GID} /var/www/html
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R ${UID}:${GID} /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 CMD ["php-fpm", "-y", "/usr/local/etc/php-fpm.conf", "-R"]
