@@ -43,49 +43,34 @@ services:
       - laravel
 
   pgsql:
-    image: postgres:12.17
+    build:
+      context: ./docker/pgsql
+      dockerfile: Dockerfile
     container_name: pgsql
     restart: always
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: ${DB_DATABASE}
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}         
+      POSTGRES_USER: ${DB_USERNAME}        
+      POSTGRES_PASSWORD: ${DB_PASSWORD} 
       SERVICE_TAGS: dev
       SERVICE_NAME: pgsql
     volumes:
-      - ./docker/pgsql:/var/lib/pgsql
+      - ./docker/pgsql/data:/var/lib/pgsql
     networks:
       - laravel
 
   redis:
-    image: redis:alpine
+    build:
+      context: ./docker/redis
+      dockerfile: Dockerfile
     container_name: redis
     restart: unless-stopped
     ports:
       - 6380:6379
     networks:
       - laravel
-
-  # laravel-queue:
-  #   build:
-  #     context: ./docker/php
-  #     dockerfile: Dockerfile
-  #     args:
-  #       - UID=${UID:-1000}
-  #       - GID=${GID:-1000}
-  #       - USER=${USER:-laravel}
-  #   container_name: laravel-queue
-  #   volumes:
-  #     - ./src:/var/www/html
-  #     - .env:/var/www/html/.env
-  #   depends_on:
-  #     - pgsql
-  #   working_dir: /var/www/html
-  #   entrypoint: ['php', '/var/www/html/artisan', 'queue:work']
-  #   networks:
-  #     - laravel
 
   artisan:
     build:
