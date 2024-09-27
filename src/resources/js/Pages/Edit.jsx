@@ -1,16 +1,16 @@
 import { useForm, Head } from "@inertiajs/inertia-react";
 
-export default function Create () {
+export default function Edit ( { post } ) {
 
-    const {data, setData, post, errors, processing } = useForm({
-        body: '', 
+    const {data, setData, put, errors, processing } = useForm({
+        body: post.body, 
     })
 
     function submit(e) {
         e.preventDefault();
         // post("/posts", { preserveScroll: true });
 
-        post('/posts');
+        put(`/posts/${post.id}`);
     }
 
     // console.log(errors);
@@ -19,9 +19,9 @@ export default function Create () {
 
     return (
         <>
-        <h1 className="bg-blue-500 title">Criar Post</h1>
+        <h1 className="bg-blue-500 title">Atualizar Post</h1>
         {/* {data.body} */}
-        <Head title='Criar' />
+        <Head title='Editar' />
 
         <div className="w-1/2 mx-auto">
             <form onSubmit={submit}>
@@ -33,7 +33,7 @@ export default function Create () {
 
                 {errors.body && <p className="error" >{errors.body}</p>}
 
-                <button type="submit" className="primary-btn mt-4" disabled={processing}>Criar Post</button>
+                <button type="submit" className="primary-btn mt-4" disabled={processing}>Atualizar Post</button>
             </form>
         </div>
         </>

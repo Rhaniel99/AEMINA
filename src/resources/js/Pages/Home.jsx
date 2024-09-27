@@ -1,11 +1,35 @@
 // import Layout from "../Layouts/Layout";
 
-import { Link } from "@inertiajs/inertia-react";
+import { Link, usePage, Head } from "@inertiajs/inertia-react";
+import { useRoute } from "../../../vendor/tightenco/ziggy";
+import { useState } from "react";
 
 export default function Home ( { posts } ) {
+    const route = useRoute();
+    const { flash } = usePage().props;
+    const { component } = usePage();
+
+    const [flashMsg, setFlashMsg] = useState(flash.message);
+
+    setTimeout(() => {
+        setFlashMsg(null);
+    }, 2000);
+
     return (
         <>
-        <h1 className="bg-blue-500 title">Hello</h1>
+        <Head title={component}/>
+        
+        {/* <Head>
+            <title>{component}</title>
+        </Head> */}
+
+        <h1 className="bg-blue-500 title">Olá</h1>
+        
+        { flashMsg && (
+            <div className="absolute top-24 righ-6 bg-rose-500 p-2 rounded-md shadow-lg text-sm text-white">
+                {flashMsg}
+            </div>
+        )}
 
         <div>
             {posts.data.map((post) => (
@@ -15,6 +39,12 @@ export default function Home ( { posts } ) {
                         <span>{new Date(post.created_at).toLocaleTimeString()}</span>
                     </div>
                     <p className="font-medium">{post.body}</p>
+
+                    {/* <Link href={`/posts/${post.id}`} className="text-link">Leia mais</Link> */}
+
+                    {/* Usando Ziggy */}
+
+                    <Link href={ route('posts.show', post.id) } className="text-link">Leia mais</Link>
                 </div>
             ))}
         </div>

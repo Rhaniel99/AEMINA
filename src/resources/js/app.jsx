@@ -9,10 +9,10 @@ import { InertiaProgress } from "@inertiajs/progress";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import Layout from '@/Layouts/Layout';
 
-const appName = window.document.getElementsByTagName("title")[0]?.innerText || "AEMINA";
+const appName = "AEMINA";
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    title: (title) => title ? `${title} - ${appName}` : appName,
     // resolve: (name) =>
     //     resolvePageComponent(
     //         `./Pages/${name}.jsx`,

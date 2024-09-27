@@ -12,7 +12,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::latest()->paginate(5);
+        $posts = Post::orderBy('updated_at', 'desc')->latest()->paginate(5);
+
+        // $posts = Post::latest()->paginate(5);
         return inertia('Home', ['posts' => $posts]);
     }
 
@@ -34,7 +36,7 @@ class PostController extends Controller
 
         Post::create($campos);
 
-        return redirect('/');
+        return redirect('/')->with('message', 'Post criado com sucesso!');
         // \Log::info($request->all()); // Verifica se os dados estão chegando
         // dd($request->all()); // Verifica a saída
         // dd($request);
@@ -46,7 +48,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return inertia('Show', ['post' => $post]);
     }
 
     /**
@@ -54,7 +56,7 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        return inertia("Edit", ['post' => $post]);
     }
 
     /**
@@ -62,7 +64,12 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        sleep(1);
+        $campos =$request->validate(['body' => ['required', 'min:5']]);
+
+        $post->update($campos);
+
+        return redirect('/')->with('message','Post atualizado com sucesso!');
     }
 
     /**
@@ -70,6 +77,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
+        return redirect('/')->with('message', 'Post deletado com sucesso!');
     }
 }
