@@ -15,6 +15,8 @@ export default function Home ( { posts } ) {
         setFlashMsg(null);
     }, 2000);
 
+    // console.log(posts);
+
     return (
         <>
         <Head title={component}/>
@@ -50,6 +52,7 @@ export default function Home ( { posts } ) {
         </div>
 
         <div className="py-12 px-4">
+
             {posts.links.map(link => (
                 link.url ?
 

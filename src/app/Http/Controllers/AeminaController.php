@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
 use Illuminate\Http\Request;
 
-class LoginController extends Controller
+class AeminaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return inertia('Login/Index');
+        $usuario = auth()->user()->only(['id', 'name', 'email']);
+        return inertia('Aemina/Index', ['usuario' => $usuario]);
     }
 
     /**
@@ -20,7 +20,7 @@ class LoginController extends Controller
      */
     public function create()
     {
-        return inertia('Login/Index');
+        //
     }
 
     /**
@@ -28,18 +28,7 @@ class LoginController extends Controller
      */
     public function store(Request $request)
     {
-
-        $request->validate([
-            'email' => ['required', 'email'],
-            // 'senha' => ['required', 'min:5'],
-        ]);
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->senha])) {
-            return redirect('/aemina')->with('message','Sucesso!');
-
-        } else {
-            return redirect()->back()->with('message', 'Email ou senha inválidos');
-            // return inertia('Login/Index');
-        }
+        //
     }
 
     /**
@@ -69,9 +58,8 @@ class LoginController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy()
+    public function destroy(string $id)
     {
-        Auth::logout();
-        return inertia('Login/Index');
+        //
     }
 }
