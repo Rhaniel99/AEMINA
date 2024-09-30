@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -18,9 +19,38 @@ class LoginController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        return inertia('Login/Index');
+        try {
+
+            $request->validate([
+                'nome' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'senha' => 'required|string|min:6',
+                'dt_nasc' => 'required',
+            ]);
+
+            \DB::beginTransaction();
+            
+            $usuario = User::create([
+                'name' => $request->nome,
+                'email' => $request->email,
+                'birth_date' => $request->dt_nasc,
+                'password' => bcrypt($request->senha),
+            ]);
+
+            if(!$usuario){
+                throw new \Exception('Não foi possivel salvar o usuário!');
+            }
+
+            \DB::commit();
+            $id_error = time();
+            return to_route('home')->with('message',"Criado com sucesso!|{$id_error}");
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            $id_error = time(); // ou use um contador
+            return redirect()->back()->with('message', $e->getMessage() . "|{$id_error}");
+        }
     }
 
     /**
@@ -78,6 +108,7 @@ class LoginController extends Controller
     public function destroy()
     {
         Auth::logout();
-        return inertia('Login/Index');
+        return to_route('home');
+        // return inertia('Login/Index');
     }
 }

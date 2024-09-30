@@ -8,7 +8,7 @@ use Inertia\Inertia;
 
 // Route::get('/', [PostController::class,'index'])->name('home');
 
-Route::inertia('/', 'Homepage');
+Route::inertia('/', 'Homepage')->name('home');
 
 // Route::resource('posts', PostController::class)->except('index');
 
@@ -19,6 +19,7 @@ Route::middleware(['auth'])->group(function () {
 Route::controller(LoginController::class)->group(function () {
     Route::get('/login', 'index')->name('login');
     Route::post('/login', 'store')->name('login.store');
+    Route::post('/create', 'create')->name('login.create');
     Route::post('/logout', 'destroy')->name('login.logout');
 });
 
