@@ -5,25 +5,31 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Importa os estilos do Toastify
 
 export default function Login() {
+    
     const route = useRoute();
+
     const { flash } = usePage().props;
 
-    const { data, setData, post, errors, processing } = useForm({
+    const { data, setData, post, errors, processing, reset } = useForm({
         email: "", senha: "",
     });
 
         // Exibe mensagem flash de erro
         useEffect(() => {
             if (flash.message) {
-                toast.error(flash.message, {
+                const [message, timestamp] = flash.message.split('|');
+
+                toast.error(message, {
                     position: "top-right",
                     hideProgressBar: false,
                     closeOnClick: true,
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
-                    autoClose: false, // Não fecha automaticamente
+                    autoClose: 3000, // Fecha em 3 segundos
                 });
+
+                reset("senha");
             }
         }, [flash.message]);
     
@@ -38,9 +44,13 @@ export default function Login() {
                         pauseOnHover: true,
                         draggable: true,
                         progress: undefined,
-                        autoClose: false, // Não fecha automaticamente
+                        autoClose: 3000,
+                        // autoClose: false, // Não fecha automaticamente
                         className: 'bg-yellow-500 text-black', // Estilo personalizado para erros de validação
                     });
+
+                    reset("senha");
+
                 });
             }
         }, [errors]);
@@ -49,8 +59,7 @@ export default function Login() {
     function submit(e) {
         e.preventDefault();
         // destroy( route('login.store') );
-
-        post( route('login.store') );
+        post( route('login.store'));
     }
 
     // console.log(errors);

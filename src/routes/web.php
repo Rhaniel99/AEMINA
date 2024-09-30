@@ -6,18 +6,20 @@ use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', [PostController::class,'index']);
+// Route::get('/', [PostController::class,'index'])->name('home');
 
-Route::resource('posts', PostController::class)->except('index');
+Route::inertia('/', 'Homepage');
 
+// Route::resource('posts', PostController::class)->except('index');
 
-Route::resource('aemina', AeminaController::class);
-
+Route::middleware(['auth'])->group(function () {
+    Route::resource('aemina', AeminaController::class);
+});
 
 Route::controller(LoginController::class)->group(function () {
-    Route::get('/login', 'index')->name('login.index');
+    Route::get('/login', 'index')->name('login');
     Route::post('/login', 'store')->name('login.store');
-    Route::post('/logout', 'destroy')->name('logout');
+    Route::post('/logout', 'destroy')->name('login.logout');
 });
 
 // Route::resource('login', LoginController::class);

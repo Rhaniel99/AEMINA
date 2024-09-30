@@ -31,14 +31,20 @@ class LoginController extends Controller
 
         $request->validate([
             'email' => ['required', 'email'],
+            'senha' => ['required'],
             // 'senha' => ['required', 'min:5'],
         ]);
         if (Auth::attempt(['email' => $request->email, 'password' => $request->senha])) {
-            return redirect('/aemina')->with('message','Sucesso!');
 
+            return to_route('aemina.index')->with('message','Sucesso!');
+
+            // return redirect('/aemina')->with('message','Sucesso!');
         } else {
-            return redirect()->back()->with('message', 'Email ou senha inválidos');
-            // return inertia('Login/Index');
+            $uniqueErrorIdentifier = time(); // ou use um contador
+            return redirect()->back()->with('message', "Email ou senha inválidos.|{$uniqueErrorIdentifier}");
+
+            // $uniqueErrorIdentifier = Carbon::now()->format('d/m/Y H:i:s'); // Formato desejado
+            // return redirect()->back()->with('message', 'Email ou senha inválidos. ' . $uniqueErrorIdentifier);
         }
     }
 

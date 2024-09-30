@@ -1,16 +1,16 @@
 import { useForm, Link } from "@inertiajs/inertia-react";
-import { useRoute } from "../../../../vendor/tightenco/ziggy"
+// import { useRoute } from "../../../../vendor/tightenco/ziggy"
 
 
 export default function Index ( { usuario } ) {
-    const route = useRoute();
+    // const route = useRoute();
 
-    const {post, errors, processing } = useForm();
+    // const {post, errors, processing } = useForm();
 
 
     function submit (e) {
         e.preventDefault();
-        post( route('logout') );
+        // post( route('login.logout') );
     }
 
     return (
@@ -20,11 +20,14 @@ export default function Index ( { usuario } ) {
                     <div className="text-sm text-slate-600">
                         <span>Usuário Autenticado, bem vindo! {usuario.name} </span>
                     </div>
-                    <form onSubmit={submit}>
+                    
+                    <Link href={ route('login.logout') } className="bg-red-500 rounded-md text-sm px-4 py-1 text-white" method="post" as="button" type="button">Logout</Link>
+
+                    {/* <form onSubmit={submit}>
                         <button className="bg-red-500 rounded-md text-sm px-4 py-1 text-white">
                                 Logout
                         </button>
-                    </form>
+                    </form> */}
         </div>
         </>
     );

@@ -1,12 +1,10 @@
 import './bootstrap';
-
 import "../css/app.css";
 
 import { createRoot } from "react-dom/client"; // Importe createRoot
 import { createInertiaApp } from "@inertiajs/inertia-react";
 import { InertiaProgress } from "@inertiajs/progress";
-
-import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
+// import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import Layout from '@/Layouts/Layout';
 
 const appName = "AEMINA";
