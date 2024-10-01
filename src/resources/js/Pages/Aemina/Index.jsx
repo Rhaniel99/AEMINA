@@ -1,12 +1,26 @@
-import { useForm, Link } from "@inertiajs/inertia-react";
-import { useRoute } from "../../../../vendor/tightenco/ziggy";
+import { useForm, Link, Head } from "@inertiajs/inertia-react";
+import { useRoute } from "ziggy";
+import { useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function Index() {
     const route = useRoute();
 
-    const { data, setData, post, progress } = useForm({
+    const { data, setData, post, progress, errors } = useForm({
         planoAcao: null, // Set default to null for file input
     });
+
+    useEffect(() => {
+        if (Object.keys(errors).length > 0) {
+            Object.values(errors).forEach((error) => {
+                toast.warn(error, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    className: "bg-white-500 text-black",
+                });
+            });
+        }
+    }, [errors]);
 
     function submit(e) {
         e.preventDefault();
@@ -15,6 +29,10 @@ export default function Index() {
 
     return (
         <>
+            <Head title="Index" />
+
+            <ToastContainer />
+
             <div className="p-4 border-b">
                 <form onSubmit={submit}>
                     <div>
