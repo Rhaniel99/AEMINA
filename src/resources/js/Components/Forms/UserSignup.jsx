@@ -6,6 +6,9 @@ import ptBR from "date-fns/locale/pt-BR";
 import "react-datepicker/dist/react-datepicker.css";
 registerLocale("pt-BR", ptBR);
 
+import { toast } from "react-toastify";
+
+
 export default function UserSignup({ onSuccess, onLoginClick }) {
     const [startDate, setStartDate] = useState();
 
@@ -16,24 +19,35 @@ export default function UserSignup({ onSuccess, onLoginClick }) {
         dt_nasc: "",
     });
 
-    // ? Exibe erros de validação
     useEffect(() => {
         if (Object.keys(errors).length > 0) {
             Object.values(errors).forEach((error) => {
                 toast.warn(error, {
                     position: "top-right",
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
                     autoClose: 3000,
-                    // autoClose: false, // Não fecha automaticamente
-                    className: "bg-yellow-500 text-black", // Estilo personalizado para erros de validação
+                    className: "bg-white-500 text-black",
                 });
             });
         }
     }, [errors]);
+
+    // ? Exibe erros de validação
+    // useEffect(() => {
+    //     if (Object.keys(errors).length > 0) {
+    //         Object.values(errors).forEach((error) => {
+    //             toast.warn(error, {
+    //                 position: "top-right",
+    //                 hideProgressBar: false,
+    //                 closeOnClick: true,
+    //                 pauseOnHover: true,
+    //                 draggable: true,
+    //                 progress: undefined,
+    //                 autoClose: 3000,
+    //                 // autoClose: false, // Não fecha automaticamente
+    //             });
+    //         });
+    //     }
+    // }, [errors]);
 
     const handleDateChange = (date) => {
         setStartDate(date);
@@ -46,6 +60,10 @@ export default function UserSignup({ onSuccess, onLoginClick }) {
             onSuccess: () => {
                 onSuccess();
                 reset("email", "nome", "senha", "dt_nasc");
+            },
+            onError: () => {
+                // Não fechar o modal caso haja erros de validação
+                console.log("Erros de validação detectados.");
             },
         });
     };

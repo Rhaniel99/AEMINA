@@ -34,23 +34,15 @@ export default function Layout({ children }) {
         <>
             <header className="bg-gradient-to-t to-[#F3BD97] from-[#CB665A] shadow-md">
                 <nav className="p-5 max-w-screen-lg mx-auto flex items-center">
-                    <Link
-                        className="text-[#000000] hover:bg-[#CB665A] hover:text-[#F3BD97] rounded-md px-3 py-2 text-sm font-medium transition-colors duration-300"
-                        href={route("home")}
-                    >
-                        Home
+                    <Link className="text-[#000000] hover:bg-[#CB665A] hover:text-[#F3BD97] rounded-md px-3 py-2 text-sm font-medium transition-colors duration-300"
+                        href={route("home")}> Home
                     </Link>
-                    <Link
-                        className="text-[#000000] hover:bg-[#CB665A] hover:text-[#F3BD97] rounded-md px-3 py-2 text-sm font-medium transition-colors duration-300"
-                        href="#"
-                    >
-                        Galeria
+                    <Link className="text-[#000000] hover:bg-[#CB665A] hover:text-[#F3BD97] rounded-md px-3 py-2 text-sm font-medium transition-colors duration-300"
+                        href="#"> Galeria
                     </Link>
-                    <button
-                        className="text-[#000000] hover:bg-[#CB665A] hover:text-[#F3BD97] rounded-md px-3 py-2 text-sm font-medium transition-colors duration-300"
-                        onClick={() => setOpen(true)}
-                    >
-                        Inscreva-se
+
+                    <button className="text-[#000000] hover:bg-[#CB665A] hover:text-[#F3BD97] rounded-md px-3 py-2 text-sm font-medium transition-colors duration-300"
+                        onClick={() => setOpen(true)}> Inscreva-se
                     </button>
                 </nav>
             </header>

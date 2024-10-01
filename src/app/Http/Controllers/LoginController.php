@@ -21,36 +21,22 @@ class LoginController extends Controller
      */
     public function create(Request $request)
     {
-        try {
+        $validated_data = $request->validate([
+            'nome' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'senha' => 'required|string|min:6',
+            'dt_nasc' => 'required|date',
+        ]);
 
-            $request->validate([
-                'nome' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'senha' => 'required|string|min:6',
-                'dt_nasc' => 'required',
-            ]);
+        // Criação do usuário
+        User::create([
+            'name' => $validated_data['nome'],
+            'email' => $validated_data['email'],
+            'birth_date' => $validated_data['dt_nasc'],
+            'password' => bcrypt($validated_data['senha']),
+        ]);
 
-            \DB::beginTransaction();
-            
-            $usuario = User::create([
-                'name' => $request->nome,
-                'email' => $request->email,
-                'birth_date' => $request->dt_nasc,
-                'password' => bcrypt($request->senha),
-            ]);
-
-            if(!$usuario){
-                throw new \Exception('Não foi possivel salvar o usuário!');
-            }
-
-            \DB::commit();
-            $id_error = time();
-            return to_route('home')->with('message',"Criado com sucesso!|{$id_error}");
-        } catch (\Exception $e) {
-            \DB::rollBack();
-            $id_error = time(); // ou use um contador
-            return redirect()->back()->with('message', $e->getMessage() . "|{$id_error}");
-        }
+        return to_route('home')->with('message', "Criado com sucesso!");
     }
 
     /**
@@ -58,23 +44,19 @@ class LoginController extends Controller
      */
     public function store(Request $request)
     {
-
         $request->validate([
             'email' => ['required', 'email'],
             'senha' => ['required'],
             // 'senha' => ['required', 'min:5'],
         ]);
+
         if (Auth::attempt(['email' => $request->email, 'password' => $request->senha])) {
 
-            return to_route('aemina.index')->with('message','Sucesso!');
+            return to_route('aemina.index')->with('message', 'Sucesso!');
 
             // return redirect('/aemina')->with('message','Sucesso!');
         } else {
-            $uniqueErrorIdentifier = time(); // ou use um contador
-            return redirect()->back()->with('message', "Email ou senha inválidos.|{$uniqueErrorIdentifier}");
-
-            // $uniqueErrorIdentifier = Carbon::now()->format('d/m/Y H:i:s'); // Formato desejado
-            // return redirect()->back()->with('message', 'Email ou senha inválidos. ' . $uniqueErrorIdentifier);
+            return back()->withErrors(['message' => "Email ou senha inválidos."]);
         }
     }
 

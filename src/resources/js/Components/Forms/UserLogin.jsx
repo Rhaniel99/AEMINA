@@ -1,8 +1,7 @@
 import { useForm, usePage } from "@inertiajs/inertia-react";
 import { useRoute } from "ziggy";
 import { useEffect } from "react";
-
-// import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 
 export default function UserLogin({ openHandleSignup, handleClose }) {
@@ -13,21 +12,13 @@ export default function UserLogin({ openHandleSignup, handleClose }) {
         senha: "",
     });
 
-    // const { flash } = usePage().props;
-    // ? Exibe erros de validação
     useEffect(() => {
         if (Object.keys(errors).length > 0) {
             Object.values(errors).forEach((error) => {
                 toast.warn(error, {
                     position: "top-right",
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
                     autoClose: 3000,
-                    // autoClose: false, // Não fecha automaticamente
-                    className: "bg-yellow-500 text-black", // Estilo personalizado para erros de validação
+                    className: "bg-white-500 text-black",
                 });
             });
         }
@@ -37,8 +28,12 @@ export default function UserLogin({ openHandleSignup, handleClose }) {
         e.preventDefault();
         post(route("login.store"), {
             onSuccess: () => {
-                handleClose();
-                reset("email", "senha");
+                handleClose(); // Fechar o modal
+                reset("email", "senha"); // Resetar os dados do formulário
+            },
+            onError: () => {
+                // Não fechar o modal caso haja erros de validação
+                console.log("Erros de validação detectados.");
             },
         });
     }
