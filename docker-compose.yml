@@ -57,7 +57,7 @@ services:
       SERVICE_TAGS: dev
       SERVICE_NAME: pgsql
     volumes:
-      - ./docker/pgsql/data:/var/lib/pgsql
+      - ./docker/pgsql/data:/var/lib/postgresql/data
     networks:
       - laravel
 

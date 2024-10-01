@@ -13,7 +13,7 @@ export default function Homepage() {
     useEffect(() => {
         if (flash.message) {
             const [message, timestamp] = flash.message.split("|");
-            toast.error(message, {
+            toast.success(message, {
                 position: "top-right",
                 hideProgressBar: false,
                 closeOnClick: true,

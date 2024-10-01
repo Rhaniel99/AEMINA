@@ -17,7 +17,7 @@ class LoginController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Criação de usuário
      */
     public function create(Request $request)
     {
@@ -28,7 +28,7 @@ class LoginController extends Controller
             'dt_nasc' => 'required|date',
         ]);
 
-        // Criação do usuário
+        // ? Criação do usuário
         User::create([
             'name' => $validated_data['nome'],
             'email' => $validated_data['email'],
@@ -40,7 +40,7 @@ class LoginController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Autenticação
      */
     public function store(Request $request)
     {
@@ -85,12 +85,11 @@ class LoginController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Logout do login
      */
     public function destroy()
     {
         Auth::logout();
         return to_route('home');
-        // return inertia('Login/Index');
     }
 }

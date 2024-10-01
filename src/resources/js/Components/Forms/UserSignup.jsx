@@ -31,24 +31,6 @@ export default function UserSignup({ onSuccess, onLoginClick }) {
         }
     }, [errors]);
 
-    // ? Exibe erros de validação
-    // useEffect(() => {
-    //     if (Object.keys(errors).length > 0) {
-    //         Object.values(errors).forEach((error) => {
-    //             toast.warn(error, {
-    //                 position: "top-right",
-    //                 hideProgressBar: false,
-    //                 closeOnClick: true,
-    //                 pauseOnHover: true,
-    //                 draggable: true,
-    //                 progress: undefined,
-    //                 autoClose: 3000,
-    //                 // autoClose: false, // Não fecha automaticamente
-    //             });
-    //         });
-    //     }
-    // }, [errors]);
-
     const handleDateChange = (date) => {
         setStartDate(date);
         setData("dt_nasc", date ? date.toISOString().split("T")[0] : ""); // Salvando em formato ISO (yyyy-mm-dd)
