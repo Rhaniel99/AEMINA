@@ -1,4 +1,4 @@
-import { useForm, usePage } from "@inertiajs/inertia-react";
+import { useForm, usePage } from "@inertiajs/react";
 import { useRoute } from "ziggy";
 import { useEffect } from "react";
 import { toast } from "react-toastify";

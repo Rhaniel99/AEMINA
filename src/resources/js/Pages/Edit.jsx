@@ -1,4 +1,4 @@
-import { useForm, Head } from "@inertiajs/inertia-react";
+import { useForm, Head } from "@inertiajs/react";
 
 export default function Edit ( { post } ) {
 

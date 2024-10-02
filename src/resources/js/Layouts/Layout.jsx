@@ -1,4 +1,4 @@
-import { Link, usePage } from "@inertiajs/inertia-react";
+import { Link, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import Modal from "../Components/Modal";
 import { useRoute } from "ziggy";
@@ -72,6 +72,7 @@ export default function Layout({ children }) {
                     )}
                 </nav>
             </header>
+            
             {!auth.user && (
                 <Modal open={open} onClose={() => setOpen(false)}>
                     {open && ( // Verifica se o modal está aberto antes de renderizar o conteúdo
@@ -92,7 +93,7 @@ export default function Layout({ children }) {
                     )}
                 </Modal>
             )}
-            ;
+
             {!auth.user && (
                 <Modal open={loginOpen} onClose={() => setLoginOpen(false)}>
                     <section>
@@ -111,7 +112,6 @@ export default function Layout({ children }) {
                     </section>
                 </Modal>
             )}
-            ;
             <main className="max-w-screen-lg mx-auto">
                 {auth.user && <h1>Você está logado como: {auth.user.name}.</h1>}
 

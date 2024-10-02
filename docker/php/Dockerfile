@@ -22,7 +22,7 @@ RUN sed -i "s/group = www-data/group = '${USER}'/g" /usr/local/etc/php-fpm.d/www
 RUN echo "php_admin_flag[log_errors] = on" >> /usr/local/etc/php-fpm.d/www.conf
 
 # Installing php extensions
-RUN apk update && apk upgrade 
+RUN apk update && apk upgrade
 
 RUN apk add --no-cache postgresql-dev 
 
@@ -33,6 +33,15 @@ RUN mkdir -p /usr/src/php/ext/redis \
     && curl -fsSL https://github.com/phpredis/phpredis/archive/5.3.4.tar.gz | tar xvz -C /usr/src/php/ext/redis --strip 1 \
     && echo 'redis' >> /usr/src/php-available-exts \
     && docker-php-ext-install redis
+
+# Installing zip extension
+RUN apk add --no-cache libzip-dev \
+    && docker-php-ext-configure zip \
+    && docker-php-ext-install zip  \
+    && docker-php-ext-install pcntl
+
+# Installing pcntl extension
+# RUN apk add --no-cache php82-pcntl
 
 # Establecer permisos
 RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache

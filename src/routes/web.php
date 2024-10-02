@@ -14,7 +14,11 @@ use Inertia\Inertia;
 //     return $redis->get('username');
 // });
 
-Route::inertia('/', 'Homepage')->name('home');
+// Route::inertia('/', 'Homepage')->name('home');
+Route::get('/', function () {
+    sleep(2);
+    return inertia('Home');
+})->name('home');
 
 // Route::resource('posts', PostController::class)->except('index');
 

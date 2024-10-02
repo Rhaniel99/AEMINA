@@ -2,14 +2,18 @@ import './bootstrap';
 import "../css/app.css";
 
 import { createRoot } from "react-dom/client"; // Importe createRoot
-import { createInertiaApp } from "@inertiajs/inertia-react";
-import { InertiaProgress } from "@inertiajs/progress";
+import { createInertiaApp } from "@inertiajs/react";
 // import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import Layout from '@/Layouts/Layout';
 
 const appName = "AEMINA";
 
 createInertiaApp({
+    progress: {
+        color: '#65406A',
+        showSpinner: true,
+      },
+      
     title: (title) => title ? `${title} - ${appName}` : appName,
     // resolve: (name) =>
     //     resolvePageComponent(
@@ -30,8 +34,3 @@ createInertiaApp({
         createRoot(el).render(<App {...props} />);
     },
 });
-
-// Defina a cor de escolha para o progresso da Inertia
-InertiaProgress.init(
-    { color: "#fff" }
-);

@@ -1,6 +1,6 @@
 // import Layout from "../Layouts/Layout";
 
-import { Link, usePage, Head } from "@inertiajs/inertia-react";
+import { Link, usePage, Head } from "@inertiajs/react";
 import { useRoute } from "../../../vendor/tightenco/ziggy";
 import { useState } from "react";
 

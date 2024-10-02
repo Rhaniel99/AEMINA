@@ -1,4 +1,4 @@
-import { useForm, Link, Head } from "@inertiajs/inertia-react";
+import { useForm, Link, Head } from "@inertiajs/react";
 import { useRoute } from "ziggy";
 import { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";

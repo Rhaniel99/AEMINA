@@ -11,8 +11,7 @@ class AeminaController extends Controller
      */
     public function index()
     {
-        $usuario = auth()->user()->only(['id', 'name', 'email']);
-        return inertia('Aemina/Index', ['usuario' => $usuario]);
+        return inertia('Aemina/Index');
     }
 
     /**

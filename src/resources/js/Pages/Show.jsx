@@ -1,4 +1,4 @@
-import { useForm, Link } from "@inertiajs/inertia-react";
+import { useForm, Link } from "@inertiajs/react";
 import { useRoute } from "../../../vendor/tightenco/ziggy"
 
 

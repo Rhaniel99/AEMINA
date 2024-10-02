@@ -14,9 +14,7 @@
         "vite": "^5.0"
     },
     "dependencies": {
-        "@inertiajs/inertia": "^0.11.1",
-        "@inertiajs/inertia-react": "^0.8.1",
-        "@inertiajs/progress": "^0.2.7",
+        "@inertiajs/react": "^1.2.0",
         "@vitejs/plugin-react": "^4.3.1",
         "date-fns": "^4.1.0",
         "jsconfig.json": "^2.3.3",
