@@ -31,6 +31,8 @@ class ImportPlanoAcao implements ShouldQueue
      */
     public function handle(): void
     {
+        ini_set('memory_limit', '-1');
+
         Excel::import(new PlanoDeAcaoImport(), $this->arquivoPlanoAcao);
 
         \Storage::delete($this->arquivoPlanoAcao); // Limpa o arquivo temporário

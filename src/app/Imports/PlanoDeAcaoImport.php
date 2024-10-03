@@ -5,29 +5,34 @@ namespace App\Imports;
 use App\Models\PlanoAcao;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Events\AfterImport;
 
 class PlanoDeAcaoImport implements ToModel, WithChunkReading
 {
     protected $contador = 0; // Contador de linhas processadas
-    /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
-    */
+
     public function model(array $row)
     {
+        set_time_limit(0); // 0 significa sem limite
+        ini_set('memory_limit', '-1');
+
         $this->contador++; // Incrementa o contador
 
-        // Log cada linha do arquivo
-        \Log::info($this->contador);
-        
-        gc_collect_cycles();
-        // Aqui você pode criar o modelo ou fazer outras operações
-        // return new PlanoAcao([...]);
+        return null;
     }
 
     public function chunkSize(): int
     {
-        return 100; // Defina o tamanho do lote conforme necessário
+        return 500; // Define o tamanho do lote
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterImport::class => function (AfterImport $event) {
+                // Log do total de linhas processadas ao final da importação
+                \Log::info('Total de linhas processadas: ' . $this->contador);
+            },
+        ];
     }
 }
