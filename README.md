@@ -58,10 +58,16 @@ docker-compose run --rm --service-ports node npm run dev
 
 > #### Implementações
 >
-> - Tela de Login.
-> - Aunteticação.
-> - Inserir o container para o minio
-> - Criar seed com usuário adm
+> - ~~Tela de Login.~~
+> - ~~Aunteticação.~~
+> - ~~Criação de Conta.~~
+> - Recuperar Senha
+> - ~~Logout~~
+> - ~~Instalar Laravel Horizon~~
+> - ~~Criar um container para Queues e Horizon.~~
+> - ~~Utilizar Redis para Sessão, Queues e Cache.~~
+> - ~~Criar seed com usuário adm.~~
+> - Importar XLS e Importar no banco com regras.
 
 
 > #### Melhorias
