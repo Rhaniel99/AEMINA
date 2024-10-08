@@ -3,36 +3,27 @@
 namespace App\Imports;
 
 use App\Models\PlanoAcao;
-use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
-use Maatwebsite\Excel\Events\AfterImport;
+use Maatwebsite\Excel\Concerns\OnEachRow;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Row;
 
-class PlanoDeAcaoImport implements ToModel, WithChunkReading
+class PlanoDeAcaoImport implements OnEachRow, WithHeadingRow
 {
-    protected $contador = 0; // Contador de linhas processadas
 
-    public function model(array $row)
+    public function onRow(Row $row)
     {
-        set_time_limit(0); // 0 significa sem limite
-        ini_set('memory_limit', '-1');
+        $data = $row->toArray(); // Converte a linha em um array associativo
+        \Log::info($data);
 
-        $this->contador++; // Incrementa o contador
+        // Aqui você pode processar os dados da linha como quiser
+        // Exemplo: salvar no banco de dados
+        // PlanoAcao::create([
+        //     'nome' => $data['nome'],
+        //     'descricao' => $data['descricao'],
+        //     // outros campos...
+        // ]);
 
-        return null;
-    }
-
-    public function chunkSize(): int
-    {
-        return 500; // Define o tamanho do lote
-    }
-
-    public function registerEvents(): array
-    {
-        return [
-            AfterImport::class => function (AfterImport $event) {
-                // Log do total de linhas processadas ao final da importação
-                \Log::info('Total de linhas processadas: ' . $this->contador);
-            },
-        ];
+        // Se ainda houver problema de memória, adicione um retorno explícito
+        return;
     }
 }

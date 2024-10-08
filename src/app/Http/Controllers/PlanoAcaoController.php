@@ -66,11 +66,12 @@ class PlanoAcaoController extends Controller
             'planoAcao.mimes' => 'O arquivo plano de ação deve ser um dos seguintes formatos: xls, xlsx, csv.',
         ]);
     
-        $arquivo_plano_acao = $request->file('planoAcao');
+        $arquivo_plano_acao = $request->file('planoAcao')->store('temp');
 
         // DB::beginTransaction(); // Inicia a transação
         try {
             Excel::import(new PlanoDeAcaoImport(), $arquivo_plano_acao);
+            
             // DB::commit(); // Confirma a transação se tudo correr bem
         } catch (\Exception $e) {
             // DB::rollBack(); // Desfaz as alterações se houver um erro
