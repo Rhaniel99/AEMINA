@@ -58,21 +58,32 @@ docker-compose run --rm --service-ports node npm run dev
 
 > #### Implementações
 >
-> - Tela de Login.
-> - Aunteticação.
-> - Inserir o container para o minio
-> - Criar seed com usuário adm
+> - ~~Tela de Login.~~
+> - ~~Aunteticação.~~
+> - ~~Criação de Conta.~~
+> - Recuperar Senha
+> - ~~Logout~~
+> - ~~Instalar Laravel Horizon~~
+> - Criar um container para minio.
+> - ~~Criar um container para Queues e Horizon.~~
+> - ~~Criar seed com usuário adm.~~
+> - Importar XLS e Importar no banco com regras.
 
 
 > #### Melhorias
->
-> - .
-> - .
->
 > 
+> - ~~Utilizar Redis para Sessão, Queues e Cache.~~
+> - ~~Utilização de Modais ao invés de pages para criação e login de usuário.~~
+> - ~~Atualização para a ultima versão do inertia.~~
+> - Verificar uma melhoria para o container de Queue e Horizon
+> - Reformular o body da homepage
+> - Reformular a header, utilizar icons com dropdown para Login.
+> - 
+
 
 > #### Logs
->
+> 
+> - Dificuldade em inserir uma tabela com 42 mil linhas usando Maatwebsite, houve uma tentiva utilizando Spout, mas não há compatibilidade com arquivos xlsx. ( Apesar da documentação dizer o contrário.)
 > - .
 > - .
 >
