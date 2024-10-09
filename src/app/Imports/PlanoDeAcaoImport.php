@@ -15,8 +15,9 @@ class PlanoDeAcaoImport implements OnEachRow, WithHeadingRow
 
     public function onRow(Row $row)
     {
-        $data = $row->toArray(); // Converte a linha em um array associativo
         // $data = $this->normalizeData($row->toArray());
+
+        $data = $row->toArray(); // Converte a linha em um array associativo
 
         $tipo_plano = Normalize::nAccent(Normalize::nLower($data['tipo_de_plano']));
         // $tipo_plano = $data['tipo_de_plano'];
@@ -34,12 +35,6 @@ class PlanoDeAcaoImport implements OnEachRow, WithHeadingRow
 
         $inicio_realizado = Normalize::nDate($data['inicio_realizado']);
         $fim_realizado = Normalize::nDate($data['fim_realizado']);
-
-        // \Log::info($inicio_previsto);
-        // \Log::info($fim_previsto);
-
-        // \Log::warning($inicio_realizado);
-        // \Log::warning($fim_realizado);
 
         $cod_escola = $data['sigeam'];
         $pontos_problematicos = $data['pontos_problematicos'];
@@ -65,7 +60,6 @@ class PlanoDeAcaoImport implements OnEachRow, WithHeadingRow
         ], [
                     'indicador' => $indicador_array
         ]);
-
         
         $id_usuario = auth()->id();
         $ano_atual = date('Y');
