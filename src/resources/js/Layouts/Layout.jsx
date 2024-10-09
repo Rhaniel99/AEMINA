@@ -36,26 +36,31 @@ export default function Layout({ children }) {
             <header className="bg-gradient-to-t to-[#F3BD97] from-[#CB665A] shadow-md">
                 <nav className="p-5 max-w-screen-lg mx-auto flex items-center">
                     <div className="flex items-center space-x-4">
-                        <Link
-                            className="text-[#000000] hover:bg-[#CB665A] hover:text-[#F3BD97] rounded-md px-3 py-2 text-sm font-medium transition-colors duration-300"
-                            href={route("home")}
-                        >
+                        
+                        <Link className="text-[#000000] hover:bg-[#CB665A] hover:text-[#F3BD97] rounded-md px-3 py-2 text-sm font-medium transition-colors duration-300"
+                            href={route("home")}>
                             Home
                         </Link>
-                        <Link
-                            className="text-[#000000] hover:bg-[#CB665A] hover:text-[#F3BD97] rounded-md px-3 py-2 text-sm font-medium transition-colors duration-300"
-                            href="#"
-                        >
+
+                        <Link className="text-[#000000] hover:bg-[#CB665A] hover:text-[#F3BD97] rounded-md px-3 py-2 text-sm font-medium transition-colors duration-300"
+                            href="#">
                             Galeria
                         </Link>
+                        
                         {!auth.user && (
-                            <button
-                                className="text-[#000000] hover:bg-[#CB665A] hover:text-[#F3BD97] rounded-md px-3 py-2 text-sm font-medium transition-colors duration-300"
-                                onClick={() => setOpen(true)}
-                            >
+                            <button className="text-[#000000] hover:bg-[#CB665A] hover:text-[#F3BD97] rounded-md px-3 py-2 text-sm font-medium transition-colors duration-300"
+                                onClick={() => setOpen(true)}>
                                 Inscreva-se
                             </button>
                         )}
+
+                        {auth.user && (
+                            <Link className="text-[#000000] hover:bg-[#CB665A] hover:text-[#F3BD97] rounded-md px-3 py-2 text-sm font-medium transition-colors duration-300"
+                                href={ route("aemina.index") }>
+                                Aemina
+                            </Link>
+                        )}
+
                     </div>
 
                     {/* O botão de logout é empurrado para a direita com ml-auto */}
