@@ -51,11 +51,11 @@ return new class extends Migration
             
             // Causa e tarefa do plano de ação
             
-            $table->string('causa')->nullable();
+            $table->text('causa')->nullable();
             
             $table->string('acao')->nullable();
             
-            $table->string('tarefa')->nullable();
+            $table->text('tarefa')->nullable();
             
             // Responsável pela execução do plano
             
@@ -73,11 +73,11 @@ return new class extends Migration
             
             // Pontos problemáticos e ações futuras
             
-            $table->string('ponto_problematico')->nullable();
+            $table->text('ponto_problematico')->nullable();
             
-            $table->string('acao_futura_1')->nullable();
+            $table->text('acao_futura_1')->nullable();
             
-            $table->string('acao_futura_2')->nullable();
+            $table->text('acao_futura_2')->nullable();
             
             // Responsável pelo problema, reprogramações e timestamps
             

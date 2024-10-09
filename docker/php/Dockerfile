@@ -23,12 +23,13 @@ RUN sed -i "s/user = www-data/user = '${USER}'/g" /usr/local/etc/php-fpm.d/www.c
 
 # Install necessary PHP extensions and system dependencies in one step
 RUN apk update && apk upgrade \
-    && apk add --no-cache postgresql-dev libzip-dev \
-    && docker-php-ext-install pdo pdo_pgsql bcmath zip pcntl \
+    && apk add --no-cache postgresql-dev libzip-dev icu-dev \
+    && docker-php-ext-install pdo pdo_pgsql bcmath zip pcntl intl \
     && docker-php-ext-configure zip \
     && mkdir -p /usr/src/php/ext/redis \
     && curl -fsSL https://github.com/phpredis/phpredis/archive/5.3.4.tar.gz | tar xvz -C /usr/src/php/ext/redis --strip 1 \
-    && docker-php-ext-install redis
+    && docker-php-ext-install redis \
+    && rm -rf /var/cache/apk/*
 
 # Set permissions for Laravel storage and cache directories
 RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache \

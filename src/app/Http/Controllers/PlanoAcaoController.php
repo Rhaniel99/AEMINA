@@ -11,6 +11,34 @@ use Box\Spout\Common\Exception\SpoutException;
 
 class PlanoAcaoController extends Controller
 {
+
+    public function uploadCSV(Request $request)
+    {
+        set_time_limit(0);
+
+        $request->validate([
+            "planoAcao" => "required|mimes:xls,xlsx,csv",
+        ], [
+            'planoAcao.required' => 'O envio do arquivo plano de ação é obrigatório.',
+            'planoAcao.mimes' => 'O arquivo plano de ação deve ser um dos seguintes formatos: xls, xlsx, csv.',
+        ]);
+    
+        $arquivo_plano_acao = $request->file('planoAcao')->store('temp');
+
+        // DB::beginTransaction(); // Inicia a transação
+        try {
+            
+            Excel::import(new PlanoDeAcaoImport(), $arquivo_plano_acao);
+            
+            // DB::commit(); // Confirma a transação se tudo correr bem
+        } catch (\Exception $e) {
+            // DB::rollBack(); // Desfaz as alterações se houver um erro
+            \Log::error('Erro ao importar o arquivo: ' . $e->getMessage());
+        }
+    }
+
+
+    
     // public function uploadCSV(Request $request)
     // {
     //     $request->validate([
@@ -51,33 +79,6 @@ class PlanoAcaoController extends Controller
     //     unlink($tempFile); // Limpeza do arquivo temporário
     // }
     
-    
-
-
-    public function uploadCSV(Request $request)
-    {
-        set_time_limit(0);
-        ini_set('memory_limit', '-1');
-
-        $request->validate([
-            "planoAcao" => "required|mimes:xls,xlsx,csv",
-        ], [
-            'planoAcao.required' => 'O envio do arquivo plano de ação é obrigatório.',
-            'planoAcao.mimes' => 'O arquivo plano de ação deve ser um dos seguintes formatos: xls, xlsx, csv.',
-        ]);
-    
-        $arquivo_plano_acao = $request->file('planoAcao')->store('temp');
-
-        // DB::beginTransaction(); // Inicia a transação
-        try {
-            Excel::import(new PlanoDeAcaoImport(), $arquivo_plano_acao);
-            
-            // DB::commit(); // Confirma a transação se tudo correr bem
-        } catch (\Exception $e) {
-            // DB::rollBack(); // Desfaz as alterações se houver um erro
-            \Log::error('Erro ao importar o arquivo: ' . $e->getMessage());
-        }
-    }
 
             // \Log::info('Arquivo enviado: ' . $arquivo_plano_acao->getClientOriginalName());
         // // Criar o leitor a partir do arquivo
