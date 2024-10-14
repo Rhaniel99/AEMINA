@@ -34,8 +34,11 @@ class PlanoDeAcaoImport implements OnEachRow, WithHeadingRow
         $fim_previsto = Normalize::nDate($data['fim_previsto']);
 
         $inicio_realizado = Normalize::nDate($data['inicio_realizado']);
-        $fim_realizado = Normalize::nDate($data['fim_realizado']);
 
+        $fim_realizado = ($data['fim_realizado'] != 'CANCELADA') ? Normalize::nDate($data['fim_realizado']) : null;
+
+        // $status = $data['DESCRIÇÃO DO STATUS'];
+        
         $cod_escola = $data['sigeam'];
         $pontos_problematicos = $data['pontos_problematicos'];
 
@@ -60,30 +63,33 @@ class PlanoDeAcaoImport implements OnEachRow, WithHeadingRow
         ], [
                     'indicador' => $indicador_array
         ]);
+
+        // \Log::warning($data);
         
         $id_usuario = auth()->id();
         $ano_atual = date('Y');
 
-        PlanoAcao::create(
-        [
-                    'ano_base' => $ano_atual,
-                    'id_tipo_acao' => $tipoAcao->id,
-                    'indicador_id' => $indicador->id,
-                    'causa_correlacionada' => $causa_correlacionada,
-                    'cod_escola' => $cod_escola,
-                    'causa' => $causa,
-                    'acao' => $acao,
-                    'tarefa' => $tarefa,
-                    'inicio_previsto' => $inicio_previsto,
-                    'fim_prev' => $fim_previsto,
-                    'inicio_real' => $inicio_realizado,
-                    'fim_real' => $fim_realizado,
-                    'ponto_problematico' => $pontos_problematicos,
-                    'acao_futura_1' => $acao_futura,
-                    'problema_responsavel_id' => $id_usuario,
-                    'reprogramacao1' => $reprogramacao_1,
-                    'reprogramacao2' => $reprogramacao_2
-        ]);
+        // PlanoAcao::create(
+        // [
+        //             'ano_base' => $ano_atual,
+        //             'id_tipo_acao' => $tipoAcao->id,
+        //             'indicador_id' => $indicador->id,
+        //             'causa_correlacionada' => $causa_correlacionada,
+        //             'cod_escola' => $cod_escola,
+        //             'causa' => $causa,
+        //             'acao' => $acao,
+        //             'tarefa' => $tarefa,
+        //             'inicio_previsto' => $inicio_previsto,
+        //             'fim_prev' => $fim_previsto,
+        //             'inicio_real' => $inicio_realizado,
+        //             'fim_real' => $fim_realizado,
+        //             'status' => $status,
+        //             'ponto_problematico' => $pontos_problematicos,
+        //             'acao_futura_1' => $acao_futura,
+        //             'problema_responsavel_id' => $id_usuario,
+        //             'reprogramacao1' => $reprogramacao_1,
+        //             'reprogramacao2' => $reprogramacao_2
+        // ]);
 
 
         /* 

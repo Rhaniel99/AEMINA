@@ -21,10 +21,13 @@ services:
       - php
       - pgsql
       - redis
+      - queue
     networks:
       - laravel
 
   php:
+    dns:
+    - 8.8.8.8  # ? Google DNS
     build:
       context: ./docker/php
       dockerfile: Dockerfile
@@ -57,8 +60,12 @@ services:
       - .env:/var/www/html/.env
     depends_on:
       - pgsql
+      - horizon
+      - redis
     working_dir: /var/www/html
     entrypoint: ['php', '/var/www/html/artisan', 'queue:work']
+    # entrypoint: ['php', '/var/www/html/artisan', 'queue:work','--queue=planos' , '--timeout=0']
+    # entrypoint: ['php', '/var/www/html/artisan', 'queue:work --tries=1 --timeout=0']
     networks:
       - laravel
 

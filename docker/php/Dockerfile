@@ -22,14 +22,16 @@ RUN sed -i "s/user = www-data/user = '${USER}'/g" /usr/local/etc/php-fpm.d/www.c
     && echo "php_admin_flag[log_errors] = on" >> /usr/local/etc/php-fpm.d/www.conf
 
 # Install necessary PHP extensions and system dependencies in one step
-RUN apk update && apk upgrade \
+RUN apk add --no-cache wget \
+    && mkdir -p /usr/src/php/ext/redis \
+    && wget -O /tmp/phpredis.tar.gz https://github.com/phpredis/phpredis/archive/5.3.4.tar.gz \
+    && tar xvz -C /usr/src/php/ext/redis --strip 1 -f /tmp/phpredis.tar.gz \
+    && echo 'redis' >> /usr/src/php-available-exts \
+    && docker-php-ext-install redis \
     && apk add --no-cache postgresql-dev libzip-dev icu-dev \
     && docker-php-ext-install pdo pdo_pgsql bcmath zip pcntl intl \
     && docker-php-ext-configure zip \
-    && mkdir -p /usr/src/php/ext/redis \
-    && curl -fsSL https://github.com/phpredis/phpredis/archive/5.3.4.tar.gz | tar xvz -C /usr/src/php/ext/redis --strip 1 \
-    && docker-php-ext-install redis \
-    && rm -rf /var/cache/apk/*
+    && rm -rf /var/cache/apk/* /tmp/phpredis.tar.gz
 
 # Set permissions for Laravel storage and cache directories
 RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache \

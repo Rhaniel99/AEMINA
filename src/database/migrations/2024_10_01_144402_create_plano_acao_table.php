@@ -70,9 +70,15 @@ return new class extends Migration
             $table->timestamp('inicio_real')->nullable();
             
             $table->timestamp('fim_real')->nullable();
+
+            $table->text('fim_real_relato')->nullable();
+
+            $table->enum('status',['Concluido', 'Cancelado'])->nullable();
             
             // Pontos problemáticos e ações futuras
             
+            $table->text('cancelamento_relato')->nullable();
+
             $table->text('ponto_problematico')->nullable();
             
             $table->text('acao_futura_1')->nullable();

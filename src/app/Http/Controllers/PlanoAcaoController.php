@@ -14,7 +14,8 @@ class PlanoAcaoController extends Controller
 
     public function uploadCSV(Request $request)
     {
-        set_time_limit(0);
+        // set_time_limit(0);
+        // ini_set('memory_limit', '-1');
 
         $request->validate([
             "planoAcao" => "required|mimes:xls,xlsx,csv",
@@ -27,13 +28,15 @@ class PlanoAcaoController extends Controller
 
         // DB::beginTransaction(); // Inicia a transação
         try {
-            
-            Excel::import(new PlanoDeAcaoImport(), $arquivo_plano_acao);
+            ImportPlanoAcao::dispatch($arquivo_plano_acao)->onQueue('planos');
+
+            // Excel::import(new PlanoDeAcaoImport(), $arquivo_plano_acao);
             
             // DB::commit(); // Confirma a transação se tudo correr bem
         } catch (\Exception $e) {
             // DB::rollBack(); // Desfaz as alterações se houver um erro
             \Log::error('Erro ao importar o arquivo: ' . $e->getMessage());
+            return back()->withErrors(['errors' => 'Erro ao importar o arquivo.']);
         }
     }
 

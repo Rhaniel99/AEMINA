@@ -31,10 +31,14 @@ class ImportPlanoAcao implements ShouldQueue
      */
     public function handle(): void
     {
-        ini_set('memory_limit', '-1');
+        try {
+            ini_set('memory_limit', '-1');
 
-        Excel::import(new PlanoDeAcaoImport(), $this->arquivoPlanoAcao);
+            Excel::import(new PlanoDeAcaoImport(), $this->arquivoPlanoAcao);
 
-        \Storage::delete($this->arquivoPlanoAcao); // Limpa o arquivo temporário
+        } catch (\Exception $e) {
+            \Log::error('Erro ao importar o arquivo: ' . $e->getMessage());
+            throw $e; // Re-lança a exceção para que o Laravel registre a falha
+        }
     }
 }
