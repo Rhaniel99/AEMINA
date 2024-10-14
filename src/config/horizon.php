@@ -193,6 +193,20 @@ return [
             'timeout' => 60,
             'nice' => 0,
         ],
+
+        'supervisor-planos' => [
+            'connection' => 'redis',
+            'queue' => ['planos'], 
+            'balance' => 'auto',
+            'autoScalingStrategy' => 'time',
+            'maxProcesses' => 5,
+            'maxTime' => 0,
+            'maxJobs' => 100,
+            'memory' => 128,
+            'tries' => 1,
+            'timeout' => 0,  
+            'nice' => 0,
+        ],
     ],
 
     'environments' => [
@@ -202,11 +216,25 @@ return [
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
             ],
+
+            'supervisor-planos' => [
+                'maxProcesses' => 20,
+                'balanceMaxShift' => 4,
+                'balanceCooldown' => 3,
+                'tries' => 3,
+            ],
         ],
 
         'local' => [
             'supervisor-1' => [
                 'maxProcesses' => 3,
+            ],
+
+            'supervisor-planos' => [
+                'maxProcesses' => 20, // parallel processes
+                'balanceMaxShift' => 4,
+                'balanceCooldown' => 3,
+                'tries' => 3,
             ],
         ],
     ],
