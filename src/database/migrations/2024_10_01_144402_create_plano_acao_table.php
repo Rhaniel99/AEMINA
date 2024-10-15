@@ -53,7 +53,7 @@ return new class extends Migration
             
             $table->text('causa')->nullable();
             
-            $table->string('acao')->nullable();
+            $table->text('acao')->nullable();
             
             $table->text('tarefa')->nullable();
             
