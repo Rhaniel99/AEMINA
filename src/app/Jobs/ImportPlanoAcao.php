@@ -14,16 +14,20 @@ class ImportPlanoAcao implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $arquivoPlanoAcao;
+    protected $arquivo_plano_acao;
+    protected $id_user;
+
 
     /**
      * Create a new job instance.
      *
-     * @param string $arquivoPlanoAcao
+     * @param string $arquivo_plano_acao
      */
-    public function __construct(string $arquivoPlanoAcao)
+    public function __construct(string $arquivo_plano_acao, $id_user)
     {
-        $this->arquivoPlanoAcao = $arquivoPlanoAcao;
+        $this->arquivo_plano_acao = $arquivo_plano_acao;
+        $this->id_user = $id_user;
+
     }
 
     /**
@@ -32,9 +36,10 @@ class ImportPlanoAcao implements ShouldQueue
     public function handle(): void
     {
         try {
+
             ini_set('memory_limit', '-1');
 
-            Excel::import(new PlanoDeAcaoImport(), $this->arquivoPlanoAcao);
+            Excel::import(new PlanoDeAcaoImport($this->id_user), $this->arquivo_plano_acao);
 
         } catch (\Exception $e) {
             \Log::error('Erro ao importar o arquivo: ' . $e->getMessage());
