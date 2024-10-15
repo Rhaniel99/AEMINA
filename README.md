@@ -39,20 +39,20 @@ docker compose up --build nginx -d
 ```
 4. **Instale as dependências do PHP**
 ```bash
-docker-compose run --rm composer install
+docker compose run --rm composer install
 ```
 5. **Execute as migrations**
 ```bash
-docker-compose run --rm artisan migrate
+docker compose run --rm artisan migrate
 ```
 
 6. **Instale as dependências do Node.js:**
 ```bash
-docker-compose run --rm node npm i
+docker compose run --rm node npm i
 ```
 7. **Inicie o front-end**
 ```bash
-docker-compose run --rm --service-ports node npm run dev
+docker compose run --rm --service-ports node npm run dev
 ```
 ## Melhorias, Implementações e Logs
 
