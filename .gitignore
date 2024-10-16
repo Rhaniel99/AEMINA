@@ -1,3 +1,4 @@
 /.phpunit.cache
 .env
 docker/pgsql/data
+.vscode
