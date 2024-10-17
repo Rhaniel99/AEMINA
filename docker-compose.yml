@@ -1,5 +1,8 @@
 networks:
-  laravel:
+  external-network:
+    external: true  # Referência à rede externa criada
+  laravel:  # Rede interna específica do projeto
+    driver: bridge
 
 services:
   nginx:
@@ -24,6 +27,7 @@ services:
       - queue
     networks:
       - laravel
+      - external-network
 
   php:
     dns:
@@ -45,6 +49,7 @@ services:
     restart: always
     networks:
       - laravel
+      - external-network
 
   queue:
     build:
@@ -68,6 +73,7 @@ services:
     # entrypoint: ['php', '/var/www/html/artisan', 'queue:work --tries=1 --timeout=0']
     networks:
       - laravel
+      - external-network
 
   horizon:
     build:
@@ -89,6 +95,7 @@ services:
     restart: always
     networks:
       - laravel
+      - external-network
 
   pgsql:
     build:
@@ -108,6 +115,7 @@ services:
       - ./docker/pgsql/data:/var/lib/postgresql/data
     networks:
       - laravel
+      - external-network
 
   redis:
     build:
@@ -119,6 +127,7 @@ services:
       - 6380:6379
     networks:
       - laravel
+      - external-network
 
   artisan:
     build:
@@ -139,6 +148,7 @@ services:
     entrypoint: ['php', '/var/www/html/artisan']
     networks:
       - laravel
+      - external-network
 
   composer:
     build:
@@ -160,9 +170,12 @@ services:
     entrypoint: ['composer', '--ignore-platform-reqs']
     networks:
       - laravel
+      - external-network
 
   node:
-    image: node:alpine
+    build:
+      context: ./docker/node
+      dockerfile: Dockerfile
     container_name: node
     volumes:
       - ./src:/var/www/html
@@ -174,3 +187,4 @@ services:
     profiles: ["node"]
     networks:
       - laravel
+      - external-network
