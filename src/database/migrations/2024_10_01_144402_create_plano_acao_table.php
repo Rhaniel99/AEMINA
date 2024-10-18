@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('plano_acao', function (Blueprint $table) {
+        Schema::create('gestao_schema.plano_acao', function (Blueprint $table) {
 
             $table->uuid('id')->primary(); // ID UUID para a tabela
             
@@ -21,7 +21,7 @@ return new class extends Migration
             
             $table->foreignId('id_tipo_acao')
             
-            ->constrained('tipo_acao')
+            ->constrained('gestao_schema.tipo_acao')
             
             ->onDelete('cascade'); // Deletar em cascata quando o tipo de ação for excluído
             
@@ -45,7 +45,7 @@ return new class extends Migration
             
             $table->foreign('indicador_id')
             
-            ->references('id')->on('indicadores')
+            ->references('id')->on('gestao_schema.indicadores')
             
             ->onDelete('cascade');
             
@@ -109,6 +109,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('plano_acao');
+        Schema::dropIfExists('gestao_schema.plano_acao');
     }
 };

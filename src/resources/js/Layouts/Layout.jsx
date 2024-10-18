@@ -61,6 +61,13 @@ export default function Layout({ children }) {
                             </Link>
                         )}
 
+                        {auth.user && (
+                            <Link className="text-[#000000] hover:bg-[#CB665A] hover:text-[#F3BD97] rounded-md px-3 py-2 text-sm font-medium transition-colors duration-300"
+                                href={ route("note.index") }>
+                                A.Notes
+                            </Link>
+                        )}
+
                     </div>
 
                     {/* O botão de logout é empurrado para a direita com ml-auto */}
@@ -75,6 +82,7 @@ export default function Layout({ children }) {
                             Logout
                         </Link>
                     )}
+                    
                 </nav>
             </header>
             
@@ -117,6 +125,7 @@ export default function Layout({ children }) {
                     </section>
                 </Modal>
             )}
+
             <main className="max-w-screen-lg mx-auto">
                 {auth.user && <h1>Você está logado como: {auth.user.name}.</h1>}
 

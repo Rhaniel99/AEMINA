@@ -8,7 +8,7 @@ class Indicador extends Model
 {
     use HasFactory;
 
-    protected $table = 'indicadores';
+    protected $table = 'gestao_schema.indicadores';
 
     // Campos que podem ser preenchidos em massa
     protected $fillable = [
