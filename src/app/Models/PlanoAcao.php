@@ -11,7 +11,7 @@ class PlanoAcao extends Model
     use HasFactory, Uuid;
 
     // Define o nome da tabela, se diferente do padrão plural
-    protected $table = 'plano_acao';
+    protected $table = 'gestao_schema.plano_acao';
 
     // Campos que podem ser preenchidos em massa
     protected $fillable = [

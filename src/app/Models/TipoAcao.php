@@ -10,7 +10,7 @@ class TipoAcao extends Model
     use HasFactory;
 
     // Define o nome da tabela
-    protected $table = 'tipo_acao';
+    protected $table = 'gestao_schema.tipo_acao';
 
     // Campos que podem ser preenchidos em massa
     protected $fillable = [

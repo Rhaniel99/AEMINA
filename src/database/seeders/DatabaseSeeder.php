@@ -17,6 +17,9 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::firstOrCreate([
+            'email' => 'rhanielmonteiro.13@gmail.com',
+    ],
+    [
             'name' => 'rhaniel monteiro',
             'email' => 'rhanielmonteiro.13@gmail.com',
             'birth_date' => '1998-04-09',
@@ -24,5 +27,9 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Post::factory(2)->create();
+
+        $this->call([
+            NoteTableSeeder::class,
+        ]);
     }
 }

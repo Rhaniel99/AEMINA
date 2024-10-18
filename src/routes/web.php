@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AeminaController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\NoteController;
 use App\Http\Controllers\PlanoAcaoController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Redis;
@@ -28,6 +29,9 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(PlanoAcaoController::class)->group(function () {
         Route::post('/uploadCSV', 'uploadCSV')->name('planoAcao.upload');
     });
+
+    Route::resource('note', NoteController::class);
+
 });
 
 Route::controller(LoginController::class)->group(function () {

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tipo_acao', function (Blueprint $table) {
+        Schema::create('gestao_schema.tipo_acao', function (Blueprint $table) {
             $table->increments('id'); // ID do tipo de ação (auto-incremento)
             $table->string('acao'); // Descrição do tipo de ação
 
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tipo_acao');
+        Schema::dropIfExists('gestao_schema.tipo_acao');
     }
 };

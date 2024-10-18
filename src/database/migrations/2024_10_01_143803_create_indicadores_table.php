@@ -11,7 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('indicadores', function (Blueprint $table) {
+        // ? Dropar o schema antes de criar novamente
+        DB::statement('DROP SCHEMA IF EXISTS gestao_schema CASCADE');
+        // ? Criar o novo schema
+        DB::statement('CREATE SCHEMA IF NOT EXISTS gestao_schema');
+        
+        Schema::create('gestao_schema.indicadores', function (Blueprint $table) {
             $table->increments('id'); // ID do indicador (auto-incremento)
             $table->string('indicador'); // Nome do indicador
 
@@ -25,6 +30,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('indicadores');
+        DB::statement('DROP SCHEMA IF EXISTS gestao_schema CASCADE');
+
+        Schema::dropIfExists('gestao_schema.indicadores');
     }
 };
