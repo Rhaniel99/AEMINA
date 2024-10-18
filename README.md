@@ -67,7 +67,7 @@ docker compose run --rm --service-ports node npm run dev
 > - Criar um container para minio.
 > - ~~Criar um container para Queues e Horizon.~~
 > - ~~Criar seed com usuário adm.~~
-> - Importar XLS e Importar no banco com regras.
+> - ~~Importar XLS e Importar no banco com regras.~~
 
 
 > #### Melhorias
@@ -78,7 +78,7 @@ docker compose run --rm --service-ports node npm run dev
 > - Verificar uma melhoria para o container de Queue e Horizon
 > - Reformular o body da homepage
 > - Reformular a header, utilizar icons com dropdown para Login.
-> - 
+> - Schemas Diferente para Gestão-Edu e Notes.
 
 
 > #### Logs
