@@ -1,4 +1,6 @@
 networks:
+  local-network:
+    external: true
   laravel:  # Rede interna específica do projeto
     driver: bridge
 
@@ -20,11 +22,11 @@ services:
       - .env:/var/www/html/.env
     depends_on:
       - php
-      - pgsql
       - redis
       - queue
     networks:
       - laravel
+      - local-network
 
   php:
     dns:
@@ -46,6 +48,7 @@ services:
     restart: always
     networks:
       - laravel
+      - local-network
 
   queue:
     build:
@@ -60,15 +63,13 @@ services:
       - ./src:/var/www/html
       - .env:/var/www/html/.env
     depends_on:
-      - pgsql
       - horizon
       - redis
     working_dir: /var/www/html
     entrypoint: ['php', '/var/www/html/artisan', 'queue:work']
-    # entrypoint: ['php', '/var/www/html/artisan', 'queue:work','--queue=planos' , '--timeout=0']
-    # entrypoint: ['php', '/var/www/html/artisan', 'queue:work --tries=1 --timeout=0']
     networks:
       - laravel
+      - local-network
 
   horizon:
     build:
@@ -84,31 +85,12 @@ services:
       - .env:/var/www/html/.env
     depends_on:
       - redis
-      - pgsql
     working_dir: /var/www/html
     entrypoint: ['php', '/var/www/html/artisan', 'horizon']
     restart: always
     networks:
       - laravel
-
-  pgsql:
-    build:
-      context: ./docker/pgsql
-      dockerfile: Dockerfile
-    container_name: pgsql
-    restart: always
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_DB: ${DB_DATABASE}         
-      POSTGRES_USER: ${DB_USERNAME}        
-      POSTGRES_PASSWORD: ${DB_PASSWORD} 
-      SERVICE_TAGS: dev
-      SERVICE_NAME: pgsql
-    volumes:
-      - ./docker/pgsql/data:/var/lib/postgresql/data
-    networks:
-      - laravel
+      - local-network
 
   redis:
     build:
@@ -120,6 +102,7 @@ services:
       - 6380:6379
     networks:
       - laravel
+      - local-network
 
   artisan:
     build:
@@ -133,13 +116,12 @@ services:
     volumes:
       - ./src:/var/www/html
       - .env:/var/www/html/.env
-    depends_on:
-      - pgsql
     working_dir: /var/www/html
     profiles: ["artisan"]
     entrypoint: ['php', '/var/www/html/artisan']
     networks:
       - laravel
+      - local-network
 
   composer:
     build:
@@ -161,6 +143,7 @@ services:
     entrypoint: ['composer', '--ignore-platform-reqs']
     networks:
       - laravel
+      - local-network
 
   node:
     build:
@@ -177,3 +160,4 @@ services:
     profiles: ["node"]
     networks:
       - laravel
+      - local-network
