@@ -21,7 +21,7 @@ Route::get('/', function () {
     return inertia('Homepage');
 })->name('home');
 
-// Route::resource('posts', PostController::class)->except('index');
+Route::resource('posts', PostController::class);
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('aemina', AeminaController::class);
