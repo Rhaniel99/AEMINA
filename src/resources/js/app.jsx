@@ -4,7 +4,8 @@ import "../css/app.css";
 import { createRoot } from "react-dom/client"; // Importe createRoot
 import { createInertiaApp } from "@inertiajs/react";
 // import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
-import Layout from '@/Layouts/Layout';
+// import Layout from '@/Layouts/Layout';
+import AppSidebar from '@/app/layout';
 
 const appName = "AEMINA";
 
@@ -24,7 +25,7 @@ createInertiaApp({
         const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
         let page = pages [`./Pages/${name}.jsx`];
 
-        page.default.layout = page.default.layout || ((page) => <Layout children={page} />);
+        page.default.layout = page.default.layout || ((page) => <AppSidebar children={page} />);
         
         return page;
       },
