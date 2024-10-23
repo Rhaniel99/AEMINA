@@ -108,7 +108,7 @@ export default function Layout({ children }) {
             )}
 
             {!auth.user && (
-                <Modal open={loginOpen} onClose={() => setLoginOpen(false)}>
+                <Modal open={loginOpen} onClose={() => setLoginOpenLayout(false)}>
                     <section>
                         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
                             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
