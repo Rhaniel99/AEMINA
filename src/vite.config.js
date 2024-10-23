@@ -19,6 +19,7 @@ export default defineConfig({
     resolve : {
         alias : {
             "@" : "/resources/js",
+            shadcn: "/node_modules/@shadcn/ui", // Ajuste o caminho conforme necessário
             ziggy: '/vendor/tightenco/ziggy'
         }
     }

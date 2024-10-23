@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notes;
 use Illuminate\Http\Request;
 
 class NoteController extends Controller
@@ -11,7 +12,11 @@ class NoteController extends Controller
      */
     public function index()
     {
-        return inertia('Note/Index');
+        $user_id = auth()->id();
+        // $notas = Notes::where('user_id', $user_id)->get();
+        $notes = Notes::where('user_id', $user_id)->orderBy('updated_at', 'desc')->latest()->paginate(5);
+
+        return inertia('Note/Index', ['notes' => $notes]);
     }
 
     /**

@@ -4,105 +4,150 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ========== BASE STYLES ========== */
 @layer base {
+    /* Font Family and Background */
     body {
         font-family: "Poppins", sans-serif;
-        background-color: #CB665A;
-        background-size: cover;
+        @apply bg-background text-foreground;
+    }
+
+    /* Root Variables */
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 224 71.4% 4.1%;
+        --card: 0 0% 100%;
+        --card-foreground: 224 71.4% 4.1%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 224 71.4% 4.1%;
+        --primary: 220.9 39.3% 11%;
+        --primary-foreground: 210 20% 98%;
+        --secondary: 220 14.3% 95.9%;
+        --secondary-foreground: 220.9 39.3% 11%;
+        --muted: 220 14.3% 95.9%;
+        --muted-foreground: 220 8.9% 46.1%;
+        --accent: 220 14.3% 95.9%;
+        --accent-foreground: 220.9 39.3% 11%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 210 20% 98%;
+        --border: 220 13% 91%;
+        --input: 220 13% 91%;
+        --ring: 224 71.4% 4.1%;
+        --chart-1: 12 76% 61%;
+        --chart-2: 173 58% 39%;
+        --chart-3: 197 37% 24%;
+        --chart-4: 43 74% 66%;
+        --chart-5: 27 87% 67%;
+        --radius: 0.5rem;
+        --sidebar-background: 0 0% 98%;
+        --sidebar-foreground: 240 5.3% 26.1%;
+        --sidebar-primary: 240 5.9% 10%;
+        --sidebar-primary-foreground: 0 0% 98%;
+        --sidebar-accent: 240 4.8% 95.9%;
+        --sidebar-accent-foreground: 240 5.9% 10%;
+        --sidebar-border: 220 13% 91%;
+        --sidebar-ring: 217.2 91.2% 59.8%;
+    }
+
+    /* Dark Mode Variables */
+    .dark {
+        --background: 224 71.4% 4.1%;
+        --foreground: 210 20% 98%;
+        --card: 224 71.4% 4.1%;
+        --card-foreground: 210 20% 98%;
+        --popover: 224 71.4% 4.1%;
+        --popover-foreground: 210 20% 98%;
+        --primary: 210 20% 98%;
+        --primary-foreground: 220.9 39.3% 11%;
+        --secondary: 215 27.9% 16.9%;
+        --secondary-foreground: 210 20% 98%;
+        --muted: 215 27.9% 16.9%;
+        --muted-foreground: 217.9 10.6% 64.9%;
+        --accent: 215 27.9% 16.9%;
+        --accent-foreground: 210 20% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 210 20% 98%;
+        --border: 215 27.9% 16.9%;
+        --input: 215 27.9% 16.9%;
+        --ring: 216 12.2% 83.9%;
+        --chart-1: 220 70% 50%;
+        --chart-2: 160 60% 45%;
+        --chart-3: 30 80% 55%;
+        --chart-4: 280 65% 60%;
+        --chart-5: 340 75% 55%;
+        --sidebar-background: 240 5.9% 10%;
+        --sidebar-foreground: 240 4.8% 95.9%;
+        --sidebar-primary: 224.3 76.3% 48%;
+        --sidebar-primary-foreground: 0 0% 100%;
+        --sidebar-accent: 240 3.7% 15.9%;
+        --sidebar-accent-foreground: 240 4.8% 95.9%;
+        --sidebar-border: 240 3.7% 15.9%;
+        --sidebar-ring: 217.2 91.2% 59.8%;
     }
 }
+
+/* ========== COMPONENT STYLES ========== */
 @layer components {
-    /* main {
-        @apply max-w-screen-lg mx-auto;
-    } */
-    /* .primary-btn {
-        @apply flex w-full justify-center rounded-md bg-blue-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:bg-slate-400 disabled:cursor-wait;
-    } */
-    /* .text-link {
-        @apply font-semibold text-blue-500 hover:text-blue-600;
-    } */
-    /* .nav-link {
-        @apply text-slate-200 hover:bg-slate-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium;
-    } */
     .title {
         @apply my-6 text-center text-3xl font-bold leading-9 text-slate-900;
     }
+
     .error {
         @apply text-xs text-red-500 mt-1;
     }
+
     table {
         @apply w-full text-sm text-left rounded-md shadow-lg overflow-hidden mb-6 table-auto bg-white;
     }
+
     thead {
         @apply text-xs uppercase font-medium border-b border-slate-100 text-slate-600;
     }
+
     tbody tr {
         @apply hover:bg-slate-100 w-full p-0;
     }
+
     th {
         @apply px-6 py-4;
     }
+
     td {
         @apply px-6 py-4 border-b border-slate-100;
     }
+
     .avatar {
         @apply w-8 h-8 rounded-full overflow-hidden object-center object-cover;
     }
-}
 
-
-/* @layer components {
-    input[type="text"],
-    input[type="email"],
-    input[type="password"],
-    input[type="search"],
-    input[type="tel"],
-    input[type="url"], textarea {
-        @apply block w-full rounded-md border-0 p-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-500 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm bg-white;
-    }
-    label {
-        @apply block text-sm font-medium leading-6 text-slate-900 first-letter:capitalize;
-    }
-    header {
-        @apply bg-slate-800 shadow-md;
-    }
-    nav {
-        @apply p-5 max-w-screen-lg mx-auto flex items-center justify-between;
-    }
-    main {
-        @apply max-w-screen-lg mx-auto;
-    }
+    /* Button Styles (commented out for now) */
+    /*
     .primary-btn {
         @apply flex w-full justify-center rounded-md bg-blue-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:bg-slate-400 disabled:cursor-wait;
     }
+
     .text-link {
         @apply font-semibold text-blue-500 hover:text-blue-600;
     }
+
     .nav-link {
         @apply text-slate-200 hover:bg-slate-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium;
     }
-    .title {
-        @apply my-6 text-center text-3xl font-bold leading-9 text-slate-900;
+    */
+}
+
+/* ========== UTILITIES ========== */
+@layer utilities {
+    /* Global Border Utility */
+    * {
+        @apply border-border;
     }
-    .error {
-        @apply text-xs text-red-500 mt-1;
+}
+@layer base {
+  * {
+    @apply border-border;
     }
-    table {
-        @apply w-full text-sm text-left rounded-md shadow-lg overflow-hidden mb-6 table-auto bg-white;
+  body {
+    @apply bg-background text-foreground;
     }
-    thead {
-        @apply text-xs uppercase font-medium border-b border-slate-100 text-slate-600;
-    }
-    tbody tr {
-        @apply hover:bg-slate-100 w-full p-0;
-    }
-    th {
-        @apply px-6 py-4;
-    }
-    td {
-        @apply px-6 py-4 border-b border-slate-100;
-    }
-    .avatar {
-        @apply w-8 h-8 rounded-full overflow-hidden object-center object-cover;
-    }
-} */
+}
