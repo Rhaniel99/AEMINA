@@ -126,7 +126,7 @@ export default function Layout({ children }) {
                 </Modal>
             )}
 
-            <main className="max-w-screen-lg mx-auto">
+            <main className="max-w-screen-lg mx-auto bg-background">
                 {auth.user && <h1>Você está logado como: {auth.user.name}.</h1>}
 
                 {children}
