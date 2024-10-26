@@ -7,7 +7,9 @@ export default function Layout({ children }) {
       <AppSidebar />
       <main>
         <SidebarTrigger />
-        {children}
+        <div className="w-screen h-screen mx-3">
+          {children}
+        </div>
       </main>
     </SidebarProvider>
   );
