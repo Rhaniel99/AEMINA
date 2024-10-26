@@ -6,10 +6,11 @@ import {
     Settings,
     ChevronUp,
 } from "lucide-react";
+
 import { Link, usePage } from "@inertiajs/react";
 import Modal from "@/components/modal";
-import UserSignup from "@/components/forms/UserSignup";
-import UserLogin from "../Components/Forms/UserLogin";
+import UserSignup from "@/components/forms/user/signup";
+import UserLogin from "@/components/forms/user/login";
 
 import { useState } from "react";
 import { useRoute } from "ziggy";
@@ -71,7 +72,6 @@ export function AppSidebar() {
     // Inicializa o estado do modal
     const [open, setOpen] = useState(false);
     const [loginOpen, setLoginOpen] = useState(false); // Se você tiver um modal de login
-    
 
     const handleSuccess = () => {
         setOpen(false); // Fecha o modal de inscrição
@@ -83,14 +83,14 @@ export function AppSidebar() {
     };
 
     const HandleSignupOpen = () => {
-      setOpen(true); // Abre o modal de inscrição
-      setLoginOpen(false); // Fecha o modal de login
-  };
+        setOpen(true); // Abre o modal de inscrição
+        setLoginOpen(false); // Fecha o modal de login
+    };
 
-  const handleClose = () => {
-      setOpen(false); // Fecha o modal de inscrição
-      setLoginOpen(false); // Fecha o modal de login
-  };
+    const handleClose = () => {
+        setOpen(false); // Fecha o modal de inscrição
+        setLoginOpen(false); // Fecha o modal de login
+    };
 
     return (
         <>
@@ -125,9 +125,17 @@ export function AppSidebar() {
                                     <SidebarMenuButton>
                                         {auth.user ? (
                                             <div>
-                                                <span>{auth.user.name.split(' ')[0]}</span>
+                                                <span>
+                                                    {
+                                                        auth.user.name.split(
+                                                            " "
+                                                        )[0]
+                                                    }
+                                                </span>
                                                 <br />
-                                                <span className="text-xs italic">{auth.user.email}</span>
+                                                <span className="text-xs italic">
+                                                    {auth.user.email}
+                                                </span>
                                             </div>
                                         ) : (
                                             <div>Visitante</div>
@@ -138,38 +146,41 @@ export function AppSidebar() {
 
                                 <DropdownMenuContent
                                     side="top"
-                                    className="w-[--radix-popper-anchor-width]"
-                                >
+                                    className="w-[--radix-popper-anchor-width]">
+
+                                    {!auth.user && (
                                     <DropdownMenuItem onClick={() => setLoginOpen(true)}>
                                         <span>Conta</span>
                                     </DropdownMenuItem>
+                                    )}
 
                                     {!auth.user && (
-                                    <DropdownMenuItem onClick={() => setOpen(true)}>
-                                        <span>Criar conta</span>
-                                    </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            onClick={() => setOpen(true)}
+                                        >
+                                            <span>Criar conta</span>
+                                        </DropdownMenuItem>
                                     )}
 
                                     {auth.user && (
-                                      <DropdownMenuItem>
-                                          <Link 
-                                              href={route("login.logout")} 
-                                              method="post" 
-                                              as="button" 
-                                              className="w-full text-left" // Para garantir que o link ocupe toda a largura do item
-                                          >
-                                              <span>Sair</span>
-                                          </Link>
-                                      </DropdownMenuItem>
+                                        <DropdownMenuItem>
+                                            <Link
+                                                href={route("login.logout")}
+                                                method="post"
+                                                as="button"
+                                                className="w-full text-left" // Para garantir que o link ocupe toda a largura do item
+                                            >
+                                                <span>Sair</span>
+                                            </Link>
+                                        </DropdownMenuItem>
                                     )}
-
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </SidebarMenuItem>
                     </SidebarMenu>
                 </SidebarFooter>
             </Sidebar>
-            
+
             {/* Criar Conta Modal */}
             {!auth.user && (
                 <Modal open={open} onClose={() => setOpen(false)}>
@@ -180,7 +191,7 @@ export function AppSidebar() {
                                     <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
                                         Crie sua conta
                                     </h1>
-                                    
+
                                     <UserSignup
                                         onSuccess={handleSuccess}
                                         onLoginClick={handleLoginOpen}
