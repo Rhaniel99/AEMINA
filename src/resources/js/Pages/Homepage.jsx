@@ -1,37 +1,15 @@
-import { useForm, Head, usePage } from "@inertiajs/react";
-import { useEffect } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { Head, usePage } from "@inertiajs/react";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Homepage() {
 
     const { component } = usePage();
 
-    const { flash } = usePage().props;
-
-    // Exibe mensagem flash de erro
-    useEffect(() => {
-        if (flash.message) {
-            const [message, timestamp] = flash.message.split("|");
-            toast.success(message, {
-                position: "top-right",
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                autoClose: 3000, // Fecha em 3 segundos
-            });
-        }
-    }, [flash.message]);
-
     return (
         <>
             <Head title={component} />
 
-            <ToastContainer />
-
-            <div className="flex justify-between mt-8">
+            <div className="flex gap-4 mt-8">
                 <div className="max-w-sm rounded overflow-hidden shadow-lg">
                     <img
                         className="w-full"

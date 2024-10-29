@@ -7,6 +7,7 @@ import {
     ChevronUp,
 } from "lucide-react";
 
+// import { ToastContainer, toast } from "react-toastify";
 import { Link, usePage } from "@inertiajs/react";
 import Modal from "@/components/modal";
 import UserSignup from "@/components/forms/user/signup";
@@ -66,8 +67,8 @@ const items = [
 ];
 
 export function AppSidebar() {
-    const { auth } = usePage().props;
     const route = useRoute();
+    const { auth } = usePage().props;
 
     // Inicializa o estado do modal
     const [open, setOpen] = useState(false);

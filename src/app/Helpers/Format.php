@@ -11,3 +11,9 @@ if (!function_exists('formatCPF')) {
         return substr($cpf, 0, 3) . '.' . substr($cpf, 3, 3) . '.' . substr($cpf, 6, 3) . '-' . substr($cpf, 9, 2);
     }
 }
+
+if (!function_exists('onSuccess')) {
+    function onSuccess($message) {
+        return $message . '|' . genDtUniqueID();
+    }
+}
