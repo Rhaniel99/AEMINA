@@ -64,6 +64,7 @@ services:
       - pgsql
       - horizon
       - redis
+    restart: always
     working_dir: /var/www/html
     entrypoint: ['php', '/var/www/html/artisan', 'queue:work']
     # entrypoint: ['php', '/var/www/html/artisan', 'queue:work','--queue=planos' , '--timeout=0']

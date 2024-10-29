@@ -52,11 +52,11 @@ class LoginController extends Controller
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->senha])) {
 
-            return to_route('aemina.index')->with('message', 'Sucesso!');
+            return redirect('/aemina/index')->with(["success" => "Login efetuado com sucesso!"]);
 
-            // return redirect('/aemina')->with('message','Sucesso!');
+            // return to_route('aemina.index');
         } else {
-            return back()->withErrors(['message' => "Email ou senha inválidos."]);
+            return back()->withErrors(['errors' => "Email ou senha inválidos."]);
         }
     }
 

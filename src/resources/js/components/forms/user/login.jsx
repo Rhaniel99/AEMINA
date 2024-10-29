@@ -7,22 +7,10 @@ import { toast } from "react-toastify";
 export default function UserLogin({ openHandleSignup, handleClose }) {
     const route = useRoute();
 
-    const { data, setData, post, errors, processing, reset } = useForm({
+    const { data, setData, post, processing, reset } = useForm({
         email: "",
         senha: "",
     });
-
-    useEffect(() => {
-        if (Object.keys(errors).length > 0) {
-            Object.values(errors).forEach((error) => {
-                toast.warn(error, {
-                    position: "top-right",
-                    autoClose: 3000,
-                    className: "bg-white-500 text-black",
-                });
-            });
-        }
-    }, [errors]);
 
     function submit(e) {
         e.preventDefault();
