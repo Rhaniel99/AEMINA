@@ -3,16 +3,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useForm } from "@inertiajs/react";
+import { useRoute } from "ziggy";
 
-export default function NoteCreate( { onSuccess }) {
+export default function NoteEdit({ note, onSuccess }) {
+    const route = useRoute();
+
     const { data, setData, post, errors, processing, reset } = useForm({
-        title: "",
-        note: "",
+        title: note.title || "", // Preenche o título da nota
+        note: note.content || "", // Preenche o conteúdo da nota
     });
 
     const submit = (e) => {
         e.preventDefault();
-        post(route("note.store"), {
+        post(route("note.update", note.id), { // Muda para a rota de atualização
             onSuccess: () => {
                 onSuccess();
                 reset("title", "note");
@@ -49,10 +52,9 @@ export default function NoteCreate( { onSuccess }) {
                 </div>
 
                 <div className="flex justify-end mt-4">                    
-                    <Button variant="outline">Salvar</Button>
+                    <Button variant="outline" type="submit" disabled={processing}>Salvar</Button>
                 </div>
             </form>
         </>
     );
 }
-

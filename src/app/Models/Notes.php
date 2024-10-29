@@ -11,7 +11,7 @@ class Notes extends Model
 
     protected $table = 'notes_schema.notes'; // Define a tabela com o schema
 
-    protected $fillable = ['user_id', 'title', 'content', 'content_html'];
+    protected $fillable = ['user_id', 'title', 'content'];
 
     public function user()
     {
