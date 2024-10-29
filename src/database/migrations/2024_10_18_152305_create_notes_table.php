@@ -18,12 +18,14 @@ return new class extends Migration
             $table->id();
             $table->foreignUuid('user_id'); // Chave estrangeira para vincular ao usuário
             $table->string('title'); // Título da nota
-            $table->text('content'); // Conteúdo da nota (Markdown)
-            $table->text('content_html')->nullable(); // Conteúdo em HTML (convertido do Markdown)
+            $table->text('content')->nullable(); // Conteúdo da nota (Markdown)
             $table->timestamps(); // Criado em / Atualizado em
 
             // Definindo a relação com a tabela de usuários
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
+            // Define o índice único composto para garantir unicidade do título por usuário
+            $table->unique(['user_id', 'title'], 'user_title_unique');
         });
     }
 

@@ -8,7 +8,6 @@ registerLocale("pt-BR", ptBR);
 
 import { toast } from "react-toastify";
 
-
 export default function UserSignup({ onSuccess, onLoginClick }) {
     const [startDate, setStartDate] = useState();
 
@@ -161,12 +160,13 @@ export default function UserSignup({ onSuccess, onLoginClick }) {
             </form>
 
             <p className="text-sm font-light">
-                    Já possui conta?{" "}
-                    <button
-                        className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                        onClick={onLoginClick}>
-                        Login
-                    </button>
+                Já possui conta?{" "}
+                <button
+                    className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                    onClick={onLoginClick}
+                >
+                    Login
+                </button>
             </p>
         </>
     );
