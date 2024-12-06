@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 class Normalize
 {
-    // Função para normalizar a letra
+    // ? Função para normalizar a letra
     public static function nLower($string)
     {
         return Str::lower($string);
