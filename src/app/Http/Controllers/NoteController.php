@@ -29,7 +29,7 @@ class NoteController extends Controller
             'update_url' => route('note.update', $note->id),
         ]);
 
-        return inertia('Note/Index', ['notes' => $notes]);
+        return inertia('Note/Index', ['notes' => $notes->toArray()]);
     }
 
     /**
