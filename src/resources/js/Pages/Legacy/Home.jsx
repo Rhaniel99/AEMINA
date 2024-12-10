@@ -1,7 +1,6 @@
 // import Layout from "../Layouts/Layout";
-
 import { Link, usePage, Head } from "@inertiajs/react";
-import { useRoute } from "../../../vendor/tightenco/ziggy";
+import { useRoute } from "ziggy";
 import { useState } from "react";
 
 export default function Home ( { posts } ) {

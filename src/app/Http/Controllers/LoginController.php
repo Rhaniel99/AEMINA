@@ -35,8 +35,8 @@ class LoginController extends Controller
             'birth_date' => $validated_data['dt_nasc'],
             'password' => bcrypt($validated_data['senha']),
         ]);
-
-        return to_route('home')->with('message', "Criado com sucesso!");
+        
+        return to_route('home')->with(["success" => "Criado com sucesso!"]);
     }
 
     /**
@@ -44,6 +44,7 @@ class LoginController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'email' => ['required', 'email'],
             'senha' => ['required'],
@@ -52,9 +53,9 @@ class LoginController extends Controller
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->senha])) {
 
-            return redirect('/aemina/index')->with(["success" => "Login efetuado com sucesso!"]);
+            // return redirect('/aemina/index')->with(["success" => "Login efetuado com sucesso!"]);
 
-            // return to_route('aemina.index');
+            return to_route('aemina.index')->with(["success" => "Login efetuado com sucesso!"]);
         } else {
             return back()->withErrors(['errors' => "Email ou senha inválidos."]);
         }
