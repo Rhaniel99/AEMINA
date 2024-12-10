@@ -14,7 +14,7 @@ services:
     restart: always
     container_name: nginx
     ports:
-      - 8000:8000
+      - "${NGINX_PORT:-8000}:8000"
     volumes:
       - ./src:/var/www/html
       - .env:/var/www/html/.env
@@ -39,7 +39,7 @@ services:
         - USER=${USER:-laravel}
     container_name: php
     ports:
-      - "9000:9000"
+      - "${PHP_PORT:-9000}:9000"
     volumes:
       - ./src:/var/www/html
       - .env:/var/www/html/.env
@@ -100,7 +100,7 @@ services:
     container_name: pgsql
     restart: always
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:5432"
     environment:
       POSTGRES_DB: ${DB_DATABASE}         
       POSTGRES_USER: ${DB_USERNAME}        
@@ -119,7 +119,7 @@ services:
     container_name: redis
     restart: unless-stopped
     ports:
-      - 6380:6379
+      - "${REDIS_PORT:-6379}:6379"
     networks:
       - laravel
 

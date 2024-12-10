@@ -8,26 +8,29 @@ import {
 import {
     Pagination,
     PaginationContent,
-    PaginationEllipsis,
     PaginationItem,
     PaginationLink,
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
 
-import { Plus, SquarePen } from "lucide-react";
+import { Plus, SquarePen, Trash2 } from "lucide-react";
 import { Link, usePage, Head } from "@inertiajs/react";
 import Modal from "@/components/modal";
 import { useState } from "react";
 import Markdown from "markdown-to-jsx";
 import NoteCreate from "@/components/forms/note/create";
 import NoteEdit from "@/components/forms/note/edit";
+import NoteDelete from "@/components/forms/note/delete";
 
 export default function Index({ notes }) {
     const { component } = usePage();
 
     const [open, setOpen] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
+
+    const [openDelete, setOpenDelete] = useState(false);
+
     const [currentNote, setCurrentNote] = useState(null); // Estado para armazenar a nota atual
 
     const handleSuccess = () => {
@@ -38,15 +41,25 @@ export default function Index({ notes }) {
         setOpenEdit(false); // Fecha o modal de edição
     };
 
+    const handleSuccessDelete = () => {
+        setOpenDelete(false); // Fecha o modal de exclusão
+    };
+
     const handleEditClick = (note) => {
         setCurrentNote(note); // Define a nota atual para edição
         setOpenEdit(true); // Abre o modal de edição
+    };
+
+    const handleDeleteClick = (note) => {
+        setCurrentNote(note); // Define a nota atual para exclusão
+        setOpenDelete(true); // Abre o modal de exclusão
     };
 
     return (
         <>
             <Head title={component} />
 
+            {/* Adicionar uma nova nota */}
             <div className="fixed bottom-4 right-4">
                 <button
                     onClick={() => setOpen(true)}
@@ -78,6 +91,9 @@ export default function Index({ notes }) {
                             <button onClick={() => handleEditClick(note)}>
                                 <SquarePen />
                             </button>
+                            <button onClick={() => handleDeleteClick(note)}>
+                                <Trash2 />
+                            </button>
                         </div>
                     ))}
                 </div>
@@ -101,14 +117,16 @@ export default function Index({ notes }) {
                             <button onClick={() => handleEditClick(note)}>
                                 <SquarePen />
                             </button>
+                            <button>
+                                <Trash2 />
+                            </button>
                         </div>
                     ))}
                 </div>
             </div>
 
             {/* Paginação Footer */}
-
-            <div className="py-12 px-4">
+            <div className="py-12 px-4 flex justify-center">
                 <Pagination>
                     <PaginationContent>
                         {notes.links.map((link) =>
@@ -140,6 +158,7 @@ export default function Index({ notes }) {
                 </Pagination>
             </div>
 
+            {/* Modal de criação */}
             <Modal open={open} onClose={() => setOpen(false)}>
                 {open && ( // Verifica se o modal está aberto antes de renderizar o conteúdo
                     <section>
@@ -156,7 +175,7 @@ export default function Index({ notes }) {
                     </section>
                 )}
             </Modal>
-
+            {/* Modal de edição */}
             <Modal open={openEdit} onClose={() => setOpenEdit(false)}>
                 {openEdit &&
                     currentNote && ( // Verifica se o modal está aberto e se há uma nota atual
@@ -169,6 +188,26 @@ export default function Index({ notes }) {
                                     <NoteEdit
                                         note={currentNote} // Passa a nota atual para o componente de edição
                                         onSuccess={handleSuccessEdit}
+                                    />
+                                </div>
+                            </div>
+                        </section>
+                    )}
+            </Modal>
+            {/* Modal de delete */}
+            <Modal open={openDelete} onClose={() => setOpenDelete(false)}>
+                {openDelete &&
+                    currentNote && ( // Verifica se o modal está aberto e se há uma nota atual
+                        <section>
+                            <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
+                                <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+                                    <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
+                                        Tem certeza que deseja deletar essa
+                                        notinha?
+                                    </h1>
+                                    <NoteDelete
+                                        note={currentNote} // Passa a nota atual para o componente de edição
+                                        onSuccess={handleSuccessDelete}
                                     />
                                 </div>
                             </div>

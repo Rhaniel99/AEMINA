@@ -5,6 +5,16 @@ import {
     Search,
     Settings,
     ChevronUp,
+    ChevronRight,
+    GalleryVerticalEnd,
+    AudioWaveform,
+    Command,
+    SquareTerminal,
+    Bot,
+    BookOpen,
+    Settings2,
+    Frame,
+    PieChart,
 } from "lucide-react";
 
 // import { ToastContainer, toast } from "react-toastify";
@@ -15,6 +25,12 @@ import UserLogin from "@/components/forms/user/login";
 
 import { useState } from "react";
 import { useRoute } from "ziggy";
+
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 import {
     Sidebar,
@@ -36,6 +52,280 @@ import {
     // DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+import { NavMain } from "@/components/nav-main";
+
+// This is sample data.
+// const data = {
+//     versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
+//     navMain: [
+//         {
+//             title: "Getting Started",
+//             url: "#",
+//             items: [
+//                 {
+//                     title: "Installation",
+//                     url: "#",
+//                 },
+//                 {
+//                     title: "Project Structure",
+//                     url: "#",
+//                 },
+//             ],
+//         },
+//         {
+//             title: "Building Your Application",
+//             url: "#",
+//             items: [
+//                 {
+//                     title: "Routing",
+//                     url: "#",
+//                 },
+//                 {
+//                     title: "Data Fetching",
+//                     url: "#",
+//                     isActive: true,
+//                 },
+//                 {
+//                     title: "Rendering",
+//                     url: "#",
+//                 },
+//                 {
+//                     title: "Caching",
+//                     url: "#",
+//                 },
+//                 {
+//                     title: "Styling",
+//                     url: "#",
+//                 },
+//                 {
+//                     title: "Optimizing",
+//                     url: "#",
+//                 },
+//                 {
+//                     title: "Configuring",
+//                     url: "#",
+//                 },
+//                 {
+//                     title: "Testing",
+//                     url: "#",
+//                 },
+//                 {
+//                     title: "Authentication",
+//                     url: "#",
+//                 },
+//                 {
+//                     title: "Deploying",
+//                     url: "#",
+//                 },
+//                 {
+//                     title: "Upgrading",
+//                     url: "#",
+//                 },
+//                 {
+//                     title: "Examples",
+//                     url: "#",
+//                 },
+//             ],
+//         },
+//         {
+//             title: "API Reference",
+//             url: "#",
+//             items: [
+//                 {
+//                     title: "Components",
+//                     url: "#",
+//                 },
+//                 {
+//                     title: "File Conventions",
+//                     url: "#",
+//                 },
+//                 {
+//                     title: "Functions",
+//                     url: "#",
+//                 },
+//                 {
+//                     title: "next.config.js Options",
+//                     url: "#",
+//                 },
+//                 {
+//                     title: "CLI",
+//                     url: "#",
+//                 },
+//                 {
+//                     title: "Edge Runtime",
+//                     url: "#",
+//                 },
+//             ],
+//         },
+//         {
+//             title: "Architecture",
+//             url: "#",
+//             items: [
+//                 {
+//                     title: "Accessibility",
+//                     url: "#",
+//                 },
+//                 {
+//                     title: "Fast Refresh",
+//                     url: "#",
+//                 },
+//                 {
+//                     title: "Next.js Compiler",
+//                     url: "#",
+//                 },
+//                 {
+//                     title: "Supported Browsers",
+//                     url: "#",
+//                 },
+//                 {
+//                     title: "Turbopack",
+//                     url: "#",
+//                 },
+//             ],
+//         },
+//         {
+//             title: "Community",
+//             url: "#",
+//             items: [
+//                 {
+//                     title: "Contribution Guide",
+//                     url: "#",
+//                 },
+//             ],
+//         },
+//     ],
+// };
+
+// This is sample data.
+const data = {
+    user: {
+        name: "shadcn",
+        email: "m@example.com",
+        avatar: "/avatars/shadcn.jpg",
+    },
+    teams: [
+        {
+            name: "Acme Inc",
+            logo: GalleryVerticalEnd,
+            plan: "Enterprise",
+        },
+        {
+            name: "Acme Corp.",
+            logo: AudioWaveform,
+            plan: "Startup",
+        },
+        {
+            name: "Evil Corp.",
+            logo: Command,
+            plan: "Free",
+        },
+    ],
+    navMain: [
+        {
+            title: "Playground",
+            url: "#",
+            icon: SquareTerminal,
+            isActive: true,
+            items: [
+                {
+                    title: "History",
+                    url: "#",
+                },
+                {
+                    title: "Starred",
+                    url: "#",
+                },
+                {
+                    title: "Settings",
+                    url: "#",
+                },
+            ],
+        },
+        {
+            title: "Models",
+            url: "#",
+            icon: Bot,
+            items: [
+                {
+                    title: "Genesis",
+                    url: "#",
+                },
+                {
+                    title: "Explorer",
+                    url: "#",
+                },
+                {
+                    title: "Quantum",
+                    url: "#",
+                },
+            ],
+        },
+        {
+            title: "Documentation",
+            url: "#",
+            icon: BookOpen,
+            items: [
+                {
+                    title: "Introduction",
+                    url: "#",
+                },
+                {
+                    title: "Get Started",
+                    url: "#",
+                },
+                {
+                    title: "Tutorials",
+                    url: "#",
+                },
+                {
+                    title: "Changelog",
+                    url: "#",
+                },
+            ],
+        },
+        {
+            title: "Settings",
+            url: "#",
+            icon: Settings2,
+            items: [
+                {
+                    title: "General",
+                    url: "#",
+                },
+                {
+                    title: "Team",
+                    url: "#",
+                },
+                {
+                    title: "Billing",
+                    url: "#",
+                },
+                {
+                    title: "Limits",
+                    url: "#",
+                },
+            ],
+        },
+    ],
+    projects: [
+        {
+            name: "Design Engineering",
+            url: "#",
+            icon: Frame,
+        },
+        {
+            name: "Sales & Marketing",
+            url: "#",
+            icon: PieChart,
+        },
+        {
+            name: "Travel",
+            url: "#",
+            icon: Map,
+        },
+    ],
+};
 
 // Menu items.
 const items = [
@@ -99,7 +389,9 @@ export function AppSidebar() {
                 {/* Corpo Da Sidebar */}
                 <SidebarContent>
                     <SidebarGroup>
-                        <SidebarGroupLabel>Application</SidebarGroupLabel>
+                        <NavMain items={data.navMain} />
+
+                        {/* <SidebarGroupLabel>Aemina App</SidebarGroupLabel>
                         <SidebarGroupContent>
                             <SidebarMenu>
                                 {items.map((item) => (
@@ -114,6 +406,49 @@ export function AppSidebar() {
                                 ))}
                             </SidebarMenu>
                         </SidebarGroupContent>
+                    </SidebarGroup>
+                    <SidebarGroup>
+                        <SidebarGroupLabel>Aemina Notes</SidebarGroupLabel>
+                    {data.navMain.map((item) => (
+                        <Collapsible
+                            key={item.title}
+                            title={item.title}
+                            defaultOpen
+                            className="group/collapsible"
+                        >
+                            <SidebarGroup>
+                                <SidebarGroupLabel
+                                    asChild
+                                    className="group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                                >
+                                    <CollapsibleTrigger>
+                                        {item.title}{" "}
+                                        <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                                    </CollapsibleTrigger>
+                                </SidebarGroupLabel>
+                                <CollapsibleContent>
+                                    <SidebarGroupContent>
+                                        <SidebarMenu>
+                                            {item.items.map((item) => (
+                                                <SidebarMenuItem
+                                                    key={item.title}
+                                                >
+                                                    <SidebarMenuButton
+                                                        asChild
+                                                        isActive={item.isActive}
+                                                    >
+                                                        <a href={item.url}>
+                                                            {item.title}
+                                                        </a>
+                                                    </SidebarMenuButton>
+                                                </SidebarMenuItem>
+                                            ))}
+                                        </SidebarMenu>
+                                    </SidebarGroupContent>
+                                </CollapsibleContent>
+                            </SidebarGroup>
+                        </Collapsible>
+                    ))} */}
                     </SidebarGroup>
                 </SidebarContent>
 
@@ -147,12 +482,14 @@ export function AppSidebar() {
 
                                 <DropdownMenuContent
                                     side="top"
-                                    className="w-[--radix-popper-anchor-width]">
-
+                                    className="w-[--radix-popper-anchor-width]"
+                                >
                                     {!auth.user && (
-                                    <DropdownMenuItem onClick={() => setLoginOpen(true)}>
-                                        <span>Conta</span>
-                                    </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            onClick={() => setLoginOpen(true)}
+                                        >
+                                            <span>Conta</span>
+                                        </DropdownMenuItem>
                                     )}
 
                                     {!auth.user && (
