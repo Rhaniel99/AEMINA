@@ -14,13 +14,15 @@ export default defineConfig({
        host: '0.0.0.0',
        port: 3000,
        open: false,
+       hmr: true,
     },
 
     resolve : {
         alias : {
             "@" : "/resources/js",
             shadcn: "/node_modules/@shadcn/ui", // Ajuste o caminho conforme necessário
-            ziggy: '/vendor/tightenco/ziggy'
+            ziggy: '/vendor/tightenco/ziggy',
+            "css" : "/resources/css",
         }
     }
 });

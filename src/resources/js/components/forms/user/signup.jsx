@@ -8,7 +8,7 @@ registerLocale("pt-BR", ptBR);
 
 import { toast } from "react-toastify";
 
-export default function UserSignup({ onSuccess, onLoginClick }) {
+export default function UserSignup() {
     const [startDate, setStartDate] = useState();
 
     const { data, setData, post, errors, processing, reset } = useForm({
@@ -39,7 +39,6 @@ export default function UserSignup({ onSuccess, onLoginClick }) {
         e.preventDefault();
         post(route("login.create"), {
             onSuccess: () => {
-                onSuccess();
                 reset("email", "nome", "senha", "dt_nasc");
             },
             onError: () => {
@@ -129,45 +128,13 @@ export default function UserSignup({ onSuccess, onLoginClick }) {
                     />
                 </div>
 
-                <div className="flex items-center justify-between">
-                    <div className="flex items-start">
-                        <div className="flex items-center h-5">
-                            <input
-                                id="remember"
-                                aria-describedby="remember"
-                                type="checkbox"
-                                className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                                required=""
-                            />
-                        </div>
-                        <div className="ml-3 text-sm">
-                            <label htmlFor="remember" className="">
-                                Lembrar
-                            </label>
-                        </div>
-                    </div>
-                    <a href="#" className="text-link">
-                        Esqueceu a senha?
-                    </a>
-                </div>
-
                 <button
                     type="submit"
                     className="w-full border border-gray-300 bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                 >
-                    Criar
+                    Criar Conta
                 </button>
             </form>
-
-            <p className="text-sm font-light">
-                Já possui conta?{" "}
-                <button
-                    className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                    onClick={onLoginClick}
-                >
-                    Login
-                </button>
-            </p>
         </>
     );
 }
