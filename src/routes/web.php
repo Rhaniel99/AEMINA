@@ -31,7 +31,6 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::resource('note', NoteController::class);
-
 });
 
 Route::controller(LoginController::class)->group(function () {
