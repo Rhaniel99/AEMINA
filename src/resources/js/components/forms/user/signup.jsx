@@ -1,38 +1,41 @@
 import { useForm } from "@inertiajs/react";
 import { useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
-import { registerLocale } from "react-datepicker";
-import ptBR from "date-fns/locale/pt-BR";
-import "react-datepicker/dist/react-datepicker.css";
-registerLocale("pt-BR", ptBR);
+// import { registerLocale } from "react-datepicker";
+// import ptBR from "date-fns/locale/pt-BR";
+// import "react-datepicker/dist/react-datepicker.css";
+import { Plus } from "lucide-react";
+// import { toast } from "react-toastify";
+import { DateTimePicker } from "@/components/utils/datapicker";
 
-import { toast } from "react-toastify";
 
-export default function UserSignup() {
-    const [startDate, setStartDate] = useState();
+import {
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+  } from "@/components/ui/form"
+  
+  // registerLocale("pt-BR", ptBR);
 
-    const { data, setData, post, errors, processing, reset } = useForm({
+export default function UserSignup({ isActive }) {
+    const [date, setDate] = useState();
+
+    const { data, setData, post, reset } = useForm({
         email: "",
         nome: "",
         senha: "",
         dt_nasc: "",
     });
 
-    useEffect(() => {
-        if (Object.keys(errors).length > 0) {
-            Object.values(errors).forEach((error) => {
-                toast.warn(error, {
-                    position: "top-right",
-                    autoClose: 3000,
-                    className: "bg-white-500 text-black",
-                });
-            });
-        }
-    }, [errors]);
-
-    const handleDateChange = (date) => {
-        setStartDate(date);
-        setData("dt_nasc", date ? date.toISOString().split("T")[0] : ""); // Salvando em formato ISO (yyyy-mm-dd)
+    const handleDateChange = (selectedDate) => {
+        setDate(selectedDate);
+        const formattedDate = selectedDate
+            ? selectedDate.toISOString().split("T")[0] // Formata para yyyy-mm-dd
+            : "";
+        setData("dt_nasc", formattedDate);
     };
 
     const submit = (e) => {
@@ -50,91 +53,86 @@ export default function UserSignup() {
 
     return (
         <>
-            <form className="space-y-4 md:space-y-6" onSubmit={submit}>
-                <div>
-                    <label
-                        htmlFor="email"
-                        className="block mb-2 text-sm font-medium text-gray-900"
-                    >
-                        Seu Email
-                    </label>
+            <div
+                className={`form-container_home absolute inset-0 w-1/2 bg-white transition-transform duration-300 ${
+                    isActive
+                        ? "translate-x-full opacity-100 z-10"
+                        : "opacity-0 z-0"
+                }`}
+            >
+                <form
+                    className="flex flex-col items-center justify-center h-full px-10"
+                    onSubmit={submit}
+                >
+                    <h1 className="text-xl font-semibold mb-4">Criar Conta</h1>
+
+                    <div className="social-icons flex space-x-2 mb-4">
+                        {["google", "facebook", "github", "linkedin"].map(
+                            (icon) => (
+                                <a
+                                    key={icon}
+                                    href="#"
+                                    className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full"
+                                >
+                                    <Plus name={icon} size={18} />
+                                </a>
+                            )
+                        )}
+                    </div>
+
+                    <span className="text-sm mb-4">
+                        ou use seu email para registro
+                    </span>
+
+                    <input
+                        type="text"
+                        id="nome"
+                        value={data.nome}
+                        onChange={(e) => setData("nome", e.target.value)}
+                        placeholder="Name"
+                        className="input"
+                    />
+
                     <input
                         type="email"
                         name="email"
                         id="email"
                         value={data.email}
                         onChange={(e) => setData("email", e.target.value)}
-                        className="bg-gray-50 border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-neutral-950 dark:focus:border-neutral-950"
                         placeholder="nome@examplo.com"
+                        className="input"
                         required
                     />
-                </div>
 
-                <div>
-                    <label
-                        htmlFor="nome"
-                        className="block mb-2 text-sm font-medium text-gray-900 "
-                    >
-                        Nome Completo
-                    </label>
-                    <input
-                        type="text"
-                        id="nome"
-                        value={data.nome}
-                        onChange={(e) => setData("nome", e.target.value)}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:focus:ring-neutral-950 dark:focus:border-neutral-950"
-                        placeholder="José Eduardo"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label
-                        htmlFor="dt_nasc"
-                        className="block mb-2 text-sm font-medium text-gray-900"
-                    >
-                        Data de Nascimento
-                    </label>
-                    <DatePicker
-                        id="dt_nasc"
-                        name="dt_nasc"
-                        selected={startDate}
-                        onChange={handleDateChange}
-                        // onChange={[(date) => setStartDate(date), (e) => setData("dt_nasc", e.target.value)]}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" // Ajuste de largura
-                        placeholderText="Selecionar a data de nascimento"
-                        locale="pt-BR"
-                        dateFormat="dd/MM/yyyy"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label
-                        htmlFor="senha"
-                        className="block mb-2 text-sm font-medium text-gray-900"
-                    >
-                        Senha
-                    </label>
                     <input
                         type="password"
                         name="senha"
                         value={data.senha}
                         onChange={(e) => setData("senha", e.target.value)}
-                        id="senha"
                         placeholder="••••••••"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        className="input"
                         required
                     />
-                </div>
 
-                <button
-                    type="submit"
-                    className="w-full border border-gray-300 bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                >
-                    Criar Conta
-                </button>
-            </form>
+                    <DateTimePicker
+                        hideTime
+                        id="dt_nasc"
+                        name="dt_nasc"
+                        value={date}
+                        // placeholder="Escolha sua data de nascimento"
+                        onChange={handleDateChange}
+                        // renderTrigger={}
+                    />
+                    
+                    {/* <FormDescription>
+                        Your date of birth is used to calculate your age.
+                    </FormDescription> */}
+
+                    <button type="submit" className="btn-primary mt-2">
+                        Cadastrar-se
+                    </button>
+                </form>
+            </div>
         </>
     );
 }

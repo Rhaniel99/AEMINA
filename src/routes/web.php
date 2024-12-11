@@ -17,7 +17,7 @@ use Inertia\Inertia;
 
 // Route::inertia('/', 'Homepage')->name('home');
 Route::get('/', function () {
-    return inertia('Public/Home');
+    return inertia('Public/Home/Index');
 })->name('home');
 
 Route::resource('posts', PostController::class);
