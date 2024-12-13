@@ -26,7 +26,6 @@ createInertiaApp({
         page.default.layout = isPublicPage
             ? (page) => <>{page}</> // Sem layout
             : (page) => <AppSidebar>{page}</AppSidebar>; // Com sidebar
-            console.log(page);
         return page;
     },
     setup({ el, App, props }) {

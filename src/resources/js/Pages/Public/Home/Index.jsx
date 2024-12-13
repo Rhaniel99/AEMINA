@@ -44,18 +44,18 @@ export default function Index() {
                 <UserLogin isActive={isActive} />
 
                 {/* Toggle Panel */}
-                <HomeToggle>
+                <HomeToggle isActive={isActive}>
                     <div className="toggle-panel absolute left-0 w-1/2 h-full flex flex-col items-center justify-center text-center p-6">
                         <h1 className="text-2xl font-semibold mb-4">
                             Bem-vindo(a) de volta!
                         </h1>
 
-                        <p className="text-sm mb-6">
+                        <p className="text-sm mb-6 leading-5 tracking-[0.3px] my-5">
                             Digite seus dados pessoais para manter contato
                         </p>
 
                         <button
-                            className="btn-secondary"
+                            className="bg-[#512da8] text-white text-xs px-[45px] py-[10px] border border-transparent rounded-lg font-semibold tracking-[0.5px] uppercase mt-5 cursor-pointer"
                             onClick={() => setIsActive(false)}
                         >
                             Entrar
@@ -67,13 +67,13 @@ export default function Index() {
                             Olá, Amigo!
                         </h1>
 
-                        <p className="text-sm mb-6">
+                        <p className="text-sm mb-6 leading-5 tracking-[0.3px] my-5">
                             Registre-se conosco e descubra oportunidades
                             incriveis
                         </p>
 
                         <button
-                            className="btn-secondary"
+                            className="bg-[#512da8] text-white text-xs px-[45px] py-[10px] border border-transparent rounded-lg font-semibold tracking-[0.5px] uppercase mt-5 cursor-pointer"
                             onClick={() => setIsActive(true)}
                         >
                             Cadastrar-se

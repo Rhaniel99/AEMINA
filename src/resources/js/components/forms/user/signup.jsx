@@ -1,24 +1,11 @@
 import { useForm } from "@inertiajs/react";
 import { useEffect, useState } from "react";
-// import { registerLocale } from "react-datepicker";
 // import ptBR from "date-fns/locale/pt-BR";
-// import "react-datepicker/dist/react-datepicker.css";
 import { Plus } from "lucide-react";
-// import { toast } from "react-toastify";
-import { DateTimePicker } from "@/components/utils/datapicker";
-
-
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-  } from "@/components/ui/form"
-  
-  // registerLocale("pt-BR", ptBR);
+// import { DateTimePicker } from "@/components/utils/datapicker";
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
+// registerLocale("pt-BR", ptBR);
 
 export default function UserSignup({ isActive }) {
     const [date, setDate] = useState();
@@ -54,19 +41,19 @@ export default function UserSignup({ isActive }) {
     return (
         <>
             <div
-                className={`form-container_home absolute inset-0 w-1/2 bg-white transition-transform duration-300 ${
+                className={`absolute inset-0 w-1/2 bg-white transition-transform duration-300 ${
                     isActive
-                        ? "translate-x-full opacity-100 z-10"
+                        ? "translate-x-full opacity-100 z-5 move-animation"
                         : "opacity-0 z-0"
                 }`}
             >
                 <form
-                    className="flex flex-col items-center justify-center h-full px-10"
+                    className="bg-white flex items-center justify-center flex-col px-10 h-full"
                     onSubmit={submit}
                 >
                     <h1 className="text-xl font-semibold mb-4">Criar Conta</h1>
 
-                    <div className="social-icons flex space-x-2 mb-4">
+                    <div className="my-5 flex space-x-2 mb-4">
                         {["google", "facebook", "github", "linkedin"].map(
                             (icon) => (
                                 <a
@@ -90,7 +77,7 @@ export default function UserSignup({ isActive }) {
                         value={data.nome}
                         onChange={(e) => setData("nome", e.target.value)}
                         placeholder="Name"
-                        className="input"
+                        className="bg-gray-200 border-0 my-2 px-4 py-2 text-sm rounded-lg w-full outline-none"
                     />
 
                     <input
@@ -100,7 +87,7 @@ export default function UserSignup({ isActive }) {
                         value={data.email}
                         onChange={(e) => setData("email", e.target.value)}
                         placeholder="nome@examplo.com"
-                        className="input"
+                        className="bg-gray-200 border-0 my-2 px-4 py-2 text-sm rounded-lg w-full outline-none"
                         required
                     />
 
@@ -110,11 +97,13 @@ export default function UserSignup({ isActive }) {
                         value={data.senha}
                         onChange={(e) => setData("senha", e.target.value)}
                         placeholder="••••••••"
-                        className="input"
+                        className="bg-gray-200 border-0 my-2 px-4 py-2 text-sm rounded-lg w-full outline-none"
                         required
                     />
 
-                    <DateTimePicker
+                    <DatePicker value={date} onChange={handleDateChange} />
+
+                    {/* <DateTimePicker
                         hideTime
                         id="dt_nasc"
                         name="dt_nasc"
@@ -122,13 +111,14 @@ export default function UserSignup({ isActive }) {
                         // placeholder="Escolha sua data de nascimento"
                         onChange={handleDateChange}
                         // renderTrigger={}
-                    />
-                    
-                    {/* <FormDescription>
-                        Your date of birth is used to calculate your age.
-                    </FormDescription> */}
+                    /> */}
 
-                    <button type="submit" className="btn-primary mt-2">
+                    <button
+                        type="submit"
+                        className={`bg-[#512da8] text-white text-xs px-[45px] py-[10px] border border-transparent rounded-lg font-semibold tracking-[0.5px] uppercase mt-5 cursor-pointer ${
+                            isActive ? "bg-transparent border-white" : ""
+                        }`}
+                    >
                         Cadastrar-se
                     </button>
                 </form>

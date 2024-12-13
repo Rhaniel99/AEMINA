@@ -37,7 +37,7 @@ export default function UserLogin({ isActive }) {
                     onSubmit={submit}
                 >
                     <h1 className="text-xl font-semibold mb-4">Entrar</h1>
-                    <div className="social-icons flex space-x-2 mb-4">
+                    <div className="my-5 flex space-x-2 mb-4">
                         {["google", "facebook", "github", "linkedin"].map(
                             (icon) => (
                                 <a
@@ -62,7 +62,7 @@ export default function UserLogin({ isActive }) {
                         value={data.email}
                         onChange={(e) => setData("email", e.target.value)}
                         placeholder="nome@examplo.com"
-                        className="input"
+                        className="bg-gray-200 border-0 my-2 px-4 py-2 text-sm rounded-lg w-full outline-none"
                         required
                     />
 
@@ -73,7 +73,7 @@ export default function UserLogin({ isActive }) {
                         onChange={(e) => setData("senha", e.target.value)}
                         id="senha"
                         placeholder="••••••••"
-                        className="input"
+                        className="bg-gray-200 border-0 my-2 px-4 py-2 text-sm rounded-lg w-full outline-none"
                         required
                     />
 
@@ -81,7 +81,12 @@ export default function UserLogin({ isActive }) {
                         Esqueceu sua senha?
                     </a>
 
-                    <button type="submit" className="btn-primary mt-4">
+                    <button
+                        type="submit"
+                        className={`bg-[#512da8] text-white text-xs px-[45px] py-[10px] border border-transparent rounded-lg font-semibold tracking-[0.5px] uppercase mt-5 cursor-pointer ${
+                            isActive ? "bg-transparent border-white" : ""
+                        }`}
+                    >
                         Entrar
                     </button>
                 </form>
