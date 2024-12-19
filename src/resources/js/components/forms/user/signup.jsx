@@ -2,26 +2,15 @@ import { useForm } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 // import { registerLocale } from "react-datepicker";
 // import ptBR from "date-fns/locale/pt-BR";
-// import "react-datepicker/dist/react-datepicker.css";
 import { Plus } from "lucide-react";
 // import { toast } from "react-toastify";
-import { DateTimePicker } from "@/components/utils/datapicker";
-
-
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-  } from "@/components/ui/form"
-  
-  // registerLocale("pt-BR", ptBR);
+import 'react-date-picker/dist/DatePicker.css';
+import 'react-calendar/dist/Calendar.css';
+import DatePicker from 'react-date-picker';
 
 export default function UserSignup({ isActive }) {
     const [date, setDate] = useState();
+    // const [value, onChange] = useState();
 
     const { data, setData, post, reset } = useForm({
         email: "",
@@ -74,13 +63,13 @@ export default function UserSignup({ isActive }) {
                                     href="#"
                                     className="border border-[#ccc] rounded-[20%] inline-flex justify-center items-center mx-0.5 w-10 h-10
                                     text-sm text-gray-700 mt-3.75 mb-2.5 underline-none"
-                                    >
+                                >
                                     <Plus name={icon} size={18} />
                                 </a>
                             )
                         )}
                     </div>
-                    
+
                     <span className="text-sm mb-4">
                         ou use seu email para registro
                     </span>
@@ -114,22 +103,19 @@ export default function UserSignup({ isActive }) {
                         className="bg-[#eee] border-none my-2 px-4 py-2.5 text-sm rounded-lg w-full outline-none"
                         required
                     />
-
-                    <DateTimePicker
-                        hideTime
-                        id="dt_nasc"
-                        name="dt_nasc"
-                        value={date}
-                        // placeholder="Escolha sua data de nascimento"
-                        onChange={handleDateChange}
-                        // renderTrigger={}
-                    />
                     
+                    <DatePicker name="dt_nasc" className="text-center bg-[#eee] border-none my-2 px-4 py-2.5 text-sm rounded-lg w-full outline-none" 
+                    dayPlaceholder="DIA" monthPlaceholder="MÊS" yearPlaceholder="ANO" disableCalendar={true}  onChange={handleDateChange} 
+                    value={date} />
+
                     {/* <FormDescription>
                         Your date of birth is used to calculate your age.
                     </FormDescription> */}
 
-                    <button type="submit" className="btn-primary mt-5 bg-[#512da8] text-white text-xs px-11 py-2.5 border border-transparent rounded-lg font-semibold tracking-wide uppercase cursor-pointer">
+                    <button
+                        type="submit"
+                        className="btn-primary mt-5 bg-[#512da8] text-white text-xs px-11 py-2.5 border border-transparent rounded-lg font-semibold tracking-wide uppercase cursor-pointer"
+                    >
                         Cadastrar-se
                     </button>
                 </form>

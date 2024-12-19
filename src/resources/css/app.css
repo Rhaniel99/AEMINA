@@ -88,7 +88,7 @@
 
 /* ========== COMPONENT STYLES ========== */
 @layer components {
-    .title {
+    /* .title {
         @apply my-6 text-center text-3xl font-bold leading-9 text-slate-900;
     }
 
@@ -118,7 +118,7 @@
 
     .avatar {
         @apply w-8 h-8 rounded-full overflow-hidden object-center object-cover;
-    }
+    } */
 
     /* Button Styles (commented out for now) */
     /*
