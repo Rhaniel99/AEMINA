@@ -33,7 +33,7 @@ export default function UserLogin({ isActive }) {
                 }`}
             >
                 <form
-                    className="flex flex-col items-center justify-center h-full px-10"
+                    className="flex flex-col items-center justify-center h-full px-10 bg-white"
                     onSubmit={submit}
                 >
                     <h1 className="text-xl font-semibold mb-4">Entrar</h1>
@@ -62,7 +62,7 @@ export default function UserLogin({ isActive }) {
                         value={data.email}
                         onChange={(e) => setData("email", e.target.value)}
                         placeholder="nome@examplo.com"
-                        className="input"
+                        className="bg-[#eee] border-none my-2 px-4 py-2.5 text-sm rounded-lg w-full outline-none"
                         required
                     />
 
@@ -73,15 +73,15 @@ export default function UserLogin({ isActive }) {
                         onChange={(e) => setData("senha", e.target.value)}
                         id="senha"
                         placeholder="••••••••"
-                        className="input"
+                        className="bg-[#eee] border-none my-2 px-4 py-2.5 text-sm rounded-lg w-full outline-none"
                         required
                     />
 
-                    <a href="#" className="text-sm text-gray-600 mb-4">
+                    <a href="#" className="underline-none text-sm text-gray-600 mb-4">
                         Esqueceu sua senha?
                     </a>
 
-                    <button type="submit" className="btn-primary mt-4">
+                    <button type="submit" className="btn-primary mt-5 bg-[#512da8] text-white text-xs px-11 py-2.5 border border-transparent rounded-lg font-semibold tracking-wide uppercase cursor-pointer">
                         Entrar
                     </button>
                 </form>
