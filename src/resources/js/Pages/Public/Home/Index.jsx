@@ -50,12 +50,12 @@ export default function Index() {
                             Bem-vindo(a) de volta!
                         </h1>
 
-                        <p className="text-sm mb-6">
+                        <p className="mb-6 text-xs leading-5 tracking-wide mt-5">
                             Digite seus dados pessoais para manter contato
                         </p>
 
                         <button
-                            className="btn-secondary"
+                            className="btn-secondary bg-[#512da8] text-white text-xs px-11 py-2.5 border border-transparent rounded-lg font-semibold tracking-wide uppercase mt-5 cursor-pointer"
                             onClick={() => setIsActive(false)}
                         >
                             Entrar
@@ -67,13 +67,13 @@ export default function Index() {
                             Olá, Amigo!
                         </h1>
 
-                        <p className="text-sm mb-6">
+                        <p className="mb-6 text-xs leading-5 tracking-wide mt-5">
                             Registre-se conosco e descubra oportunidades
                             incriveis
                         </p>
 
                         <button
-                            className="btn-secondary"
+                            className="btn-secondary bg-[#512da8] text-white text-xs px-11 py-2.5 border border-transparent rounded-lg font-semibold tracking-wide uppercase mt-5 cursor-pointer"
                             onClick={() => setIsActive(true)}
                         >
                             Cadastrar-se
