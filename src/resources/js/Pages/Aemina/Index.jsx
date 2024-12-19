@@ -1,6 +1,6 @@
 import { useForm, Link, Head } from "@inertiajs/react";
 import { useRoute } from "ziggy";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 
 export default function Index() {
@@ -29,12 +29,14 @@ export default function Index() {
 
     return (
         <>
+
             <Head title="Index" />
 
             <ToastContainer />
 
             <div className="p-4 border-b">
                 <form onSubmit={submit}>
+
                     <div>
                         <input
                             type="file"
