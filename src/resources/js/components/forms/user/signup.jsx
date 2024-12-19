@@ -64,16 +64,17 @@ export default function UserSignup({ isActive }) {
                     className="flex flex-col items-center justify-center h-full px-10 bg-white"
                     onSubmit={submit}
                 >
-                    <h1 className="text-xl font-semibold mb-4">Criar Conta</h1>
+                    <h1 className="text-xl font-semibold mb-1">Criar Conta</h1>
 
-                    <div className="social-icons flex space-x-2 mb-4">
+                    <div className="my-5 flex space-x-2 mb-4">
                         {["google", "facebook", "github", "linkedin"].map(
                             (icon) => (
                                 <a
                                     key={icon}
                                     href="#"
-                                    className="text-sm text-gray-700 mt-3.75 mb-2.5 underline-none w-10 h-10 flex items-center justify-center border border-gray-700 rounded-full"
-                                >
+                                    className="border border-[#ccc] rounded-[20%] inline-flex justify-center items-center mx-0.5 w-10 h-10
+                                    text-sm text-gray-700 mt-3.75 mb-2.5 underline-none"
+                                    >
                                     <Plus name={icon} size={18} />
                                 </a>
                             )
