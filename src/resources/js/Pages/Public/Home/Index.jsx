@@ -34,6 +34,8 @@ export default function Index() {
 
     return (
         <>
+                        
+
             <ToastContainer />
             
             <HomeCard isActive={isActive}>
@@ -44,6 +46,7 @@ export default function Index() {
                 <UserLogin isActive={isActive} />
 
                 {/* Toggle Panel */}
+
                 <HomeToggle>
                     <div className="toggle-panel absolute left-0 w-1/2 h-full flex flex-col items-center justify-center text-center p-6">
                         <h1 className="text-2xl font-semibold mb-4">
@@ -53,7 +56,6 @@ export default function Index() {
                         <p className="mb-6 text-xs leading-5 tracking-wide mt-5">
                             Digite seus dados pessoais para manter contato
                         </p>
-
                         <button
                             className="btn-secondary bg-[#512da8] text-white text-xs px-11 py-2.5 border border-transparent rounded-lg font-semibold tracking-wide uppercase mt-5 cursor-pointer"
                             onClick={() => setIsActive(false)}

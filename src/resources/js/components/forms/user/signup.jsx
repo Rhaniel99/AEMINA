@@ -1,12 +1,12 @@
 import { useForm } from "@inertiajs/react";
 import { useEffect, useState } from "react";
-// import { registerLocale } from "react-datepicker";
-// import ptBR from "date-fns/locale/pt-BR";
+import ptBR from "date-fns/locale/pt-BR";
 import { Plus } from "lucide-react";
-// import { toast } from "react-toastify";
-import 'react-date-picker/dist/DatePicker.css';
-import 'react-calendar/dist/Calendar.css';
-import DatePicker from 'react-date-picker';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
+// import { registerLocale } from "react-datepicker";
+// registerLocale("pt-BR", ptBR);
 
 export default function UserSignup({ isActive }) {
     const [date, setDate] = useState();
@@ -94,6 +94,19 @@ export default function UserSignup({ isActive }) {
                         required
                     />
 
+                    {/* <DatePicker
+                        name="dt_nasc"
+                        className="text-center bg-[#eee] border-none my-2 px-4 py-2.5 text-sm rounded-lg w-full outline-none"
+                        // calendarAriaLabel="aaa"
+                        dayPlaceholder="DIA"
+                        monthPlaceholder="MÊS"
+                        yearPlaceholder="ANO"
+                        onChange={handleDateChange}
+                        value={date}
+                        // portalContainer={document.getElementById('my-div')}
+                        // portal
+                    /> */}
+
                     <input
                         type="password"
                         name="senha"
@@ -103,11 +116,10 @@ export default function UserSignup({ isActive }) {
                         className="bg-[#eee] border-none my-2 px-4 py-2.5 text-sm rounded-lg w-full outline-none"
                         required
                     />
-                    
-                    <DatePicker name="dt_nasc" className="text-center bg-[#eee] border-none my-2 px-4 py-2.5 text-sm rounded-lg w-full outline-none" 
-                    dayPlaceholder="DIA" monthPlaceholder="MÊS" yearPlaceholder="ANO" disableCalendar={true}  onChange={handleDateChange} 
-                    value={date} />
 
+<DatePicker className="bg-[#eee] border-none my-2 px-6 py-2.5 text-sm rounded-lg w-full outline-none"
+                    placeholderText="Selecione a data de nascimento" locale={ptBR}/>
+                    
                     {/* <FormDescription>
                         Your date of birth is used to calculate your age.
                     </FormDescription> */}
