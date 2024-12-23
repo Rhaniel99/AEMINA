@@ -21,7 +21,6 @@ class LoginController extends Controller
      */
     public function create(Request $request)
     {
-        dd($request->all());
         $validated_data = $request->validate([
             'nome' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',

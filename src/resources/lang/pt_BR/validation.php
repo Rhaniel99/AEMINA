@@ -3,7 +3,7 @@
 return [
     'required' => 'O campo :attribute é obrigatório.',
     'email' => 'Informe um endereço de e-mail válido para o campo :attribute.',
-    'unique' => 'O campo :attribute já está em uso.',
+    'unique' => 'O :attribute já está em uso.',
     'same' => 'O campo :attribute e :other tem de ser o mesmo.',
     'max' => [
         'string' => 'O campo :attribute não deve exceder :max caracteres.',

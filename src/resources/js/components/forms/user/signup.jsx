@@ -93,20 +93,7 @@ export default function UserSignup({ isActive }) {
                         className="bg-[#eee] border-none my-2 px-4 py-2.5 text-sm rounded-lg w-full outline-none"
                         required
                     />
-
-                    {/* <DatePicker
-                        name="dt_nasc"
-                        className="text-center bg-[#eee] border-none my-2 px-4 py-2.5 text-sm rounded-lg w-full outline-none"
-                        // calendarAriaLabel="aaa"
-                        dayPlaceholder="DIA"
-                        monthPlaceholder="MÊS"
-                        yearPlaceholder="ANO"
-                        onChange={handleDateChange}
-                        value={date}
-                        // portalContainer={document.getElementById('my-div')}
-                        // portal
-                    /> */}
-
+                    
                     <input
                         type="password"
                         name="senha"
@@ -117,9 +104,15 @@ export default function UserSignup({ isActive }) {
                         required
                     />
 
-<DatePicker className="bg-[#eee] border-none my-2 px-6 py-2.5 text-sm rounded-lg w-full outline-none"
-                    placeholderText="Selecione a data de nascimento" locale={ptBR}/>
-                    
+                    <DatePicker
+                        name="dt_nasc"
+                        className="bg-[#eee] border-none my-2 px-6 py-2.5 text-sm rounded-lg w-full outline-none"
+                        placeholderText="Selecione a data de nascimento"
+                        onChange={handleDateChange}
+                        selected={date}
+                        locale={ptBR}
+                    />
+
                     {/* <FormDescription>
                         Your date of birth is used to calculate your age.
                     </FormDescription> */}
