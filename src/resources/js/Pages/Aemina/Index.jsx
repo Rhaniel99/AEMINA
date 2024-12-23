@@ -1,26 +1,14 @@
 import { useForm, Link, Head } from "@inertiajs/react";
 import { useRoute } from "ziggy";
 import { useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+// import { ToastContainer, toast } from "react-toastify";
 
 export default function Index() {
     const route = useRoute();
 
-    const { data, setData, post, progress, errors } = useForm({
+    const { data, setData, post, progress } = useForm({
         planoAcao: null, // Set default to null for file input
     });
-
-    useEffect(() => {
-        if (Object.keys(errors).length > 0) {
-            Object.values(errors).forEach((error) => {
-                toast.warn(error, {
-                    position: "top-right",
-                    autoClose: 3000,
-                    className: "bg-white-500 text-black",
-                });
-            });
-        }
-    }, [errors]);
 
     function submit(e) {
         e.preventDefault();
@@ -31,8 +19,6 @@ export default function Index() {
         <>
 
             <Head title="Index" />
-
-            <ToastContainer />
 
             <div className="p-4 border-b">
                 <form onSubmit={submit}>

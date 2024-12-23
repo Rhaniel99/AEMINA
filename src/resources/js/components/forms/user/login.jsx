@@ -1,10 +1,12 @@
 import { useForm } from "@inertiajs/react";
 import { useRoute } from "ziggy";
 import { Plus } from "lucide-react";
+// import Modal from "@/components/modal";
+// import { useEffect, useState } from "react";
 
 export default function UserLogin({ isActive }) {
     const route = useRoute();
-
+    
     const { data, setData, post, processing, reset } = useForm({
         email: "",
         senha: "",
@@ -78,7 +80,7 @@ export default function UserLogin({ isActive }) {
                         required
                     />
 
-                    <a href="#" className="underline-none text-sm text-gray-600 mb-4">
+                    <a className="underline-none text-sm text-gray-600 mb-4">
                         Esqueceu sua senha?
                     </a>
 
