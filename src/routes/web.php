@@ -17,12 +17,20 @@ use Inertia\Inertia;
 
 // Route::inertia('/', 'Homepage')->name('home');
 Route::get('/', function () {
-    return inertia('Public/Home/Index');
+    if (Auth::check()) {
+        // return inertia('Public/Home/Index');
+        return inertia('Aemina/Index');
+    } else {
+        return inertia('Public/Home/Index');
+    }
+
 })->name('home');
 
 Route::resource('posts', PostController::class);
 
 Route::middleware(['auth'])->group(function () {
+    Route::patch('/login/update/{id_user}/{type}', [LoginController::class, 'update'])->name('login.update');
+
     Route::resource('aemina', AeminaController::class);
 
     Route::controller(PlanoAcaoController::class)->group(function () {
@@ -33,7 +41,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::controller(LoginController::class)->group(function () {
-    Route::get('/login', 'index')->name('login');
+    // Route::get('/documentacao_completa/{id_convocado}', [PDFController::class, 'documentacao_convocado'])->name('doc.pdf');
     Route::post('/login', 'store')->name('login.store');
     Route::post('/create', 'create')->name('login.create');
     Route::post('/logout', 'destroy')->name('login.logout');

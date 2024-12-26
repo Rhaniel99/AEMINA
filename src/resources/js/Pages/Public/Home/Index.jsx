@@ -34,8 +34,6 @@ export default function Index() {
 
     return (
         <>
-                        
-
             <ToastContainer />
             
             <HomeCard isActive={isActive}>
@@ -46,7 +44,6 @@ export default function Index() {
                 <UserLogin isActive={isActive} />
 
                 {/* Toggle Panel */}
-
                 <HomeToggle>
                     <div className="toggle-panel absolute left-0 w-1/2 h-full flex flex-col items-center justify-center text-center p-6">
                         <h1 className="text-2xl font-semibold mb-4">
