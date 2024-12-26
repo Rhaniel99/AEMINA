@@ -100,9 +100,11 @@ class LoginController extends Controller
                     return back()->withErrors(['errors' => "Senha atual está incorreta!"]);
                 }
 
-                dd($request->all());
-                break;
+                User::where('id', $id)->update([
+                    'password' => bcrypt($request->nova_senha)
+                ]);
 
+                return to_route('aemina.index')->with(["success" => "Senha atualizada com sucesso!"]);
             default:
                 break;
         }
