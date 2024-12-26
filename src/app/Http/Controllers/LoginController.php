@@ -9,14 +9,6 @@ use Illuminate\Http\Request;
 class LoginController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        return inertia('Login/Index');
-    }
-
-    /**
      * Criação de usuário
      */
     public function create(Request $request)
@@ -36,7 +28,7 @@ class LoginController extends Controller
             'password' => bcrypt($validated_data['senha']),
         ]);
         
-        return to_route('home')->with(["success" => "Criado com sucesso!"]);
+        return to_route('home')->with(key: ["success" => "Criado com sucesso!"]);
     }
 
     /**
@@ -64,10 +56,13 @@ class LoginController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        //
-    }
+    // public function show(string $id)
+    // {
+    //     $user = User::findOrFail($id)->first(['name', 'email', 'birth_date']);
+    //     return inertia('Login/Account', [
+    //         'user' => $user,
+    //     ]);
+    // }
 
     /**
      * Show the form for editing the specified resource.
@@ -80,9 +75,37 @@ class LoginController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id, string $type)
     {
-        //
+        switch ($type) {
+            case 'account':
+                $request->validate([
+                    "email" => "required|email|unique:users,email,{$id}",
+                    "name" => "required|string",
+                ]);
+
+                User::where('id', $id)->update([
+                    'email' => $request->email,
+                    'name' => $request->name
+                ]);
+
+                return to_route('aemina.index')->with(["success" => "Atualizado com sucesso!"]);
+            case 'password':
+                $request->validate([
+                    "senha_atual" => "required|string|min:6",
+                    "nova_senha" => "required|string|min:6",
+                ]);
+
+                if (!\Illuminate\Support\Facades\Hash::check($request->senha_atual, Auth::user()->password)) {
+                    return back()->withErrors(['errors' => "Senha atual está incorreta!"]);
+                }
+
+                dd($request->all());
+                break;
+
+            default:
+                break;
+        }
     }
 
     /**

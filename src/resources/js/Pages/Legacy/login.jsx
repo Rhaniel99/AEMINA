@@ -124,7 +124,8 @@ export function LoginForm() {
                             <div className="grid gap-2">
                                 <div className="flex items-center">
                                     <Label htmlFor="password">Senha</Label>
-                                    <button type="button"
+                                    <button
+                                        type="button"
                                         onClick={() => setOpenForgout(true)}
                                         className="ml-auto inline-block text-sm underline"
                                     >
@@ -179,14 +180,13 @@ export function LoginForm() {
                 )}
             </Modal>
 
-
             <Modal open={openForgout} onClose={() => setOpenForgout(false)}>
                 {openForgout && ( // Verifica se o modal está aberto antes de renderizar o conteúdo
                     <section>
                         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
                             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                                 <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
-                                    Recuperar senha 
+                                    Recuperar senha
                                 </h1>
 
                                 {/* <UserSignup onSuccess={handleSuccess} /> */}
