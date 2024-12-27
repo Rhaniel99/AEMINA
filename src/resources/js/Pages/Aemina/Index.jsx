@@ -22,7 +22,6 @@ export default function Index() {
 
             <div className="p-4 border-b">
                 <form onSubmit={submit}>
-
                     <div>
                         <input
                             type="file"
