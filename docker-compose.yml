@@ -179,3 +179,22 @@ services:
     profiles: ["node"]
     networks:
       - laravel
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    command: server /data --console-address ":9701"
+    restart: always
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - ./docker/minio/data:/data
+    ports:
+      - 9700:9700
+      - 9701:9701
+    networks:
+      - laravel
+        # networks:
+        #     docker-laravel:
+        #       ipv4_address: 172.16.238.10

@@ -108,23 +108,23 @@ export function NavUser({ user }) {
                                 onClick={() => setLoginOpen(true)}
                             >
                                 <BadgeCheck />
-                                Account
+                                Conta
                             </DropdownMenuItem>
                             {/* </Link> */}
                             {/* <DropdownMenuItem>
                 <CreditCard />
                 Billing
               </DropdownMenuItem> */}
-                            <DropdownMenuItem>
+                            {/* <DropdownMenuItem>
                                 <Bell />
                                 Notifications
-                            </DropdownMenuItem>
+                            </DropdownMenuItem> */}
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <Link href={user.logout} method="post">
                             <DropdownMenuItem>
                                 <LogOut />
-                                Log out
+                                Sair
                             </DropdownMenuItem>
                         </Link>
                     </DropdownMenuContent>
