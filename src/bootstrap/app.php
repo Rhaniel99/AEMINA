@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureUserProfileExists;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -13,6 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+
+        $middleware->alias([
+            'ensure.profile.exists' => EnsureUserProfileExists::class,
+            'check.selected.profile' => App\Http\Middleware\CheckSelectedProfile::class
+        ]);
+
         $middleware->web(append: [
             HandleInertiaRequests::class,
         ]);

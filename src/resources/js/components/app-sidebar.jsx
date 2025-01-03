@@ -36,9 +36,9 @@ export function AppSidebar(props) {
     const data = {
         user: {
             id: auth.user.id,
-            name: auth.user.name,
+            name: auth.profile.username,
             email: auth.user.email,
-            avatar: "/avatars/shadcn.jpg",
+            avatar: auth.profile.avatar,
             logout: route("login.logout"),
         },
         teams: [
