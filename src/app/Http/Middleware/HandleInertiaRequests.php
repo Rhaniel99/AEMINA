@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use App\Models\UserProfiles;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -35,14 +36,27 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $current_profile = null;
+
+        // Verifica se há um ID de perfil na sessão
+        if ($profile_id = $request->session()->get('selected_profile')) {
+            $current_profile = UserProfiles::where('id', $profile_id)->first(
+                ['id', 'username', 'avatar']
+            );
+        }
 
         return array_merge(parent::share($request), [
             'flash' => [
-                'success' => fn () => $request->session()->get('success') ? $request->session()->get('success') : [],
-                // 'success' => fn () => $request->session()->get('success'),
-                'errors' => fn () => $request->session()->get('errors')  ? $request->session()->get('errors')->getBag('default')->getMessages() : [],
+                'success' => fn() => $request->session()->get('success') ? $request->session()->get('success') : [],
+                'errors' => fn() => $request->session()->get('errors') ? $request->session()->get('errors')->getBag('default')->getMessages() : [],
             ],
-            'auth.user' => fn () => $request->user() ? $request->user()->only('id', 'name', 'email') : null,
+            'auth.user' => fn() => $request->user() ? $request->user()->only('id', 'name', 'email') : null,
+            'auth.profile' => fn() => $current_profile ? [
+                'id' => $current_profile->id,
+                'username' => $current_profile->username,
+                'avatar' => \Storage::url($current_profile->avatar), // URL completa do avatar
+            ] : null,
+
         ]);
     }
 }

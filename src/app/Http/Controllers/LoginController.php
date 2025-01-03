@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserProfiles;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -28,7 +29,7 @@ class LoginController extends Controller
             'password' => bcrypt($validated_data['senha']),
         ]);
         
-        return to_route('home')->with(key: ["success" => "Criado com sucesso!"]);
+        return to_route('home')->with(["success" => "Criado com sucesso!"]);
     }
 
     /**
@@ -51,25 +52,6 @@ class LoginController extends Controller
         } else {
             return back()->withErrors(['errors' => "Email ou senha inválidos."]);
         }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    // public function show(string $id)
-    // {
-    //     $user = User::findOrFail($id)->first(['name', 'email', 'birth_date']);
-    //     return inertia('Login/Account', [
-    //         'user' => $user,
-    //     ]);
-    // }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
     }
 
     /**
@@ -116,6 +98,51 @@ class LoginController extends Controller
     public function destroy()
     {
         Auth::logout();
+        session()->forget('selected_profile');
         return to_route('home');
     }
+
+    // ! Profile
+
+    /**
+     * Display the specified resource.
+     */
+    // public function create_profile(Request $request, string $id)
+    // {
+    //     $request->validate([
+    //         'name' => 'required',
+    //         'avatar' => 'required|file|max:102400', // 100mb
+    //     ]);
+       
+    //     $extension = $request->avatar->getClientOriginalExtension();
+    //     $encoded = file_get_contents($request->avatar);
+    //     $path = "profiles/{$id}/avatar.{$extension}";
+
+    //     $success = \Storage::disk('s3')->put($path, $encoded);
+
+    //     if (!$success) {
+    //         return back()->withErrors(['errors' => "Erro ao enviar o avatar!"]);
+    //     }
+
+    //     $profile = UserProfiles::create([
+    //         "user_id" => $id,
+    //         "username" => $request->name,
+    //         "avatar" => $path,
+    //     ]);
+
+    //     if (!$profile) {
+    //         return back()->withErrors(['errors' => "Erro ao salvar as informações do perfil."]);
+    //     }
+
+    //     return to_route('aemina.index')->with(["success" => "Perfil criado com sucesso!"]);
+    // }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    // public function create_profile()
+    // {
+    //     return inertia('Login/CreateProfile');
+    // }
+
 }

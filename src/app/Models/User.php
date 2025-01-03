@@ -43,6 +43,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function profiles()
+    {
+        return $this->hasMany(UserProfiles::class);
+    }
+
     // Indica que o campo 'id' é do tipo UUID
     protected $keyType = 'uuid';
     // Indica que o valor do campo 'id' será gerado automaticamente
