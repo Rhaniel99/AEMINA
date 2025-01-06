@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use PhpOffice\PhpSpreadsheet\Calculation\Category;
-use App\Traits\Uuid; 
+use App\Traits\Uuid;
 
 
 class Media extends Model
@@ -24,10 +24,19 @@ class Media extends Model
         'status',
     ];
 
+    // ? Content Type
     public function contentType()
     {
         return $this->belongsTo(ContentType::class, 'content_type_id');
     }
+
+    public function scopeOfContentType($query, $type)
+    {
+        return $query->whereHas('contentType', function ($query) use ($type) {
+            $query->where('type', $type);
+        });
+    }
+    // !
 
     public function categories()
     {

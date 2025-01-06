@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AeminaController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\MediaController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\PlanoAcaoController;
 use App\Http\Controllers\PostController;
@@ -30,14 +31,18 @@ Route::middleware(['auth', 'ensure.profile.exists'])->group(function () {
 });
 
 Route::middleware(['auth', 'ensure.profile.exists', 'check.selected.profile'])->group(function () {
+    // ? Rotas de atualização para Login
     Route::patch('/login/update/{id_user}/{type}', [LoginController::class, 'update'])->name('login.update');
 
+    Route::resource('media', MediaController::class);
     Route::resource('aemina', AeminaController::class);
 
+    // ? Rotas de atualização para Plano de Acão antigo projeto!
     Route::controller(PlanoAcaoController::class)->group(function () {
         Route::post('/uploadCSV', 'uploadCSV')->name('planoAcao.upload');
     });
 
+    // ? Projeto Antigo
     Route::resource('note', NoteController::class);
 });
 

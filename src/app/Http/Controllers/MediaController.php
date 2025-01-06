@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Normalize;
+use App\Models\Media;
 use Illuminate\Http\Request;
+use Storage;
 
 class MediaController extends Controller
 {
@@ -11,7 +14,19 @@ class MediaController extends Controller
      */
     public function index()
     {
-        //
+        $medias_collection = Media::ofContentType('filme')->get();
+
+        $medias = $medias_collection->map(function ($media) {
+            // Formata a data para o padrão brasileiro
+            $media->release_date = fDateBR($media->release_date);
+            
+            // Converte o caminho da imagem para a URL completa usando Storage
+            $media->cover_image_path = Storage::url($media->cover_image_path);
+            
+            return $media;
+            // dd(Storage::url($media->cover_image_path)); 
+        });
+        return inertia('Media/Index', ['medias' => $medias]);
     }
 
     /**
@@ -35,7 +50,7 @@ class MediaController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return inertia('Media/Show');
     }
 
     /**
