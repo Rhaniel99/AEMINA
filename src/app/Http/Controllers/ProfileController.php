@@ -66,7 +66,7 @@ class ProfileController extends Controller
 
         session(['selected_profile' => $profile->id]);
 
-        return to_route('aemina.index')->with(["success" => "Perfil criado com sucesso!"]);
+        return to_route('media.index')->with(["success" => "Perfil criado com sucesso!"]);
     }
 
     /**
@@ -78,7 +78,7 @@ class ProfileController extends Controller
         // Armazena o perfil selecionado na sessão
         session(['selected_profile' => $profile->id]);
     
-        return to_route('aemina.index')->with(["success" => "Bem vindo de volta, {$profile->username}!"]);
+        return to_route('media.index')->with(["success" => "Bem vindo de volta, {$profile->username}!"]);
     }
 
     /**

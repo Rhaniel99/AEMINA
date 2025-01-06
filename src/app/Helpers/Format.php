@@ -17,3 +17,22 @@ if (!function_exists('onSuccess')) {
         return $message . '|' . genDtUniqueID();
     }
 }
+
+// ? Função para formatar uma data para o padrão brasileiro (dd/mm/yyyy)
+if (!function_exists('fDateBR')) {
+    function fDateBR($date)
+    {
+        // Verifica se a data está em um formato válido
+        if (!$date) {
+            return null;
+        }
+
+        try {
+            // Converte a data usando o Carbon
+            return \Carbon\Carbon::parse($date)->format('d/m/Y');
+        } catch (\Exception $e) {
+            // Retorna a data original em caso de erro
+            return $date;
+        }
+    }
+}
