@@ -43,7 +43,7 @@ export function AppSidebar(props) {
         },
         teams: [
             {
-                name: "Aemina Flix",
+                name: "Aemina Media",
                 logo: CirclePlay,
                 plan: "Séries",
             },
@@ -61,12 +61,12 @@ export function AppSidebar(props) {
     };
 
     const [activeTeam, setActiveTeam] = useState({
-        name: "Aemina Flix", // Time padrão
+        name: "Aemina Media", // Time padrão
       });
     
       const getNavItemsByTeam = (teamName) => {
         switch (teamName) {
-          case "Aemina Flix":
+          case "Aemina Media":
             return [
               {
                 title: "Playground",
