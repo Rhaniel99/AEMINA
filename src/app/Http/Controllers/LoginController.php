@@ -102,47 +102,4 @@ class LoginController extends Controller
         return to_route('home');
     }
 
-    // ! Profile
-
-    /**
-     * Display the specified resource.
-     */
-    // public function create_profile(Request $request, string $id)
-    // {
-    //     $request->validate([
-    //         'name' => 'required',
-    //         'avatar' => 'required|file|max:102400', // 100mb
-    //     ]);
-       
-    //     $extension = $request->avatar->getClientOriginalExtension();
-    //     $encoded = file_get_contents($request->avatar);
-    //     $path = "profiles/{$id}/avatar.{$extension}";
-
-    //     $success = \Storage::disk('s3')->put($path, $encoded);
-
-    //     if (!$success) {
-    //         return back()->withErrors(['errors' => "Erro ao enviar o avatar!"]);
-    //     }
-
-    //     $profile = UserProfiles::create([
-    //         "user_id" => $id,
-    //         "username" => $request->name,
-    //         "avatar" => $path,
-    //     ]);
-
-    //     if (!$profile) {
-    //         return back()->withErrors(['errors' => "Erro ao salvar as informações do perfil."]);
-    //     }
-
-    //     return to_route('aemina.index')->with(["success" => "Perfil criado com sucesso!"]);
-    // }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    // public function create_profile()
-    // {
-    //     return inertia('Login/CreateProfile');
-    // }
-
 }

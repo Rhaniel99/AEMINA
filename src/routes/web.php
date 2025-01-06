@@ -6,17 +6,9 @@ use App\Http\Controllers\NoteController;
 use App\Http\Controllers\PlanoAcaoController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// Route::get('/teste', function () {
-//     $redis = Redis::connection();
-//     // $redis->set('username', 'rhanis');
-//     return $redis->get('username');
-// });
-
-// Route::inertia('/', 'Homepage')->name('home');
 Route::get('/', function () {
     if (Auth::check()) {
         return to_route('aemina.index');
@@ -35,7 +27,6 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'ensure.profile.exists'])->group(function () {
     Route::get('/index-profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/selected-profile/{id_user}', [ProfileController::class, 'selected'])->name('profile.selected');
-    // Route::inertia('/profile-select', 'Public/Profile/Select')->name('profile.select');
 });
 
 Route::middleware(['auth', 'ensure.profile.exists', 'check.selected.profile'])->group(function () {
