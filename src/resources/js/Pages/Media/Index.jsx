@@ -5,19 +5,22 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-
 import { Badge } from "@/components/ui/badge";
 
-import { Link } from "@inertiajs/react";
+import { Link, Head } from "@inertiajs/react";
 import { useRoute } from "ziggy";
 
 export default function Index({ medias }) {
     const route = useRoute();
 
     return (
-        <div className="flex justify-evenly">
+        <>
+        <Head title="Home" />
+        
+        <div className="container px-6 m-auto">
+            <div className="grid grid-cols-4 gap-6 md:grid-cols-8 lg:grid-cols-12">
             {medias.map((media) => (
-                <Card className="m-4" key={media.id}>
+                <Card className="col-span-4" key={media.id}>
                     <CardHeader>
                         <CardTitle>{media.title}</CardTitle>
                         <Badge>Lançamento</Badge>
@@ -45,6 +48,9 @@ export default function Index({ medias }) {
                     </CardFooter>
                 </Card>
             ))}
+            </div>
         </div>
+
+        </>
     );
 }

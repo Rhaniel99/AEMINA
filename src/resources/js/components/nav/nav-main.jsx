@@ -21,7 +21,7 @@ import {
 export function NavMain({ items }) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
+      <SidebarGroupLabel>Tipos de Conteúdo</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible

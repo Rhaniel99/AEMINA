@@ -4,7 +4,7 @@ import "css/home.css";
 
 import { createRoot } from "react-dom/client";
 import { createInertiaApp } from "@inertiajs/react";
-import AppSidebar from '@/app/layout';
+import Layout from '@/app/layout';
 
 const appName = "AEMINA";
 
@@ -25,7 +25,7 @@ createInertiaApp({
         // Define o layout: páginas públicas não usam sidebar
         page.default.layout = isPublicPage
             ? (page) => <>{page}</> // Sem layout
-            : (page) => <AppSidebar>{page}</AppSidebar>; // Com sidebar
+            : (page) => <Layout>{page}</Layout>; // Com sidebar
         return page;
     },
     setup({ el, App, props }) {

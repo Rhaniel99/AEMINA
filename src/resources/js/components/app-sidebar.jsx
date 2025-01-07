@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/sidebar";
 
 export function AppSidebar(props) {
-    const { auth } = usePage().props;
+    const { auth, items_sidebar } = usePage().props;
     const route = useRoute();
 
     // Dados de exemplo
@@ -67,28 +67,35 @@ export function AppSidebar(props) {
       const getNavItemsByTeam = (teamName) => {
         switch (teamName) {
           case "Aemina Media":
-            return [
-              {
-                title: "Playground",
-                url: "#",
-                icon: SquareTerminal,
-                items: [
-                  { title: "History", url: "#" },
-                  { title: "Starred", url: "#" },
-                  { title: "Settings", url: "#" },
-                ],
-              },
-              {
-                title: "Models",
-                url: "#",
-                icon: Bot,
-                items: [
-                  { title: "Genesis", url: "#" },
-                  { title: "Explorer", url: "#" },
-                  { title: "Quantum", url: "#" },
-                ],
-              },
-            ];
+                // Organizando os dados de items_sidebar
+                const nav_items = [];
+
+                items_sidebar.forEach((item) => {
+                  // Verifica se o tipo de conteúdo já existe nos itens de navegação
+                  let existing_nav = nav_items.find(nav => nav.title === item.content_type);
+                  if (!existing_nav) {
+                      // Cria um novo item para o content_type, incluindo "Lançamentos"
+                      existing_nav = {
+                          title: item.content_type,
+                          url: "#", // Adicione a URL do tipo de conteúdo, se necessário
+                          items: [
+                              {
+                                  title: "Lançamentos",
+                                  url: "#", // URL para Lançamentos
+                              }
+                          ], // Começa com "Lançamentos" como primeiro item
+                      };
+                      nav_items.push(existing_nav);
+                  }
+
+                  // Adiciona as categorias específicas para esse tipo de mídia
+                  existing_nav.items.push({
+                      title: `${item.category_name}`,
+                      url: "#", // Adicione a URL da categoria, se necessário
+                  });
+              });
+
+              return nav_items;
           case "Acme Corp.":
             return [
               {

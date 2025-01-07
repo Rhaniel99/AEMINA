@@ -10,6 +10,18 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard', [
+        // Carregamento inicial mínimo
+        'auth' => Auth::user(),
+
+        // Dados carregados de forma assíncrona
+        'content_types' => Inertia::defer(fn () => \App\Models\ContentType::all()),
+        // 'recent_releases' => Inertia::defer(fn () => Item::latest()->take(10)->get()),
+    ]);
+});
+
+
 Route::get('/', function () {
     if (Auth::check()) {
         return to_route('aemina.index');
