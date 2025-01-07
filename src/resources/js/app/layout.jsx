@@ -23,6 +23,8 @@ export default function Layout({ children }) {
 
   const { auth, flash, errors } = usePage().props;
   const { component } = usePage();
+  console.log(usePage());
+  // const { title } = usePage().props;
 
     useEffect(() => {
         if (flash.success) {
@@ -40,6 +42,7 @@ export default function Layout({ children }) {
         }
     }, [flash.success, errors]);
 
+    // console.log(title);
     return (
 
         <SidebarProvider>
@@ -54,9 +57,10 @@ export default function Layout({ children }) {
               <Breadcrumb>
                 <BreadcrumbList>
                   <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink href="#">
+                  <BreadcrumbLink href="#">
                       { component }
                     </BreadcrumbLink>
+
                   </BreadcrumbItem>
                   <BreadcrumbSeparator className="hidden md:block" />
                   <BreadcrumbItem>

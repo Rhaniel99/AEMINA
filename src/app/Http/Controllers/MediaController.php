@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Normalize;
+use App\Models\ContentType;
 use App\Models\Media;
+use App\Models\MediaFiles;
 use Illuminate\Http\Request;
 use Storage;
 
@@ -19,7 +21,7 @@ class MediaController extends Controller
         $medias = $medias_collection->map(function ($media) {
             // Formata a data para o padrão brasileiro
             $media->release_date = fDateBR($media->release_date);
-            
+       
             // Converte o caminho da imagem para a URL completa usando Storage
             $media->cover_image_path = Storage::url($media->cover_image_path);
             
@@ -50,7 +52,10 @@ class MediaController extends Controller
      */
     public function show(string $id)
     {
-        return inertia('Media/Show');
+        $media = MediaFiles::where('media_id', $id)->with('media')->first();
+        $media->title = $media->media->title;
+        $media->file_path = Storage::url($media->file_path);
+        return inertia('Media/Show', ['media' => $media]);
     }
 
     /**

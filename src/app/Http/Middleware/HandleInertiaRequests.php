@@ -36,27 +36,52 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $current_profile = null;
 
-        // Verifica se há um ID de perfil na sessão
-        if ($profile_id = $request->session()->get('selected_profile')) {
-            $current_profile = UserProfiles::where('id', $profile_id)->first(
-                ['id', 'username', 'avatar']
-            );
+        // Verifica se o usuário está autenticado
+        if (auth()->check()) {
+            $current_profile = null;
+
+            // Carrega o perfil selecionado
+            if ($profile_id = $request->session()->get('selected_profile')) {
+                $current_profile = UserProfiles::where('id', $profile_id)->first(
+                    ['id', 'username', 'avatar']
+                );
+            }
+
+            // Obtem a contagem de mídias por categoria e tipo
+            $content_categories = \DB::table('media_schema.content_and_categories_count')
+            ->select('content_type', 'category_name')
+            ->groupBy('content_type', 'category_name')
+            ->get();
+
+            $content_categories->map(function ($item) {
+                $item->content_type = \Str::ucfirst($item->content_type);
+                $item->category_name = \Str::ucfirst($item->category_name);
+                return $item;
+            });
+            
+            // Retorna os dados compartilhados
+            return array_merge(parent::share($request), [
+                'flash' => [
+                    'success' => fn() => $request->session()->get('success') ?? [],
+                    'errors' => fn() => $request->session()->get('errors') ? $request->session()->get('errors')->getBag('default')->getMessages() : [],
+                ],
+                'auth.user' => fn() => auth()->user()->only('id', 'name', 'email'),
+                'auth.profile' => fn() => $current_profile ? [
+                    'id' => $current_profile->id,
+                    'username' => $current_profile->username,
+                    'avatar' => \Storage::url($current_profile->avatar),
+                ] : null,
+                'items_sidebar' => fn() => $content_categories,
+            ]);
         }
 
+        // Retorna apenas os dados mínimos quando não autenticado
         return array_merge(parent::share($request), [
             'flash' => [
-                'success' => fn() => $request->session()->get('success') ? $request->session()->get('success') : [],
+                'success' => fn() => $request->session()->get('success') ?? [],
                 'errors' => fn() => $request->session()->get('errors') ? $request->session()->get('errors')->getBag('default')->getMessages() : [],
             ],
-            'auth.user' => fn() => $request->user() ? $request->user()->only('id', 'name', 'email') : null,
-            'auth.profile' => fn() => $current_profile ? [
-                'id' => $current_profile->id,
-                'username' => $current_profile->username,
-                'avatar' => \Storage::url($current_profile->avatar), // URL completa do avatar
-            ] : null,
-
         ]);
     }
 }
