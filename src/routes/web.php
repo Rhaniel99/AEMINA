@@ -36,7 +36,7 @@ Route::middleware(['auth', 'ensure.profile.exists', 'check.selected.profile'])->
     Route::patch('/login/update/{id_user}/{type}', [LoginController::class, 'update'])->name('login.update');
 
     Route::resource('media', MediaController::class)->except(['index', 'show']);
-    Route::get('/media/{content}/{category?}', [MediaController::class, 'index'])->name('media.index');
+    Route::get('/media/{content}/{category}', [MediaController::class, 'index'])->name('media.index');
     Route::get('/media/{content}/{category}/{movie_id}', [MediaController::class, 'show'])->name('media.show');
 
     Route::resource('aemina', AeminaController::class);

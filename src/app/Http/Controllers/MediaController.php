@@ -14,7 +14,7 @@ class MediaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index($content, $category = null)
+    public function index($content, $category)
     {
         // Query básica
         $query = Media::ofContentType($content);

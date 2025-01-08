@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
+import { Head } from "@inertiajs/react";
 
 export default function Index({ content, category, movie, media }) {
     const videoRef = useRef(null);
@@ -25,6 +26,8 @@ export default function Index({ content, category, movie, media }) {
     }, []);
 
     return (
+        <>
+        <Head title={movie ? `${movie.toUpperCase()}` : "Movie"} />
         <div className="video-container max-w-4xl mx-auto mt-4">
             <h1 className="text-center text-xl font-semibold mb-4">{media.title || "Ver Filme"}</h1>
             <div data-vjs-player>
@@ -40,5 +43,7 @@ export default function Index({ content, category, movie, media }) {
                 </video>
             </div>
         </div>
+        </>
+
     );
 }
