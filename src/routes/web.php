@@ -10,17 +10,6 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard', [
-        // Carregamento inicial mínimo
-        'auth' => Auth::user(),
-
-        // Dados carregados de forma assíncrona
-        'content_types' => Inertia::defer(fn () => \App\Models\ContentType::all()),
-        // 'recent_releases' => Inertia::defer(fn () => Item::latest()->take(10)->get()),
-    ]);
-});
-
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -46,7 +35,10 @@ Route::middleware(['auth', 'ensure.profile.exists', 'check.selected.profile'])->
     // ? Rotas de atualização para Login
     Route::patch('/login/update/{id_user}/{type}', [LoginController::class, 'update'])->name('login.update');
 
-    Route::resource('media', MediaController::class);
+    Route::resource('media', MediaController::class)->except(['index', 'show']);
+    Route::get('/media/{content}/{category?}', [MediaController::class, 'index'])->name('media.index');
+    Route::get('/media/{content}/{category}/{movie_id}', [MediaController::class, 'show'])->name('media.show');
+
     Route::resource('aemina', AeminaController::class);
 
     // ? Rotas de atualização para Plano de Acão antigo projeto!

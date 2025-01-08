@@ -20,11 +20,9 @@ import {
 } from "@/components/ui/sidebar"
 
 export default function Layout({ children }) {
-
-  const { auth, flash, errors } = usePage().props;
-  const { component } = usePage();
-  console.log(usePage());
-  // const { title } = usePage().props;
+  const { flash, errors } = usePage().props;
+  const { content, category, movie, media } = usePage().props;
+    // console.log(usePage().props);
 
     useEffect(() => {
         if (flash.success) {
@@ -42,7 +40,6 @@ export default function Layout({ children }) {
         }
     }, [flash.success, errors]);
 
-    // console.log(title);
     return (
 
         <SidebarProvider>
@@ -56,16 +53,32 @@ export default function Layout({ children }) {
               <Separator orientation="vertical" className="mr-2 h-4" />
               <Breadcrumb>
                 <BreadcrumbList>
-                  <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                      { component }
-                    </BreadcrumbLink>
+                  {/* ! */}
 
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator className="hidden md:block" />
                   <BreadcrumbItem>
-                    <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                    <BreadcrumbPage> { content.toUpperCase() }</BreadcrumbPage>
                   </BreadcrumbItem>
+                  
+                  <BreadcrumbSeparator className="hidden md:block" />
+
+                  <BreadcrumbItem className="hidden md:block">
+                    <BreadcrumbLink href={route("media.index", [content, category])}>
+                    { category.toUpperCase() }
+                      </BreadcrumbLink>
+                  </BreadcrumbItem>
+
+                  {movie && (
+                  <>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbLink href={route("media.show", [content, category, media.media_id])}>
+                      { movie.toUpperCase() }
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                  </>
+                  )}
+
+                  {/* ! */}
                 </BreadcrumbList>
               </Breadcrumb>
             </div>

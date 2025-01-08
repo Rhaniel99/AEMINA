@@ -48,7 +48,7 @@ class LoginController extends Controller
 
             // return redirect('/aemina/index')->with(["success" => "Login efetuado com sucesso!"]);
 
-            return to_route('aemina.index')->with(["success" => "Login efetuado com sucesso!"]);
+            return to_route('media.index', ['content' => 'filme','category' => 'lancamento'])->with(["success" => "Login efetuado com sucesso!"]);
         } else {
             return back()->withErrors(['errors' => "Email ou senha inválidos."]);
         }

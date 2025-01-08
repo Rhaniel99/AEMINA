@@ -10,14 +10,15 @@ import { Badge } from "@/components/ui/badge";
 import { Link, Head } from "@inertiajs/react";
 import { useRoute } from "ziggy";
 
-export default function Index({ medias }) {
+export default function Index({ content, category, medias }) {
     const route = useRoute();
 
     return (
         <>
-        <Head title="Home" />
+        <Head title={category ? `${category.toUpperCase()}` : "Home"} />
         
         <div className="container px-6 m-auto">
+
             <div className="grid grid-cols-4 gap-6 md:grid-cols-8 lg:grid-cols-12">
             {medias.map((media) => (
                 <Card className="col-span-4" key={media.id}>
@@ -42,7 +43,7 @@ export default function Index({ medias }) {
                         </p>
                     </CardContent>
                     <CardFooter>
-                        <Link href={route("media.show", media.id)} prefetch={false}>
+                        <Link href={route("media.show", [content, category, media.id])} prefetch={false}>
                             Ver mais
                         </Link>
                     </CardFooter>
