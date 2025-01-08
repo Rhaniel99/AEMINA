@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use PhpOffice\PhpSpreadsheet\Calculation\Category;
 use App\Traits\Uuid;
 
 
@@ -40,7 +39,15 @@ class Media extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'media_schema.media_category', 'media_id', 'category_id');
+        return $this->belongsToMany(
+            Categories::class, 
+            'media_schema.media_category', 
+            'media_id', 
+            'category_id'
+        );
+        // return $this->hasMany(MediaCategory::class, 'media_id');
+
+        // return $this->belongsToMany(MediaCategory::class, 'media_schema.media_category', 'media_id', 'category_id');
     }
 
     public function files()

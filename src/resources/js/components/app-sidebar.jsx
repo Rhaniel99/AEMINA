@@ -5,12 +5,8 @@ import { useState } from "react";
 import {
     AudioWaveform,
     BookOpen,
-    Bot,
     Command,
     Frame,
-    GalleryVerticalEnd,
-    Map,
-    PieChart,
     Settings2,
     CirclePlay,
     SquareTerminal,
@@ -72,16 +68,17 @@ export function AppSidebar(props) {
 
                 items_sidebar.forEach((item) => {
                   // Verifica se o tipo de conteúdo já existe nos itens de navegação
-                  let existing_nav = nav_items.find(nav => nav.title === item.content_type);
+                  let existing_nav = nav_items.find(nav => nav.title === item.title_content);
                   if (!existing_nav) {
                       // Cria um novo item para o content_type, incluindo "Lançamentos"
                       existing_nav = {
-                          title: item.content_type,
+                          title: item.title_content,
+                          icon: SquareTerminal,
                           url: "#", // Adicione a URL do tipo de conteúdo, se necessário
                           items: [
                               {
                                   title: "Lançamentos",
-                                  url: "#", // URL para Lançamentos
+                                  url:  route("media.index", [item.content_type, "lancamento"]), // URL para Lançamentos
                               }
                           ], // Começa com "Lançamentos" como primeiro item
                       };
@@ -90,8 +87,8 @@ export function AppSidebar(props) {
 
                   // Adiciona as categorias específicas para esse tipo de mídia
                   existing_nav.items.push({
-                      title: `${item.category_name}`,
-                      url: "#", // Adicione a URL da categoria, se necessário
+                      title: `${item.title_category}`,
+                      url: route("media.index", [item.content_type, item.category_name_normalized]), // Adicione a URL da categoria, se necessário
                   });
               });
 

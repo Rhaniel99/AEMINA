@@ -14,21 +14,54 @@ class MediaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($content, $category = null)
     {
-        $medias_collection = Media::ofContentType('filme')->get();
+        // Query básica
+        $query = Media::ofContentType($content);
+
+        if ($category === 'lancamento') {
+            // Ordenar por data de lançamento (mais recentes primeiro)
+            $query->orderBy('release_date', 'desc');
+        } elseif ($category) {
+            // Filtrar pela categoria fornecida
+            $query->whereHas('categories', function ($q) use ($category) {
+                $q->whereRaw('LOWER(UNACCENT(categories.name)) = ?', [$category]);
+            });
+        }
+
+        $medias_collection = $query->get();
 
         $medias = $medias_collection->map(function ($media) {
             // Formata a data para o padrão brasileiro
             $media->release_date = fDateBR($media->release_date);
-       
+
             // Converte o caminho da imagem para a URL completa usando Storage
             $media->cover_image_path = Storage::url($media->cover_image_path);
             
             return $media;
-            // dd(Storage::url($media->cover_image_path)); 
         });
-        return inertia('Media/Index', ['medias' => $medias]);
+
+        return inertia('Media/Index', [
+            'content' => $content,
+            'category' => $category,
+            'medias' => $medias,
+        ]);
+    }
+
+        /**
+     * Display the specified resource.
+     */
+    public function show($content, $category, $movie_id)
+    {
+        $media = MediaFiles::where('media_id', $movie_id)->with('media')->first();
+        $media->title = $media->media->title;
+        $media->file_path = Storage::url($media->file_path);
+        return inertia('Media/Show', [
+            'media' => $media,
+            'category' => $category,
+            'content' => $content,
+            'movie' => $media->title
+        ]);
     }
 
     /**
@@ -47,16 +80,7 @@ class MediaController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        $media = MediaFiles::where('media_id', $id)->with('media')->first();
-        $media->title = $media->media->title;
-        $media->file_path = Storage::url($media->file_path);
-        return inertia('Media/Show', ['media' => $media]);
-    }
+
 
     /**
      * Show the form for editing the specified resource.

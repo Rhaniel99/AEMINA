@@ -50,13 +50,13 @@ class HandleInertiaRequests extends Middleware
 
             // Obtem a contagem de mídias por categoria e tipo
             $content_categories = \DB::table('media_schema.content_and_categories_count')
-            ->select('content_type', 'category_name')
-            ->groupBy('content_type', 'category_name')
+            ->select('content_type', 'category_name', 'category_name_normalized')
+            ->groupBy('content_type', 'category_name', 'category_name_normalized')
             ->get();
 
             $content_categories->map(function ($item) {
-                $item->content_type = \Str::ucfirst($item->content_type);
-                $item->category_name = \Str::ucfirst($item->category_name);
+                $item->title_content = \Str::ucfirst($item->content_type);
+                $item->title_category = \Str::ucfirst($item->category_name);
                 return $item;
             });
             
