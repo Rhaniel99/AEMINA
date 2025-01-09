@@ -8,7 +8,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useForm, usePage } from "@inertiajs/react";
 import { useState, useEffect } from "react";
 import ptBR from "date-fns/locale/pt-BR";
-
 import { FancyMultiSelect } from "@/components/select/Fancy";
 
 export default function Index() {
@@ -47,10 +46,10 @@ export default function Index() {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            const { id } = e.target; // Identifica qual input chamou a função
-            setData(id, file); // Atualiza o dado correspondente no formulário
+            const { id } = e.target; // ? Identifica qual input chamou a função
+            setData(id, file); // ? Atualiza o dado correspondente no formulário
     
-            // Se o arquivo for uma imagem, cria o preview
+            // ? Se o arquivo for uma imagem, cria o preview
             if (id === "capa_filme" && file.type.startsWith("image/")) {
                 const reader = new FileReader();
                 reader.onload = () => setPreview(reader.result);
@@ -59,7 +58,7 @@ export default function Index() {
         }
     };
 
-    // Extrair as categorias únicas dos filmes em items_sidebar
+    // ? Extrair as categorias únicas dos filmes em items_sidebar
     useEffect(() => {
         if (items_sidebar) {
             const uniqueCategories = items_sidebar
@@ -90,6 +89,7 @@ export default function Index() {
             <form onSubmit={submit}>
                 <div className="container px-6 m-auto">
                     <div className="grid grid-cols-4 gap-6 md:grid-cols-8 lg:grid-cols-12">
+
                         {/* Titulo do Filme */}
                         <div className="col-span-4 lg:col-span-6">
                             <Label
@@ -162,6 +162,7 @@ export default function Index() {
                             />
                         </div>
 
+                        {/* Arquivo bruto do Filme */}
                         <div className="col-span-4 lg:col-span-6">
                             <Label htmlFor="arquivo_filme">Arquivo do Filme</Label>
                             <Input
@@ -172,6 +173,7 @@ export default function Index() {
                             />
                         </div>
 
+                        {/* Preview */}
                         <div className="col-span-4 lg:col-span-6">
                             {preview && (
                                 <div className="col-span-4 flex justify-center">
@@ -183,6 +185,7 @@ export default function Index() {
                                 </div>
                             )}
                         </div>
+
                     </div>
                 </div>
 
