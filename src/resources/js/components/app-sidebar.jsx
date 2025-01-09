@@ -2,18 +2,9 @@ import { usePage } from "@inertiajs/react";
 import { useRoute } from "ziggy";
 import { useState } from "react";
 
-import {
-    AudioWaveform,
-    BookOpen,
-    Command,
-    Frame,
-    Settings2,
-    CirclePlay,
-    SquareTerminal,
-} from "lucide-react";
+import { Play, Shell, Clapperboard } from "lucide-react";
 
 import { NavMain } from "@/components/nav/nav-main";
-// import { NavProjects } from "@/components/nav/nav-projects"; Verificar isso depois
 import { NavUser } from "@/components/nav/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
 import {
@@ -28,7 +19,6 @@ export function AppSidebar(props) {
     const { auth, items_sidebar } = usePage().props;
     const route = useRoute();
 
-    // Dados de exemplo
     const data = {
         user: {
             id: auth.user.id,
@@ -37,121 +27,75 @@ export function AppSidebar(props) {
             avatar: auth.profile.avatar,
             logout: route("login.logout"),
         },
-        teams: [
+        contents: [
             {
-                name: "Aemina Media",
-                logo: CirclePlay,
-                plan: "Séries",
+                name: "Filme",
+                logo: Clapperboard,
             },
             {
-                name: "Acme Corp.",
-                logo: AudioWaveform,
-                plan: "Startup",
+                name: "Série",
+                logo: Play,
             },
             {
-                name: "Evil Corp.",
-                logo: Command,
-                plan: "Free",
+                name: "Anime",
+                logo: Shell,
             },
         ],
+        main: items_sidebar.reduce((navItems, item) => {
+          // Verifica se já existe um item para este tipo de mídia
+          let existingNav = navItems.find(
+              (nav) => nav.title === item.title_content
+          );
+          if (!existingNav) {
+              // Cria um novo grupo de navegação
+              existingNav = {
+                  title: item.title_content,
+                  icon: Clapperboard, // Ícone genérico, pode ser alterado
+                  url: "#", // URL principal (se necessário)
+                  items: [
+                      {
+                          title: "Lançamentos",
+                          url: route("aemina.index", [
+                              item.content_type,
+                              "lancamento",
+                          ]),
+                      },
+                  ],
+              };
+              navItems.push(existingNav);
+          }
+          // Adiciona a categoria específica
+          existingNav.items.push({
+              title: item.title_category,
+              url: route("aemina.index", [
+                  item.content_type,
+                  item.category_name_normalized,
+              ]),
+          });
+          return navItems;
+      }, []),
     };
 
-    const [activeTeam, setActiveTeam] = useState({
-        name: "Aemina Media", // Time padrão
-      });
-    
-      const getNavItemsByTeam = (teamName) => {
-        switch (teamName) {
-          case "Aemina Media":
-                // Organizando os dados de items_sidebar
-                const nav_items = [];
-
-                items_sidebar.forEach((item) => {
-                  // Verifica se o tipo de conteúdo já existe nos itens de navegação
-                  let existing_nav = nav_items.find(nav => nav.title === item.title_content);
-                  if (!existing_nav) {
-                      // Cria um novo item para o content_type, incluindo "Lançamentos"
-                      existing_nav = {
-                          title: item.title_content,
-                          icon: SquareTerminal,
-                          url: "#", // Adicione a URL do tipo de conteúdo, se necessário
-                          items: [
-                              {
-                                  title: "Lançamentos",
-                                  url:  route("media.index", [item.content_type, "lancamento"]), // URL para Lançamentos
-                              }
-                          ], // Começa com "Lançamentos" como primeiro item
-                      };
-                      nav_items.push(existing_nav);
-                  }
-
-                  // Adiciona as categorias específicas para esse tipo de mídia
-                  existing_nav.items.push({
-                      title: `${item.title_category}`,
-                      url: route("media.index", [item.content_type, item.category_name_normalized]), // Adicione a URL da categoria, se necessário
-                  });
-              });
-
-              return nav_items;
-          case "Acme Corp.":
-            return [
-              {
-                title: "Projects",
-                url: "#",
-                icon: Frame,
-                items: [
-                  { title: "Design Engineering", url: "#" },
-                  { title: "Sales & Marketing", url: "#" },
-                  { title: "Travel", url: "#" },
-                ],
-              },
-            ];
-          case "Evil Corp.":
-            return [
-              {
-                title: "Documentation",
-                url: "#",
-                icon: BookOpen,
-                items: [
-                  { title: "Introduction", url: "#" },
-                  { title: "Get Started", url: "#" },
-                  { title: "Tutorials", url: "#" },
-                  { title: "Changelog", url: "#" },
-                ],
-              },
-              {
-                title: "Settings",
-                url: "#",
-                icon: Settings2,
-                items: [
-                  { title: "General", url: "#" },
-                  { title: "Team", url: "#" },
-                  { title: "Billing", url: "#" },
-                  { title: "Limits", url: "#" },
-                ],
-              },
-            ];
-          default:
-            return [];
-        }
-      };
-      
-      const navMain = getNavItemsByTeam(activeTeam.name);
-    
-      return (
+    return (
         <>
-          <Sidebar collapsible="icon" {...props}>
-            <SidebarHeader>
-              <TeamSwitcher teams={data.teams} onTeamChange={setActiveTeam} />
-            </SidebarHeader>
-            <SidebarContent>
-              <NavMain items={navMain} />
-            </SidebarContent>
-            <SidebarFooter>
-              <NavUser user={data.user} />
-            </SidebarFooter>
-            <SidebarRail />
-          </Sidebar>
+            <Sidebar collapsible="icon" {...props}>
+                {/* Cabeçalho */}
+                <SidebarHeader>
+                    <TeamSwitcher contents={data.contents}/>
+                </SidebarHeader>
+
+                {/* Corpo */}
+                <SidebarContent>
+                    <NavMain items={data.main} />
+                </SidebarContent>
+
+                {/* Pé */}
+                <SidebarFooter>
+                    <NavUser user={data.user} />
+                </SidebarFooter>
+
+                <SidebarRail />
+            </Sidebar>
         </>
-      );
+    );
 }

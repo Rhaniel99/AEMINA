@@ -71,10 +71,11 @@ class MediaSeeder extends Seeder
                 ]);
             }
 
+            $normalized_title = strtolower(str_replace(' ', '_', $film['title']));
             // Adiciona os arquivos de mídia
             MediaFiles::create([
                 'media_id' => $newFilm->id,
-                'file_path' => 'films/' . strtolower(str_replace(' ', '_', $film['title'])) . '.mp4',
+                'file_path' => "films/{$normalized_title}/{$normalized_title}_720p.mp4",
             ]);
         }
     }

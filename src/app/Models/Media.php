@@ -45,9 +45,6 @@ class Media extends Model
             'media_id', 
             'category_id'
         );
-        // return $this->hasMany(MediaCategory::class, 'media_id');
-
-        // return $this->belongsToMany(MediaCategory::class, 'media_schema.media_category', 'media_id', 'category_id');
     }
 
     public function files()
