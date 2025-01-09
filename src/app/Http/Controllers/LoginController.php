@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\UserProfiles;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -37,18 +36,14 @@ class LoginController extends Controller
      */
     public function store(Request $request)
     {
-
         $request->validate([
             'email' => ['required', 'email'],
             'senha' => ['required'],
-            // 'senha' => ['required', 'min:5'],
         ]);
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->senha])) {
 
-            // return redirect('/aemina/index')->with(["success" => "Login efetuado com sucesso!"]);
-
-            return to_route('media.index', ['content' => 'filme','category' => 'lancamento'])->with(["success" => "Login efetuado com sucesso!"]);
+            return to_route('aemina.index', ['content' => 'filme','category' => 'lancamento'])->with(["success" => "Login efetuado com sucesso!"]);
         } else {
             return back()->withErrors(['errors' => "Email ou senha inválidos."]);
         }

@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\AeminaController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\MediaController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\PlanoAcaoController;
 use App\Http\Controllers\PostController;
@@ -35,11 +34,9 @@ Route::middleware(['auth', 'ensure.profile.exists', 'check.selected.profile'])->
     // ? Rotas de atualização para Login
     Route::patch('/login/update/{id_user}/{type}', [LoginController::class, 'update'])->name('login.update');
 
-    Route::resource('media', MediaController::class)->except(['index', 'show']);
-    Route::get('/media/{content}/{category}', [MediaController::class, 'index'])->name('media.index');
-    Route::get('/media/{content}/{category}/{movie_id}', [MediaController::class, 'show'])->name('media.show');
-
-    Route::resource('aemina', AeminaController::class);
+    Route::resource('aemina', AeminaController::class)->except(['index', 'show']);
+    Route::get('/aemina/{content}/{category}', [AeminaController::class, 'index'])->name('aemina.index');
+    Route::get('/aemina/{content}/{category}/{movie_id}', [AeminaController::class, 'show'])->name('aemina.show');
 
     // ? Rotas de atualização para Plano de Acão antigo projeto!
     Route::controller(PlanoAcaoController::class)->group(function () {
