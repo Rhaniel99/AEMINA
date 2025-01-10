@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import DatePicker from "react-datepicker";
+// import { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useForm, usePage } from "@inertiajs/react";
 import { useState, useEffect } from "react";
 import ptBR from "date-fns/locale/pt-BR";
 import { FancyMultiSelect } from "@/components/select/Fancy";
+// registerLocale("ptBR", ptBR);
 
 export default function Index() {
     const { items_sidebar } = usePage().props;
@@ -81,7 +83,7 @@ export default function Index() {
 
     const submit = (e) => {
         e.preventDefault();
-        post(route("aemina.store"));
+        post(route("aemina.store", "filme"));
     };
 
     return (
@@ -121,6 +123,7 @@ export default function Index() {
                                 onChange={handleDateChange}
                                 selected={date}
                                 locale={ptBR}
+                                dateFormat="dd/MM/yyyy"
                             />
                         </div>
 

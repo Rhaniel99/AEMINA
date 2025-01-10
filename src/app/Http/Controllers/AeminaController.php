@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categories;
+use App\Models\ContentType;
+use App\Models\MediaCategory;
+use Exception;
 use Illuminate\Http\Request;
 use App\Models\Media;
 use App\Models\MediaFiles;
+use Log;
 use Storage;
 
 class AeminaController extends Controller
@@ -80,7 +85,20 @@ class AeminaController extends Controller
     /**
      * ? Salvar um novo filme, série, anime.
      */
-    public function store(Request $request)
+
+    public function store(Request $request, $content)
+    {
+        switch ($content) {
+            case 'filme':
+                $this->store_movie($request);
+
+                return to_route('aemina.index', ['content' => 'filme', 'category' => 'lancamento'])->with(["success" => "Filme enviado com sucesso!"]);
+            default:
+                break;
+        }
+    }
+
+    private function store_movie($request)
     {
         $request->validate([
             'titulo_filme' => 'required',
@@ -88,10 +106,63 @@ class AeminaController extends Controller
             'categorias' => 'required',
             'capa_filme' => 'required',
             'dt_lancamento' => 'required',
-            // 'arquivo_filme' => 'required',
+            'arquivo_filme' => 'required',
         ]);
-        dd($request->all());
-        //
+
+        try {
+            // Buscar o Tipo de Conteudo
+            $content = ContentType::where('type', 'filme')->first();
+
+            // Buscar ou criar categorias
+            $categories = collect($request->categorias)->map(function ($categoria) {
+                return Categories::firstOrCreate(['name' => $categoria]);
+            });
+
+            Log::info($categories);
+            // Normalizar o título e definir o caminho da capa
+            $tittle_normalized = fPath($request->titulo_filme);
+            $ext_cover = $request->capa_filme->getClientOriginalExtension();
+            $path_cover = "covers/{$tittle_normalized}.{$ext_cover}";
+            Log::warning($path_cover);
+
+            // Criar a mídia
+            $media = Media::create([
+                'user_id' => auth()->id(),
+                'title' => $request->titulo_filme,
+                'description' => $request->desc_filme,
+                'release_date' => $request->dt_lancamento,
+                'cover_image_path' => $path_cover,
+                'content_type_id' => $content->id,
+                'status' => 'active',
+            ]);
+            Log::alert($media);
+
+            // Associar as categorias à mídia sem duplicatas
+            foreach ($categories as $category) {
+                MediaCategory::firstOrCreate([
+                    'media_id' => $media->id,
+                    'category_id' => $category->id,
+                ]);
+            }
+
+            $ext_file = $request->arquivo_filme->getClientOriginalExtension();
+            $path_file = "films/{$tittle_normalized}/{$tittle_normalized}_1080p.{$ext_file}";
+
+            $media_files = MediaFiles::create([
+               'media_id' => $media->id,
+               'file_path' => $path_file
+            ]);
+
+            $encoded_file = file_get_contents($request->arquivo_filme);
+            $encoded_cover = file_get_contents($request->capa_filme);
+
+            Storage::disk('s3')->put($path_file, $encoded_file);
+            Storage::disk('s3')->put($path_cover, $encoded_cover);
+
+            Log::alert($media_files);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+        }
     }
 
     /**

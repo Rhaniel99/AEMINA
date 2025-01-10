@@ -34,7 +34,8 @@ Route::middleware(['auth', 'ensure.profile.exists', 'check.selected.profile'])->
     // ? Rotas de atualização para Login
     Route::patch('/login/update/{id_user}/{type}', [LoginController::class, 'update'])->name('login.update');
 
-    Route::resource('aemina', AeminaController::class)->except(['index', 'show']);
+    Route::resource('aemina', AeminaController::class)->except(['index', 'show', 'store']);
+    Route::post('/aemina/{content}', [AeminaController::class, 'store'])->name('aemina.store');
     Route::get('/aemina/{content}/{category}', [AeminaController::class, 'index'])->name('aemina.index');
     Route::get('/aemina/{content}/{category}/{movie_id}', [AeminaController::class, 'show'])->name('aemina.show');
 

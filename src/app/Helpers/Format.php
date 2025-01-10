@@ -36,3 +36,22 @@ if (!function_exists('fDateBR')) {
         }
     }
 }
+
+if (!function_exists('fPath')) {
+    function fPath($string)
+    {
+        // Transformar em minúsculas
+        $string = strtolower($string);
+
+        // Remover acentos
+        $string = iconv('UTF-8', 'ASCII//TRANSLIT', $string);
+
+        // Substituir espaços por underscores
+        $string = str_replace(' ', '_', $string);
+
+        // Remover quaisquer caracteres que não sejam letras, números ou underscores
+        $string = preg_replace('/[^a-z0-9_]/', '', $string);
+
+        return $string;
+    }
+}
