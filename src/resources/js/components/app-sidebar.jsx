@@ -2,9 +2,10 @@ import { usePage } from "@inertiajs/react";
 import { useRoute } from "ziggy";
 import { useState } from "react";
 
-import { Play, Shell, Clapperboard } from "lucide-react";
+import { Play, Shell, Clapperboard, Frame } from "lucide-react";
 
 import { NavMain } from "@/components/nav/nav-main";
+import { NavProjects } from "@/components/nav/nav-projects";
 import { NavUser } from "@/components/nav/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
 import {
@@ -74,6 +75,23 @@ export function AppSidebar(props) {
           });
           return navItems;
       }, []),
+      projects: [
+        {
+          name: "Recursos",
+          url: route("aemina.list"),
+          icon: Frame,
+        },
+        // {
+        //   name: "Sales & Marketing",
+        //   url: "#",
+        //   icon: PieChart,
+        // },
+        // {
+        //   name: "Travel",
+        //   url: "#",
+        //   icon: Map,
+        // },
+      ],
     };
 
     return (
@@ -87,6 +105,7 @@ export function AppSidebar(props) {
                 {/* Corpo */}
                 <SidebarContent>
                     <NavMain items={data.main} />
+                    <NavProjects projects={data.projects} />
                 </SidebarContent>
 
                 {/* Pé */}

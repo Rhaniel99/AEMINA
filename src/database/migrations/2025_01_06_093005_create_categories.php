@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('media_schema.categories', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name'); // Descrição do tipo de ação
+            $table->string('name_normalized'); // Descrição do tipo de ação normalizada
             // Timestamps de criação e atualização
             $table->timestamps();
         });

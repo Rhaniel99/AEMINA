@@ -15,7 +15,7 @@ import {
         case "Filme":
           return (
             <>
-              <Movie />
+              <Movie onSuccess={() => onOpenChange(false)} />
             </>
           );
         case "Série":

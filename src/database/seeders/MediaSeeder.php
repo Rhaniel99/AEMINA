@@ -20,7 +20,7 @@ class MediaSeeder extends Seeder
         $categories = Categories::all();
 
         // Define o user_id fixo fornecido
-        $userId = '3a21efd4-8d13-420e-85bc-84207387934f';
+        $userId = '61478421-621b-4074-85a1-94cc8fcc4032';
 
         // Cria os filmes
         $films = [

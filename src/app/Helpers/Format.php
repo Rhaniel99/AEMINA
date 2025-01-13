@@ -55,3 +55,11 @@ if (!function_exists('fPath')) {
         return $string;
     }
 }
+
+if(!function_exists('fnStrings')){
+    function fnStrings($string){
+        $string = strtolower($string);
+        $transliterator = \Transliterator::createFromRules(':: Any-Latin; :: Latin-ASCII; :: NFD; :: [:Nonspacing Mark:] Remove; :: NFC;', \Transliterator::FORWARD);
+        return $transliterator->transliterate($string);
+    }
+}

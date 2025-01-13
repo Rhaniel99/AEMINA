@@ -12,10 +12,13 @@ class CategoriesSeeder extends Seeder
      */
     public function run(): void
     {
-        $types = ['ação', 'drama', 'comedia'];
+        $types = ['ação', 'drama', 'comédia'];
 
         foreach ($types as $type) {
-            Categories::create(['name' => $type]);
+            Categories::create([
+                'name' => $type,
+                'name_normalized' => fnStrings($type),
+            ]);
         }
     }
 }

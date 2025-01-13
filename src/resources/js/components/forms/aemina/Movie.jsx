@@ -12,7 +12,7 @@ import ptBR from "date-fns/locale/pt-BR";
 import { FancyMultiSelect } from "@/components/select/Fancy";
 // registerLocale("ptBR", ptBR);
 
-export default function Index() {
+export default function Index({ onSuccess }) {
     const { items_sidebar } = usePage().props;
 
     const [date, setDate] = useState();
@@ -50,7 +50,7 @@ export default function Index() {
         if (file) {
             const { id } = e.target; // ? Identifica qual input chamou a função
             setData(id, file); // ? Atualiza o dado correspondente no formulário
-    
+
             // ? Se o arquivo for uma imagem, cria o preview
             if (id === "capa_filme" && file.type.startsWith("image/")) {
                 const reader = new FileReader();
@@ -83,7 +83,14 @@ export default function Index() {
 
     const submit = (e) => {
         e.preventDefault();
-        post(route("aemina.store", "filme"));
+        post(route("aemina.store", "filme"), {
+            onSuccess: () => {
+                reset(); // Opcional: reseta o formulário
+                if (onSuccess) {
+                    onSuccess(); // Fecha o diálogo
+                }
+            },
+        });
     };
 
     return (
@@ -91,7 +98,6 @@ export default function Index() {
             <form onSubmit={submit}>
                 <div className="container px-6 m-auto">
                     <div className="grid grid-cols-4 gap-6 md:grid-cols-8 lg:grid-cols-12">
-
                         {/* Titulo do Filme */}
                         <div className="col-span-4 lg:col-span-6">
                             <Label
@@ -167,7 +173,9 @@ export default function Index() {
 
                         {/* Arquivo bruto do Filme */}
                         <div className="col-span-4 lg:col-span-6">
-                            <Label htmlFor="arquivo_filme">Arquivo do Filme</Label>
+                            <Label htmlFor="arquivo_filme">
+                                Arquivo do Filme
+                            </Label>
                             <Input
                                 id="arquivo_filme"
                                 type="file"
@@ -188,7 +196,6 @@ export default function Index() {
                                 </div>
                             )}
                         </div>
-
                     </div>
                 </div>
 
