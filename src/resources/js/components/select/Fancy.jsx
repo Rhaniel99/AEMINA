@@ -6,15 +6,20 @@ import { Badge } from "@/components/ui/badge";
 import { Command, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
 import { Command as CommandPrimitive } from "cmdk";
 
-export function FancyMultiSelect({ categories, onCategoriesChange }) {
+export function FancyMultiSelect({ categories, onCategoriesChange, initialSelected = [] }) {
   const inputRef = React.useRef(null);
   const [open, setOpen] = React.useState(false);
-  const [selected, setSelected] = React.useState([]);
+  const [selected, setSelected] = React.useState(initialSelected);
   const [inputValue, setInputValue] = React.useState("");
 
+  React.useEffect(() => {
+    setSelected(initialSelected);
+  }, [initialSelected]);
+
   const handleUnselect = React.useCallback((item) => {
-    setSelected((prev) => prev.filter((s) => s.value !== item.value));
-    onCategoriesChange?.(selected.filter((s) => s.value !== item.value)); // Atualiza as categorias no parent
+    const updated = selected.filter((s) => s.value !== item.value);
+    setSelected(updated);
+    onCategoriesChange(updated);
   }, [onCategoriesChange, selected]);
 
   const handleKeyDown = React.useCallback(
@@ -23,8 +28,9 @@ export function FancyMultiSelect({ categories, onCategoriesChange }) {
         e.preventDefault();
         const newCategory = { value: inputValue.toLowerCase(), label: inputValue };
         if (!selected.find((s) => s.value === newCategory.value)) {
-          setSelected((prev) => [...prev, newCategory]);
-          onCategoriesChange?.([...selected, newCategory]); // Atualiza no parent
+          const updated = [...selected, newCategory];
+          setSelected(updated);
+          onCategoriesChange(updated); // Atualiza no parent
         }
         setInputValue("");
       }
@@ -83,8 +89,9 @@ export function FancyMultiSelect({ categories, onCategoriesChange }) {
                     }}
                     onSelect={() => {
                       setInputValue("");
-                      setSelected((prev) => [...prev, item]);
-                      onCategoriesChange?.([...selected, item]); // Atualiza no parent
+                      const updated = [...selected, item];
+                      setSelected(updated);
+                      onCategoriesChange(updated); // Atualiza no parent
                     }}
                     className="cursor-pointer"
                   >

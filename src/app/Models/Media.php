@@ -14,7 +14,7 @@ class Media extends Model
     protected $table = 'media_schema.media';
 
     protected $fillable = [
-        'user_id',
+        'profile_id',
         'title',
         'description',
         'release_date',
@@ -22,6 +22,16 @@ class Media extends Model
         'cover_image_path',
         'status',
     ];
+
+    // public function user()
+    // {
+    //     return $this->belongsTo(User::class, 'user_id');
+    // }
+
+    public function profile()
+    {
+        return $this->belongsTo(UserProfiles::class, 'profile_id');
+    }
 
     // ? Content Type
     public function contentType()

@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             // Relacionamentos
             $table->uuid('content_type_id');
-            $table->uuid('user_id');
+            $table->uuid('profile_id');
 
             $table->string('title');
             $table->text('description')->nullable();
@@ -30,9 +30,9 @@ return new class extends Migration {
                   ->restrictOnDelete()
                   ->cascadeOnUpdate();
         
-            $table->foreign('user_id')
+            $table->foreign('profile_id')
                   ->references('id')
-                  ->on('users')
+                  ->on('user_profiles')
                   ->cascadeOnDelete()
                   ->cascadeOnUpdate();
         });

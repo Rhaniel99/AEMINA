@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('media_schema.user_favorites', function (Blueprint $table) {
+        Schema::create('media_schema.profile_favorites', function (Blueprint $table) {
             $table->uuid('id')->primary();
             // Relacionamentos
-            $table->uuid('user_id');
+            $table->uuid('profile_id');
             $table->uuid('media_id');
 
             $table->timestamps();
 
             // Chave estrangeira
-            $table->foreign('user_id')
+            $table->foreign('profile_id')
             ->references('id')
-            ->on('users')
+            ->on('user_profiles')
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
 
@@ -39,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('media_schema.user_favorites');
+        Schema::dropIfExists('media_schema.profile_favorites');
     }
 };
