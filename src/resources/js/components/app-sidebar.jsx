@@ -1,7 +1,4 @@
 import { usePage } from "@inertiajs/react";
-import { useRoute } from "ziggy";
-import { useState } from "react";
-
 import { Play, Shell, Clapperboard, Frame } from "lucide-react";
 
 import { NavMain } from "@/components/nav/nav-main";
@@ -18,7 +15,6 @@ import {
 
 export function AppSidebar(props) {
     const { auth, items_sidebar } = usePage().props;
-    const route = useRoute();
 
     const data = {
         user: {
@@ -78,7 +74,7 @@ export function AppSidebar(props) {
       projects: [
         {
           name: "Recursos",
-          url: route("aemina.list"),
+          url: route("aemina.list.media"),
           icon: Frame,
         },
         // {

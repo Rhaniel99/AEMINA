@@ -19,8 +19,8 @@ class MediaSeeder extends Seeder
         $contentTypeFilm = ContentType::where('type', 'filme')->first(); // Corrigido para 'film'
         $categories = Categories::all();
 
-        // Define o user_id fixo fornecido
-        $userId = '61478421-621b-4074-85a1-94cc8fcc4032';
+        // Define o profile_id fixo fornecido
+        $userId = 'f7bebeca-c8ad-468a-ae70-07282bb5db4a';
 
         // Cria os filmes
         $films = [
@@ -53,7 +53,7 @@ class MediaSeeder extends Seeder
         // Inserir filmes na tabela 'media'
         foreach ($films as $film) {
             $newFilm = Media::create([
-                'user_id' => $userId,
+                'profile_id' => $userId,
                 'title' => $film['title'],
                 'description' => $film['description'],
                 'release_date' => $film['release_date'],

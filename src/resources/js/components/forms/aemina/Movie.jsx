@@ -4,17 +4,15 @@ import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import DatePicker from "react-datepicker";
-// import { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useForm, usePage } from "@inertiajs/react";
 import { useState, useEffect } from "react";
 import ptBR from "date-fns/locale/pt-BR";
 import { FancyMultiSelect } from "@/components/select/Fancy";
-// registerLocale("ptBR", ptBR);
 
-export default function Index({ onSuccess }) {
+export default function Index({ onSuccess, Movie }) {
+    // console.log(Movie.categories);
     const { items_sidebar } = usePage().props;
-
     const [date, setDate] = useState();
     const [categories, setCategories] = useState([]);
     const [preview, setPreview] = useState(null);
@@ -29,6 +27,17 @@ export default function Index({ onSuccess }) {
         dt_lancamento: "",
     });
 
+    // Atualiza as categorias quando o Movie é passado
+    useEffect(() => {
+        if (Movie?.categories) {
+            const initialCategories = Movie.categories.map((cat) => ({
+                value: cat,
+                label: cat.charAt(0).toUpperCase() + cat.slice(1),
+            }));
+            setSelectedCategories(initialCategories);
+        }
+    }, [Movie]);
+
     const handleDateChange = (selectedDate) => {
         setDate(selectedDate);
         const formattedDate = selectedDate
@@ -38,11 +47,11 @@ export default function Index({ onSuccess }) {
     };
 
     const handleCategoriesChange = (newCategories) => {
-        setSelectedCategories(newCategories);
+        setSelectedCategories(newCategories); // Atualiza o estado de categorias selecionadas
         setData(
             "categorias",
             newCategories.map((cat) => cat.value)
-        ); // Atualiza o formulário
+        ); // Atualiza o campo categorias no formulário
     };
 
     const handleFileChange = (e) => {
@@ -110,7 +119,7 @@ export default function Index({ onSuccess }) {
                                 id="titulo_filme"
                                 className="col-span-3"
                                 placeholder="Digite o nome do filme"
-                                value={data.titulo_filme}
+                                value={data.titulo_filme || Movie?.title || ""}
                                 onChange={(e) =>
                                     setData("titulo_filme", e.target.value)
                                 }
@@ -127,7 +136,7 @@ export default function Index({ onSuccess }) {
                                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                 placeholderText="Selecione a data de lançamento"
                                 onChange={handleDateChange}
-                                selected={date}
+                                selected={date || Movie?.dt_lancamento || ""}
                                 locale={ptBR}
                                 dateFormat="dd/MM/yyyy"
                             />
@@ -142,7 +151,7 @@ export default function Index({ onSuccess }) {
                                 id="desc_filme"
                                 className="col-span-3"
                                 placeholder="Digite a descrição do filme."
-                                value={data.desc_filme}
+                                value={data.desc_filme || Movie?.descricao || ""}
                                 onChange={(e) =>
                                     setData("desc_filme", e.target.value)
                                 }
@@ -157,6 +166,7 @@ export default function Index({ onSuccess }) {
                             <FancyMultiSelect
                                 categories={categories}
                                 onCategoriesChange={handleCategoriesChange}
+                                initialSelected={selectedCategories} // Passa as categorias selecionadas
                             />
                         </div>
 
