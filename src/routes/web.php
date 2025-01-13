@@ -37,6 +37,7 @@ Route::middleware(['auth', 'ensure.profile.exists', 'check.selected.profile'])->
     Route::resource('aemina', AeminaController::class)->except(['index', 'show', 'store']);
     Route::post('/aemina/{content}', [AeminaController::class, 'store'])->name('aemina.store');
     Route::get('/aemina/{content}/{category}', [AeminaController::class, 'index'])->name('aemina.index');
+    Route::get('/aemina/list', [AeminaController::class, 'list'])->name('aemina.list');
     Route::get('/aemina/{content}/{category}/{movie_id}', [AeminaController::class, 'show'])->name('aemina.show');
 
     // ? Rotas de atualização para Plano de Acão antigo projeto!

@@ -16,6 +16,7 @@ class Categories extends Model
     // Campos que podem ser preenchidos em massa
     protected $fillable = [
         'name',
+        'name_normalized',
     ];
 
     protected $keyType = 'uuid';

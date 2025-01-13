@@ -58,6 +58,9 @@ class AeminaController extends Controller
         ]);
     }
 
+    public function list(){
+        return inertia('Aemina/List');
+    }
     /**
      * ? Detalhes de um conteúdo específico.
      */
@@ -115,7 +118,9 @@ class AeminaController extends Controller
 
             // Buscar ou criar categorias
             $categories = collect($request->categorias)->map(function ($categoria) {
-                return Categories::firstOrCreate(['name' => $categoria]);
+                return Categories::firstOrCreate(
+                    ['name_normalized' => fnStrings($categoria)],
+                    ['name' => $categoria]);
             });
 
             Log::info($categories);
