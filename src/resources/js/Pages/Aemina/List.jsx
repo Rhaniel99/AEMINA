@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Head, router } from "@inertiajs/react";
+import { Head, router, useForm } from "@inertiajs/react";
 import { TableListMedia } from "@/components/datatables/list-media";
 import {
     DropdownMenuItem,
@@ -16,6 +16,10 @@ import EditMedia from "@/components/dialogs/edit-media";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 
 export default function Index({ media }) {
+    const { data, setData } = useForm({
+        search: "",
+    });
+
     const [openDialog, setOpenDialog] = useState(false); // Controla o estado do diálogo
     const [selectedContent, setSelectedContent] = useState(null); // Armazena o conteúdo selecionado
 
@@ -153,7 +157,12 @@ export default function Index({ media }) {
             <h1 className="title p-6">Lista novos Recursos</h1>
 
             <div className="p-6">
-                <TableListMedia media={media} columns={columns} handleSearch={handleSearchChange}/>
+                <TableListMedia
+                    media={media}
+                    columns={columns}
+                    handleSearch={handleSearchChange}
+                    data={data}
+                />
             </div>
 
             {/* Diálogo separado */}

@@ -35,10 +35,8 @@ import {
 
 import { useForm } from "@inertiajs/react";
 
-export function TableListMedia({ media, columns, handleSearch }) {
-    const { data, setData } = useForm({
-        search: "",
-    });
+export function TableListMedia({ media, columns, handleSearch, data }) {
+
 
     const [sorting, setSorting] = React.useState([]);
     const [columnFilters, setColumnFilters] = React.useState([]);
