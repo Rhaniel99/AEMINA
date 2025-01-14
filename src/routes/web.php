@@ -6,6 +6,7 @@ use App\Http\Controllers\NoteController;
 use App\Http\Controllers\PlanoAcaoController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -34,7 +35,12 @@ Route::middleware(['auth', 'ensure.profile.exists', 'check.selected.profile'])->
     // ? Rotas de atualização para Login
     Route::patch('/login/update/{id_user}/{type}', [LoginController::class, 'update'])->name('login.update');
 
-    Route::resource('aemina', AeminaController::class)->except(['index', 'show', 'store']);
+    Route::resource('test', TestController::class);
+    Route::post('/upload', [TestController::class, 'uploadFile']);
+
+    
+    Route::resource('aemina', AeminaController::class)->except(['index', 'show', 'store', 'update']);
+    Route::post('/aemina/{id_media}/{content}', [AeminaController::class, 'update'])->name('aemina.update');
     Route::post('/aemina/{content}', [AeminaController::class, 'store'])->name('aemina.store');
     Route::get('/aemina/{content}/{category}', [AeminaController::class, 'index'])->name('aemina.index');
     Route::get('/aemina/list-media', [AeminaController::class, 'list_media'])->name('aemina.list.media');

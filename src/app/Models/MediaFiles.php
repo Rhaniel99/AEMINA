@@ -15,6 +15,8 @@ class MediaFiles extends Model
     protected $fillable = [
         'media_id',
         'file_path',
+        'upload_status',
+        'upload_progress',
     ];
 
     protected $keyType = 'uuid';

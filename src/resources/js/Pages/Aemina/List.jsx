@@ -14,8 +14,10 @@ import { Button } from "@/components/ui/button";
 
 import EditMedia from "@/components/dialogs/edit-media";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import ProgressWind  from "@/components/bar/progress-wind";
 
 export default function Index({ media }) {
+    console.log(media);
     const { data, setData } = useForm({
         search: "",
     });
@@ -62,10 +64,36 @@ export default function Index({ media }) {
         // ? Nome do Responsavel
         {
             accessorKey: "username",
-            header: "Responsável por Envio",
+            header: "Responsável",
             cell: ({ row }) => (
                 <div className="capitalize">{row.getValue("username")}</div>
             ),
+        },
+        // ? Porcentual
+        {
+            accessorKey: "progress_upload",
+            header: () => (
+                <div className="text-center">Percentual</div>
+            ),
+            cell: ({ row }) => {
+                return (
+                    <ProgressWind progress={row.getValue("progress_upload")} />
+                );
+            },
+        },
+        // ? Status
+        {
+            accessorKey: "status_upload",
+            header: () => (
+                <div className="text-center">Status do Arquivo</div>
+            ),
+            cell: ({ row }) => {
+                return (
+                    <div className="text-center font-medium capitalize">
+                        {row.getValue("status_upload")}
+                    </div>
+                );
+            },
         },
         // ? Data de Lançamento
         {

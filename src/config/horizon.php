@@ -208,6 +208,22 @@ return [
             'timeout' => 0,  
             'nice' => 0,
         ],
+
+        'supervisor-media' => [
+            'connection' => 'redis',
+            'queue' => ['media'], 
+            'balance' => 'auto',
+            'autoScalingStrategy' => 'time',
+            'max_processes' => 10,
+            'maxTime' => 0,
+            'maxJobs' => 100,
+            'memory' => 128,
+            'timeout' => 600, // 10 minutos
+            'tries' => 3,
+            // 'tries' => 1,
+            // 'timeout' => 0,  
+            'nice' => 0,
+        ],
     ],
 
     'environments' => [

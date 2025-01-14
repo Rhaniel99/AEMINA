@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\UploadMediaJob;
 use App\Models\Categories;
 use App\Models\ContentType;
 use App\Models\MediaCategory;
@@ -71,6 +72,7 @@ class AeminaController extends Controller
             ->with('categories')
             ->with('contentType')
             ->with('profile')
+            ->with('files')
             ->paginate(5);
 
         // Transformar apenas os itens dentro da coleção sem perder a estrutura de paginação
@@ -83,7 +85,9 @@ class AeminaController extends Controller
                     'release_date' => $item->release_date,
                     'descricao' => $item->description,
                     'content_type' => $item->contentType->type,
-                    'username' => $item->profile->username
+                    'username' => $item->profile->username,
+                    'status_upload' => $item->files->first()->upload_status,
+                    'progress_upload' => $item->files->first()->upload_progress,
                 ];
             })
         );
@@ -126,6 +130,7 @@ class AeminaController extends Controller
         try {
             switch ($content) {
                 case 'filme':
+                    DB::beginTransaction();
                     $this->store_movie($request);
                     DB::commit();
                     return to_route('aemina.index', ['content' => 'filme', 'category' => 'lancamento'])
@@ -152,7 +157,6 @@ class AeminaController extends Controller
         ]);
 
         $profile_id = session()->get('selected_profile');
-        Log::info($profile_id);
         // ? Buscar o Tipo de Conteudo
         $content = ContentType::where('type', 'filme')->first();
 
@@ -165,9 +169,7 @@ class AeminaController extends Controller
         });
 
         // ? Normalizar o título e definir o caminho da capa
-        $tittle_normalized = fPath($request->titulo_filme);
-        $ext_cover = $request->capa_filme->getClientOriginalExtension();
-        $path_cover = "covers/{$tittle_normalized}.{$ext_cover}";
+        $path_cover = genPathCover($request->titulo_filme, $request->capa_filme);
 
         // ? Criar a mídia
         $media = Media::create([
@@ -177,7 +179,6 @@ class AeminaController extends Controller
             'release_date' => $request->dt_lancamento,
             'cover_image_path' => $path_cover,
             'content_type_id' => $content->id,
-            'status' => 'active',
         ]);
 
         // ? Associar as categorias à mídia sem duplicatas
@@ -188,21 +189,104 @@ class AeminaController extends Controller
             ]);
         }
 
-        $ext_file = $request->arquivo_filme->getClientOriginalExtension();
-        $path_file = "films/{$tittle_normalized}/{$tittle_normalized}_1080p.{$ext_file}";
+        $path_file = genPathFile($request->titulo_filme, $request->arquivo_filme);
 
-        MediaFiles::create([
+        $medial_file = MediaFiles::create([
             'media_id' => $media->id,
-            'file_path' => $path_file
+            'file_path' => $path_file,
+            'upload_status' => 'pending',
+            'upload_progress' => 0
         ]);
 
-        $encoded_file = file_get_contents($request->arquivo_filme);
+        // $arquivo_plano_acao = $request->file('planoAcao')->store('temp');
+        // ImportPlanoAcao::dispatch($arquivo_plano_acao, $id_usuario)->onQueue('planos');
+
+        // $encoded_file = file_get_contents($request->arquivo_filme);
         $encoded_cover = file_get_contents($request->capa_filme);
 
-        Storage::disk('s3')->put($path_file, $encoded_file);
+        // Storage::disk('s3')->put($path_file, $encoded_file);
         Storage::disk('s3')->put($path_cover, $encoded_cover);
+
+        UploadMediaJob::dispatch($path_file, file_get_contents($request->arquivo_filme), $medial_file->id)->onQueue('media');
     }
 
+    /**
+     * ? Atualizar um novo filme, série, anime.
+     */
+    public function update(Request $request, string $id, $content)
+    {
+        Log::info(json_encode($request->all()));
+        try {
+            switch ($content) {
+                case 'filme':
+                    DB::beginTransaction();
+                    $this->update_movie($request, $id);
+                    DB::commit();
+                    return to_route('aemina.list.media')->with(['success' => 'Filme Atualizado com sucesso!']);
+                default:
+                    break;
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return back()->withErrors(['error' => 'Houve um erro ao enviar o filme.']);
+        }
+    }
+
+    private function update_movie($request, $id)
+    {
+        // Atualizar os dados básicos do filme
+        $media = Media::findOrFail($id);
+        $media->update([
+            'title' => $request->titulo_filme,
+            'description' => $request->desc_filme,
+            'release_date' => $request->dt_lancamento,
+        ]);
+
+        $categories = collect($request->categorias)->map(function ($categoria) {
+            return Categories::firstOrCreate(
+                ['name_normalized' => fnStrings($categoria)],
+                ['name' => $categoria]
+            );
+        })->pluck('id')->toArray();
+
+
+        $old_categories = MediaCategory::where('media_id', $media->id)->get(['category_id'])->pluck('category_id')->toArray();
+
+        $categoriesToRemove = array_diff( $old_categories, $categories);
+
+        $categoriesToAdd = array_diff($categories, $old_categories);
+
+        if (!empty($categoriesToRemove)) {
+            Log::info("Executou o Remove");
+
+            $media->categories()->detach($categoriesToRemove);
+        }
+
+        if(!empty($categoriesToAdd)){
+            Log::info("Executou o ADD");
+            Log::alert($categoriesToAdd);
+            Log::warning($media);
+
+
+
+            $media->categories()->attach($categoriesToAdd);
+        }
+
+        // Uploads (se fornecidos)
+        if ($request->capa_filme) {
+            $path_cover = genPathCover($request->titulo_filme, $request->capa_filme);
+            $encoded_cover = file_get_contents($request->capa_filme);
+            Storage::disk('s3')->put($path_cover, $encoded_cover);
+        }
+    
+        if ($request->arquivo_filme) {
+            $path_file = genPathFile($request->titulo_filme, $request->arquivo_filme);
+            $encoded_file = file_get_contents($request->arquivo_filme);
+            Storage::disk('s3')->put($path_file, $encoded_file);
+        }
+    }
+    
     /**
      * Show the form for editing the specified resource.
      */
@@ -211,13 +295,7 @@ class AeminaController extends Controller
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+
 
     /**
      * Remove the specified resource from storage.

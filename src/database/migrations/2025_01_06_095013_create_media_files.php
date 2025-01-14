@@ -15,10 +15,11 @@ return new class extends Migration
             $table->uuid('id')->primary();
             // Relacionamentos
             $table->uuid('media_id');
-
+            $table->string('upload_status')->default('pending'); // pending, in_progress, completed, failed
+            $table->integer('upload_progress')->default(0); // 0-100 (percentual)
             $table->string('file_path');
             $table->timestamps();
-            
+       
             // Chave estrangeira
             $table->foreign('media_id')
             ->references('id')

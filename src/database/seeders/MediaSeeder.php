@@ -20,7 +20,7 @@ class MediaSeeder extends Seeder
         $categories = Categories::all();
 
         // Define o profile_id fixo fornecido
-        $userId = 'f7bebeca-c8ad-468a-ae70-07282bb5db4a';
+        $userId = '15d6f290-055a-4161-9f5f-7732c27c6fba';
 
         // Cria os filmes
         $films = [
@@ -30,15 +30,15 @@ class MediaSeeder extends Seeder
                 'release_date' => '2010-07-16',
                 'content_type_id' => $contentTypeFilm->id,
                 'cover_image_path' => 'covers/inception.jpg',
-                'status' => 'active',
+
             ],
             [
                 'title' => 'The Matrix',
                 'description' => 'A hacker discovers the shocking truth about his world.',
                 'release_date' => '1999-03-31',
                 'content_type_id' => $contentTypeFilm->id,
-                'cover_image_path' => 'covers/matrix.jpg',
-                'status' => 'active',
+                'cover_image_path' => 'covers/the_matrix.jpg',
+
             ],
             [
                 'title' => 'Interstellar',
@@ -46,7 +46,6 @@ class MediaSeeder extends Seeder
                 'release_date' => '2014-11-07',
                 'content_type_id' => $contentTypeFilm->id,
                 'cover_image_path' => 'covers/interstellar.jpg',
-                'status' => 'active',
             ],
         ];
 
@@ -59,7 +58,6 @@ class MediaSeeder extends Seeder
                 'release_date' => $film['release_date'],
                 'content_type_id' => $film['content_type_id'],
                 'cover_image_path' => $film['cover_image_path'],
-                'status' => $film['status'],
             ]);
 
             // Associa as categorias ao filme
@@ -76,6 +74,8 @@ class MediaSeeder extends Seeder
             MediaFiles::create([
                 'media_id' => $newFilm->id,
                 'file_path' => "films/{$normalized_title}/{$normalized_title}_720p.mp4",
+                'upload_status' => 'completed',
+                'upload_progress' => 100,
             ]);
         }
     }

@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->text('description')->nullable();
             $table->date('release_date');
             $table->string('cover_image_path')->nullable();
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            // $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
         
             // Chaves estrangeiras

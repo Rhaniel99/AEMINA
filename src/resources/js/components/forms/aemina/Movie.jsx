@@ -18,13 +18,13 @@ export default function Index({ onSuccess, Movie }) {
     const [preview, setPreview] = useState(null);
     const [selectedCategories, setSelectedCategories] = useState([]);
 
-    const { data, setData, post, reset } = useForm({
-        titulo_filme: "",
-        desc_filme: "",
-        categorias: [],
+    const { data, setData, post, reset, patch } = useForm({
+        titulo_filme: Movie?.title || "",
+        desc_filme: Movie?.descricao || "",
+        categorias: Movie?.categories || [],
         capa_filme: null,
         arquivo_filme: null,
-        dt_lancamento: "",
+        dt_lancamento: Movie?.dt_lancamento || "",
     });
 
     // Atualiza as categorias quando o Movie é passado
@@ -102,9 +102,21 @@ export default function Index({ onSuccess, Movie }) {
         });
     };
 
+    const submitUpdate = (e) => {
+        e.preventDefault();
+        post(route("aemina.update", [Movie.id, "filme"]), {
+            onSuccess: () => {
+                reset(); // Opcional: reseta o formulário
+                if (onSuccess) {
+                    onSuccess(); // Fecha o diálogo
+                }
+            },
+        });
+    }
+
     return (
         <>
-            <form onSubmit={submit}>
+            <form onSubmit={Movie ? submitUpdate : submit}>
                 <div className="container px-6 m-auto">
                     <div className="grid grid-cols-4 gap-6 md:grid-cols-8 lg:grid-cols-12">
                         {/* Titulo do Filme */}
