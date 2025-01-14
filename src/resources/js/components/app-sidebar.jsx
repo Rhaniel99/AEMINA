@@ -77,6 +77,11 @@ export function AppSidebar(props) {
           url: route("aemina.list.media"),
           icon: Frame,
         },
+        {
+            name: "Test_Area",
+            url: route("test.index"),
+            icon: Frame,
+          },
         // {
         //   name: "Sales & Marketing",
         //   url: "#",

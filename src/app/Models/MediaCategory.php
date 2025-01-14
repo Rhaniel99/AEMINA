@@ -4,16 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\Uuid; 
+// use App\Traits\Uuid; 
 
 
 class MediaCategory extends Model
 {
-    use HasFactory, Uuid;
+    use HasFactory;
 
     protected $table = 'media_schema.media_category';
 
-    protected $keyType = 'uuid';
+    // protected $keyType = 'uuid';
     public $incrementing = false;
     
     protected $fillable = [

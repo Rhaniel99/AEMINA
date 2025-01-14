@@ -20,7 +20,6 @@ class Media extends Model
         'release_date',
         'content_type_id',
         'cover_image_path',
-        'status',
     ];
 
     // public function user()

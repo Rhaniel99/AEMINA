@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('media_schema.media_category', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            // $table->uuid('id')->primary();
+            
             // Relacionamentos
             $table->uuid('media_id');
             $table->uuid('category_id');
