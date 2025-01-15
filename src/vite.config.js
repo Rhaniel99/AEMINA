@@ -23,6 +23,8 @@ export default defineConfig({
             shadcn: "/node_modules/@shadcn/ui", // Ajuste o caminho conforme necessário
             ziggy: '/vendor/tightenco/ziggy',
             "css" : "/resources/css",
+            "uppy-css": "/node_modules/@uppy/core/dist/style.css",  // Alias para o CSS do Uppy
+            "uppy-dashboard-css": "/node_modules/@uppy/dashboard/dist/style.css",
         }
     }
 });

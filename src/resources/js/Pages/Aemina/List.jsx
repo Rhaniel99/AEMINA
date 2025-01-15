@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Head, router, useForm } from "@inertiajs/react";
+import { Head, router, useForm, Link } from "@inertiajs/react";
 import { TableListMedia } from "@/components/datatables/list-media";
 import {
     DropdownMenuItem,
@@ -17,7 +17,6 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import ProgressWind  from "@/components/bar/progress-wind";
 
 export default function Index({ media }) {
-    console.log(media);
     const { data, setData } = useForm({
         search: "",
     });
@@ -144,6 +143,13 @@ export default function Index({ media }) {
                                 Visualizar
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
+
+                            {/* <Link href={route("aemina.edit", row.original.id)}>
+                                <DropdownMenuItem>
+                                    Editar
+                                </DropdownMenuItem>
+                            </Link> */}
+
                             <DropdownMenuItem
                                 onClick={() => handleContentClick(content)}
                             >

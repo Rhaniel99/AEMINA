@@ -33,12 +33,12 @@ Route::middleware(['auth', 'ensure.profile.exists'])->group(function () {
 
 Route::middleware(['auth', 'ensure.profile.exists', 'check.selected.profile'])->group(function () {
     // ? Rotas de atualização para Login
-    Route::patch('/login/update/{id_user}/{type}', [LoginController::class, 'update'])->name('login.update');
+    Route::patch('/login/update/{id_user}/{type}', action: [LoginController::class, 'update'])->name('login.update');
 
     Route::resource('test', TestController::class);
-    Route::post('/upload', [TestController::class, 'uploadFile']);
+    // Route::post('/tus/tus', [TestController::class, 'store'])->name('test.store');
 
-    
+
     Route::resource('aemina', AeminaController::class)->except(['index', 'show', 'store', 'update']);
     Route::post('/aemina/{id_media}/{content}', [AeminaController::class, 'update'])->name('aemina.update');
     Route::post('/aemina/{content}', [AeminaController::class, 'store'])->name('aemina.store');

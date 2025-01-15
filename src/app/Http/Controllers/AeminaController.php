@@ -292,7 +292,20 @@ class AeminaController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $media = Media::where('id', $id)
+            ->with(['categories', 'contentType', 'profile', 'files'])
+            ->first(['id', 'title', 'description', 'release_date', 'content_type_id', 'profile_id']);
+
+        $media = [
+            'id' => $media->id,
+            'title' => $media->title,
+            'categories' => $media->categories->pluck('name')->toArray(),
+            'release_date' => $media->release_date,
+            'description' => $media->description,
+        ];
+        
+        return inertia('Aemina/Edit', [
+            'media' => $media,]);
     }
 
 
