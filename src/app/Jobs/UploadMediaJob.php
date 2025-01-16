@@ -9,19 +9,20 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Log;
 
 class UploadMediaJob implements ShouldQueue
 {
     use Queueable, InteractsWithQueue, SerializesModels, Dispatchable;
 
     protected $filePath;
-    protected $fileContent;
+    protected $profileId;
     protected $mediaFileId;
 
-    public function __construct($filePath, $fileContent, $mediaFileId)
+    public function __construct($filePath, $profileId, $mediaFileId)
     {
         $this->filePath = $filePath;
-        $this->fileContent = $fileContent;
+        $this->profileId = $profileId;
         $this->mediaFileId = $mediaFileId;
     }
 
@@ -29,33 +30,43 @@ class UploadMediaJob implements ShouldQueue
     {
         ini_set('memory_limit', '-1');
 
-        $chunkSize = 1024 * 1024; // 1MB per chunk (ajuste conforme necessário)
-        $totalSize = strlen($this->fileContent);
-        $uploaded = 0;
+        // Gerar o caminho correto para o arquivo recodificado
+        $recodedFilePath = storage_path("app/private/tus/recoded_" . basename($this->filePath));
 
-        // Divida o arquivo em chunks e envie para o S3
-        foreach (str_split($this->fileContent, $chunkSize) as $chunk) {
-            Storage::disk('s3')->put($this->filePath, $chunk, [
-                'visibility' => 'public',
-            ]);
+        // Construir o comando FFmpeg para recodificar o vídeo
+        $command = "ffmpeg -i {$this->filePath} -c:v libx264 -profile:v high10 -c:a aac -level 4.2 -y {$recodedFilePath} 2>&1";
+        // $command = "ffmpeg -i {$this->filePath} -c:v libx264 -c:a aac -profile:v main -level 4.2 -y {$recodedFilePath} 2>&1";
 
-            $uploaded += strlen($chunk);
-            $progress = ($uploaded / $totalSize) * 100;
+        Log::info('Iniciando recodificação do vídeo: ' . $this->filePath);
+        $startTime = microtime(true);
 
-            // Atualize o progresso no banco de dados
-            MediaFiles::where('id', $this->mediaFileId)->update([
-                'upload_progress' => (int)$progress
-            ]);
+        // Executar o FFmpeg
+        exec($command, $output, $return_var);
 
-            // Atualize o status (se necessário)
-            if ($progress === 100) {
-                MediaFiles::where('id', $this->mediaFileId)->update([
-                    'upload_status' => 'completed'
-                ]);
-            }
+        // Calcular o tempo de execução
+        $endTime = microtime(true);
+        $executionTime = $endTime - $startTime;
+        Log::info('Tempo de execução do FFmpeg: ' . $executionTime . ' segundos');
 
-            // Atraso entre os chunks (simulação de tempo)
-            sleep(1);
+        if ($return_var !== 0) {
+            Log::warning('Erro ao recodificar o vídeo: ' . implode("\n", $output));
+            return;
+        }
+
+
+        // Armazenar o arquivo recodificado no MinIO (S3)
+        $fileContents = file_get_contents($recodedFilePath);
+
+        // Recuperar a mídia associada
+        $mediaFile = MediaFiles::find($this->mediaFileId);
+
+        if ($mediaFile) {
+            Storage::disk('s3')->put($mediaFile->file_path, $fileContents);
+
+            // Opcional: Apagar o arquivo recodificado localmente após o upload
+            unlink($recodedFilePath);
+        } else {
+            Log::warning('Mídia não encontrada para ID: ' . $this->mediaFileId);
         }
     }
 }

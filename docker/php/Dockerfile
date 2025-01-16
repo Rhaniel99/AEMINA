@@ -28,7 +28,7 @@ RUN apk add --no-cache wget \
     && tar xvz -C /usr/src/php/ext/redis --strip 1 -f /tmp/phpredis.tar.gz \
     && echo 'redis' >> /usr/src/php-available-exts \
     && docker-php-ext-install redis \
-    && apk add --no-cache postgresql-dev libzip-dev icu-dev \
+    && apk add --no-cache postgresql-dev libzip-dev icu-dev ffmpeg \
     && docker-php-ext-install pdo pdo_pgsql bcmath zip pcntl intl \
     && docker-php-ext-configure zip \
     && rm -rf /var/cache/apk/* /tmp/phpredis.tar.gz

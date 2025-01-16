@@ -29,7 +29,17 @@ if (!function_exists('genPathFile')) {
         function genPathFile($titulo, $arquivo)
         {
                 $titulo_normalizado = fPath($titulo);
-                $ext_file = $arquivo->getClientOriginalExtension();
+
+                if ($arquivo instanceof \Illuminate\Http\UploadedFile) {
+                        // Caso seja um arquivo enviado via formulário
+                        $ext_file = $arquivo->getClientOriginalExtension();
+                } elseif (is_string($arquivo)) {
+                        // Caso seja um caminho de arquivo (string)
+                        $ext_file = pathinfo($arquivo, PATHINFO_EXTENSION);
+                } else {
+                        throw new \InvalidArgumentException('O argumento $arquivo deve ser uma string ou uma instância de UploadedFile.');
+                }
+
                 return "films/{$titulo_normalizado}/{$titulo_normalizado}_1080p.{$ext_file}";
         }
 }
