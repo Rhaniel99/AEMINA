@@ -189,6 +189,8 @@ class AeminaController extends Controller
             ]);
         }
 
+        // ImportPlanoAcao::dispatch($arquivo_plano_acao, $id_usuario)->onQueue('planos');
+
         $encoded_cover = file_get_contents($request->capa_filme);
 
         Storage::disk('s3')->put($path_cover, $encoded_cover);
@@ -211,22 +213,17 @@ class AeminaController extends Controller
                 if (file_exists($localFilePath)) {
                     // $recodedFilePath = storage_path("app/private/tus/recoded_{$fileBaseName}.mp4");
                     // $command = "ffmpeg -i {$localFilePath} -c:v libx264 -c:a aac -profile:v high10 -level 4.2 -y {$recodedFilePath} 2>&1";
-
                     // $command = "ffmpeg -i {$localFilePath} -c:v libx264 -c:a aac -strict experimental -profile:v baseline -level 3.0 -y {$recodedFilePath} 2>&1";
                     // $command = "ffmpeg -i {$localFilePath} -c:v libx264 -c:a aac -strict experimental -profile:v baseline -level 3.0 -y {$recodedFilePath}";
                     // exec($command, $output, $return_var);
-       
-       
-       
-                    // UploadMediaJob::dispatch($localFilePath, $profile_id)->onQueue('planos');
                     
                     // if ($return_var !== 0) {
-                    //     Log::warning('Erro ao recodificar o vídeo: ' . implode("\n", $output));
+                    //     Log::info('Erro ao recodificar o vídeo: ' . implode("\n", $output));
+                    //     return back()->withErrors(['error' => $e->getMessage()]);
 
-                    //     return back()->withErrors(['error' => 'Error']);
                     // }
                     
-                    // $fileContents = file_get_contents($localFilePath);
+                    $fileContents = file_get_contents($localFilePath);
                     // $fileContents = file_get_contents($recodedFilePath);
                     
                     $titulo_normalizado = fPath($request->titulo_filme);
@@ -238,16 +235,14 @@ class AeminaController extends Controller
                         'upload_status' => 'pending',
                         'upload_progress' => 0
                     ]);
-
-                    UploadMediaJob::dispatch($localFilePath, $profile_id, $medial_file->id)->onQueue('planos');
                     
                     // $s3Path = 'uploads/' . $fileBaseName . '.' . $extension;
 
                     // Armazenar no MinIO (S3)
-                    // Storage::disk('s3')->put($medial_file->file_path, $fileContents);
+                    Storage::disk('s3')->put($medial_file->file_path, $fileContents);
 
                     // Opcional: Apagar o arquivo local depois de transferido
-                    // unlink($localFilePath);
+                    unlink($localFilePath);
 
                 } else {
                     dd('Arquivo não encontrado no diretório local: ' . $localFilePath);
