@@ -52,9 +52,13 @@ if (!function_exists('fPath')) {
         // Remover quaisquer caracteres que não sejam letras, números ou underscores
         $string = preg_replace('/[^a-z0-9_]/', '', $string);
 
+        // Substituir múltiplos underscores por um único
+        $string = preg_replace('/_+/', '_', $string);
+
         return $string;
     }
 }
+
 
 if(!function_exists('fnStrings')){
     function fnStrings($string){

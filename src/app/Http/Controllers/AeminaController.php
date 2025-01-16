@@ -141,7 +141,7 @@ class AeminaController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             Log::error($e->getMessage());
-            return back()->withErrors(['error' => 'Houve um erro ao enviar o filme.']);
+            return back()->withErrors(['error' => $e->getMessage()]);
         }
     }
 
@@ -189,25 +189,75 @@ class AeminaController extends Controller
             ]);
         }
 
-        $path_file = genPathFile($request->titulo_filme, $request->arquivo_filme);
-
-        $medial_file = MediaFiles::create([
-            'media_id' => $media->id,
-            'file_path' => $path_file,
-            'upload_status' => 'pending',
-            'upload_progress' => 0
-        ]);
-
-        // $arquivo_plano_acao = $request->file('planoAcao')->store('temp');
-        // ImportPlanoAcao::dispatch($arquivo_plano_acao, $id_usuario)->onQueue('planos');
-
-        // $encoded_file = file_get_contents($request->arquivo_filme);
         $encoded_cover = file_get_contents($request->capa_filme);
 
-        // Storage::disk('s3')->put($path_file, $encoded_file);
         Storage::disk('s3')->put($path_cover, $encoded_cover);
 
-        UploadMediaJob::dispatch($path_file, file_get_contents($request->arquivo_filme), $medial_file->id)->onQueue('media');
+        $fileName = $request->arquivo_filme;
+
+        // ? Pega o nome base do arquivo (sem caminho)
+        $fileBaseName = basename($fileName);
+        $jsonFilePath = storage_path("app/private/tus/{$fileBaseName}.json");
+        if (file_exists($jsonFilePath)) {
+            $jsonData = json_decode(file_get_contents($jsonFilePath), true);
+
+            // ? Verifica se a extensão existe no JSON
+            if (isset($jsonData['extension'])) {
+                $extension = $jsonData['extension']; // A extensão do arquivo
+
+                // ? Construir o caminho completo do arquivo com base na extensão
+                $localFilePath = storage_path("app/private/tus/{$fileBaseName}.{$extension}"); // Caminho completo para o arquivo
+                // ? Verifique se o arquivo realmente existe
+                if (file_exists($localFilePath)) {
+                    // $recodedFilePath = storage_path("app/private/tus/recoded_{$fileBaseName}.mp4");
+                    // $command = "ffmpeg -i {$localFilePath} -c:v libx264 -c:a aac -profile:v high10 -level 4.2 -y {$recodedFilePath} 2>&1";
+
+                    // $command = "ffmpeg -i {$localFilePath} -c:v libx264 -c:a aac -strict experimental -profile:v baseline -level 3.0 -y {$recodedFilePath} 2>&1";
+                    // $command = "ffmpeg -i {$localFilePath} -c:v libx264 -c:a aac -strict experimental -profile:v baseline -level 3.0 -y {$recodedFilePath}";
+                    // exec($command, $output, $return_var);
+       
+       
+       
+                    // UploadMediaJob::dispatch($localFilePath, $profile_id)->onQueue('planos');
+                    
+                    // if ($return_var !== 0) {
+                    //     Log::warning('Erro ao recodificar o vídeo: ' . implode("\n", $output));
+
+                    //     return back()->withErrors(['error' => 'Error']);
+                    // }
+                    
+                    // $fileContents = file_get_contents($localFilePath);
+                    // $fileContents = file_get_contents($recodedFilePath);
+                    
+                    $titulo_normalizado = fPath($request->titulo_filme);
+                    $path_file = "films/{$titulo_normalizado}/{$titulo_normalizado}_1080p.{$extension}";
+
+                    $medial_file = MediaFiles::create([
+                        'media_id' => $media->id,
+                        'file_path' => $path_file,
+                        'upload_status' => 'pending',
+                        'upload_progress' => 0
+                    ]);
+
+                    UploadMediaJob::dispatch($localFilePath, $profile_id, $medial_file->id)->onQueue('planos');
+                    
+                    // $s3Path = 'uploads/' . $fileBaseName . '.' . $extension;
+
+                    // Armazenar no MinIO (S3)
+                    // Storage::disk('s3')->put($medial_file->file_path, $fileContents);
+
+                    // Opcional: Apagar o arquivo local depois de transferido
+                    // unlink($localFilePath);
+
+                } else {
+                    dd('Arquivo não encontrado no diretório local: ' . $localFilePath);
+                }
+            } else {
+                dd('Extensão do arquivo não encontrada no arquivo JSON.');
+            }
+        } else {
+            dd('Arquivo JSON não encontrado: ' . $jsonFilePath);
+        }
     }
 
     /**

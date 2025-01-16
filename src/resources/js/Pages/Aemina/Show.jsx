@@ -39,7 +39,8 @@ export default function Index({ content, category, movie, media }) {
                 >
                     <source src={media.file_path} type="video/mp4" />
                     {/* Adicione mais formatos se necessário */}
-                    <source src={media.file_path} type="video/webm" />
+                    
+                    {/* <source src={media.file_path} type="video/webm" /> */}
                 </video>
             </div>
         </div>
