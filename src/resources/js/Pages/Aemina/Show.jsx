@@ -10,6 +10,7 @@ export default function Index({ content, category, movie, media }) {
         // Inicializa o player de vídeo
         if (videoRef.current) {
             const player = videojs(videoRef.current, {
+                debug: true,
                 controls: true,
                 autoplay: false,
                 preload: "auto",
@@ -39,7 +40,7 @@ export default function Index({ content, category, movie, media }) {
                 >
                     <source src={media.file_path} type="video/mp4" />
                     {/* Adicione mais formatos se necessário */}
-                    
+
                     {/* <source src={media.file_path} type="video/webm" /> */}
                 </video>
             </div>

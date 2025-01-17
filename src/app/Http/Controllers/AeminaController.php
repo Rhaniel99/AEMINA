@@ -212,18 +212,19 @@ class AeminaController extends Controller
                 // ? Verifique se o arquivo realmente existe
                 if (file_exists($localFilePath)) {
                     // $recodedFilePath = storage_path("app/private/tus/recoded_{$fileBaseName}.mp4");
-                    // $command = "ffmpeg -i {$localFilePath} -c:v libx264 -c:a aac -profile:v high10 -level 4.2 -y {$recodedFilePath} 2>&1";
-                    // $command = "ffmpeg -i {$localFilePath} -c:v libx264 -c:a aac -strict experimental -profile:v baseline -level 3.0 -y {$recodedFilePath} 2>&1";
-                    // $command = "ffmpeg -i {$localFilePath} -c:v libx264 -c:a aac -strict experimental -profile:v baseline -level 3.0 -y {$recodedFilePath}";
+
+                    // $command = "ffmpeg -i {$localFilePath} -c:v libx264 -preset medium -crf 23 -profile:v main -c:a aac -b:a 128k -movflags +faststart {$recodedFilePath}";
+
+                    // $command = "ffmpeg -i {$localFilePath} -c:v libx264 -profile:v main -c:a aac -strict experimental {$recodedFilePath}";
+
                     // exec($command, $output, $return_var);
                     
                     // if ($return_var !== 0) {
                     //     Log::info('Erro ao recodificar o vídeo: ' . implode("\n", $output));
-                    //     return back()->withErrors(['error' => $e->getMessage()]);
-
+                    //     return back()->withErrors(['error' => 'Erro']);
                     // }
                     
-                    $fileContents = file_get_contents($localFilePath);
+                    // $fileContents = file_get_contents($localFilePath);
                     // $fileContents = file_get_contents($recodedFilePath);
                     
                     $titulo_normalizado = fPath($request->titulo_filme);
@@ -239,10 +240,12 @@ class AeminaController extends Controller
                     // $s3Path = 'uploads/' . $fileBaseName . '.' . $extension;
 
                     // Armazenar no MinIO (S3)
-                    Storage::disk('s3')->put($medial_file->file_path, $fileContents);
+                    // Storage::disk('s3')->put($medial_file->file_path, $fileContents);
+
+                    UploadMediaJob::dispatch($localFilePath, $profile_id, $medial_file->id);
 
                     // Opcional: Apagar o arquivo local depois de transferido
-                    unlink($localFilePath);
+                    // unlink($localFilePath);
 
                 } else {
                     dd('Arquivo não encontrado no diretório local: ' . $localFilePath);
