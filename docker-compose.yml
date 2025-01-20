@@ -23,7 +23,7 @@ services:
       - pgsql
       - redis
       - horizon
-      - queue
+      # - queue
     networks:
       - laravel
 
@@ -48,29 +48,27 @@ services:
     networks:
       - laravel
 
-  queue:
-    build:
-      context: ./docker/php
-      dockerfile: Dockerfile
-      args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
-    container_name: queue
-    volumes:
-      - ./src:/var/www/html
-      - .env:/var/www/html/.env
-    depends_on:
-      - pgsql
-      - horizon
-      - redis
-    restart: always
-    working_dir: /var/www/html
-    entrypoint: ['php', '/var/www/html/artisan', 'queue:work']
-    # entrypoint: ['php', '/var/www/html/artisan', 'queue:work','--queue=planos' , '--timeout=0']
-    # entrypoint: ['php', '/var/www/html/artisan', 'queue:work --tries=1 --timeout=0']
-    networks:
-      - laravel
+  # queue:
+  #   build:
+  #     context: ./docker/php
+  #     dockerfile: Dockerfile
+  #     args:
+  #       - UID=${UID:-1000}
+  #       - GID=${GID:-1000}
+  #       - USER=${USER:-laravel}
+  #   container_name: queue
+  #   volumes:
+  #     - ./src:/var/www/html
+  #     - .env:/var/www/html/.env
+  #   depends_on:
+  #     - pgsql
+  #     - horizon
+  #     - redis
+  #   restart: always
+  #   working_dir: /var/www/html
+  #   entrypoint: ['php', '/var/www/html/artisan', 'queue:work']
+  #   networks:
+  #     - laravel
 
   horizon:
     build:

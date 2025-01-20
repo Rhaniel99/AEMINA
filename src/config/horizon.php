@@ -217,7 +217,7 @@ return [
             'max_processes' => 10,
             'maxTime' => 0,
             'maxJobs' => 100,
-            'memory' => 128,
+            'memory' => 256,
             'timeout' => 600, // 10 minutos
             'tries' => 3,
             // 'tries' => 1,

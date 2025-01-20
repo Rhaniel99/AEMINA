@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use FFMpeg;
 use App\Jobs\UploadMediaJob;
 use App\Models\Categories;
 use App\Models\ContentType;
@@ -145,6 +146,7 @@ class AeminaController extends Controller
         }
     }
 
+
     private function store_movie($request)
     {
         $request->validate([
@@ -155,23 +157,21 @@ class AeminaController extends Controller
             'dt_lancamento' => 'required',
             'arquivo_filme' => 'required',
         ]);
-
+    
         $profile_id = session()->get('selected_profile');
-        // ? Buscar o Tipo de Conteudo
         $content = ContentType::where('type', 'filme')->first();
-
-        // ? Buscar ou criar categorias
+    
+        // Buscar ou criar categorias
         $categories = collect($request->categorias)->map(function ($categoria) {
             return Categories::firstOrCreate(
                 ['name_normalized' => fnStrings($categoria)],
                 ['name' => $categoria]
             );
         });
-
-        // ? Normalizar o título e definir o caminho da capa
+    
         $path_cover = genPathCover($request->titulo_filme, $request->capa_filme);
-
-        // ? Criar a mídia
+    
+        // Criar a mídia
         $media = Media::create([
             'profile_id' => $profile_id,
             'title' => $request->titulo_filme,
@@ -180,73 +180,77 @@ class AeminaController extends Controller
             'cover_image_path' => $path_cover,
             'content_type_id' => $content->id,
         ]);
-
-        // ? Associar as categorias à mídia sem duplicatas
+    
+        // Associar as categorias à mídia sem duplicatas
         foreach ($categories as $category) {
             MediaCategory::firstOrCreate([
                 'media_id' => $media->id,
                 'category_id' => $category->id,
             ]);
         }
-
-        // ImportPlanoAcao::dispatch($arquivo_plano_acao, $id_usuario)->onQueue('planos');
-
+    
+        // Armazenar a capa
         $encoded_cover = file_get_contents($request->capa_filme);
-
         Storage::disk('s3')->put($path_cover, $encoded_cover);
-
+    
         $fileName = $request->arquivo_filme;
-
-        // ? Pega o nome base do arquivo (sem caminho)
         $fileBaseName = basename($fileName);
         $jsonFilePath = storage_path("app/private/tus/{$fileBaseName}.json");
+    
         if (file_exists($jsonFilePath)) {
             $jsonData = json_decode(file_get_contents($jsonFilePath), true);
-
-            // ? Verifica se a extensão existe no JSON
+    
             if (isset($jsonData['extension'])) {
-                $extension = $jsonData['extension']; // A extensão do arquivo
-
-                // ? Construir o caminho completo do arquivo com base na extensão
-                $localFilePath = storage_path("app/private/tus/{$fileBaseName}.{$extension}"); // Caminho completo para o arquivo
-                // ? Verifique se o arquivo realmente existe
+                $extension = $jsonData['extension'];
+                // $localFilePath = storage_path("app/private/tus/{$fileBaseName}.{$extension}");
+    
+                $localFilePath = storage_path("app/private/tus/{$fileBaseName}.{$extension}");
+    
                 if (file_exists($localFilePath)) {
-                    // $recodedFilePath = storage_path("app/private/tus/recoded_{$fileBaseName}.mp4");
-
-                    // $command = "ffmpeg -i {$localFilePath} -c:v libx264 -preset medium -crf 23 -profile:v main -c:a aac -b:a 128k -movflags +faststart {$recodedFilePath}";
-
-                    // $command = "ffmpeg -i {$localFilePath} -c:v libx264 -profile:v main -c:a aac -strict experimental {$recodedFilePath}";
-
-                    // exec($command, $output, $return_var);
-                    
-                    // if ($return_var !== 0) {
-                    //     Log::info('Erro ao recodificar o vídeo: ' . implode("\n", $output));
-                    //     return back()->withErrors(['error' => 'Erro']);
-                    // }
-                    
-                    // $fileContents = file_get_contents($localFilePath);
-                    // $fileContents = file_get_contents($recodedFilePath);
-                    
+                    // Usar php-ffmpeg para converter o vídeo
+                    // $ffmpeg = FFMpeg\FFMpeg::create();
+    
+                    // Abrir o vídeo original
+                    // $video = $ffmpeg->open($localFilePath);
+    
+                    // Definir o caminho para o arquivo convertido
                     $titulo_normalizado = fPath($request->titulo_filme);
-                    $path_file = "films/{$titulo_normalizado}/{$titulo_normalizado}_1080p.{$extension}";
-
+                    $converted_path = storage_path("app/private/tus/{$titulo_normalizado}_converted.mp4");
+    
+                    // Converter o vídeo para H.264 (Main Profile) e AAC (Áudio)
+                    // $format = new FFMpeg\Format\Video\X264('aac', 'libx264');
+                    // $format->setAudioCodec('aac');
+                    // $format->setVideoCodec('libx264');
+                    // $format->setKiloBitrate(1500);
+                    // $format->setAudioKiloBitrate(256);
+                    // $format->setAdditionalParameters(['-profile:v', 'main', '-level:v', '4.0', '-pix_fmt', 'yuv420p']);
+                    // $format->on('progress', function ($video, $format, $percentage) {
+                    //     Log::info($percentage);
+                    //     // echo "$percentage % transcoded"s;
+                    // });
+                    // // Salvar o arquivo convertido
+                    // $video->save($format, $convertedPath);
+    
+                    // Salvar o arquivo convertido no S3
+                    // $convertedFileContents = file_get_contents($convertedPath);
+                    $path_file = "films/{$titulo_normalizado}/{$titulo_normalizado}_1080p.mp4";
+    
                     $medial_file = MediaFiles::create([
                         'media_id' => $media->id,
                         'file_path' => $path_file,
                         'upload_status' => 'pending',
                         'upload_progress' => 0
                     ]);
-                    
-                    // $s3Path = 'uploads/' . $fileBaseName . '.' . $extension;
-
+    
                     // Armazenar no MinIO (S3)
-                    // Storage::disk('s3')->put($medial_file->file_path, $fileContents);
+                    // Storage::disk('s3')->put($medial_file->file_path, $convertedFileContents);
 
-                    UploadMediaJob::dispatch($localFilePath, $profile_id, $medial_file->id);
-
+                    UploadMediaJob::dispatch("app/private/tus/{$fileBaseName}.{$extension}", "app/private/tus/{$titulo_normalizado}_converted.mp4", $profile_id, $medial_file->id, $path_file)->onQueue('media');
+    
                     // Opcional: Apagar o arquivo local depois de transferido
                     // unlink($localFilePath);
-
+                    // unlink($converted_path);
+    
                 } else {
                     dd('Arquivo não encontrado no diretório local: ' . $localFilePath);
                 }
@@ -257,7 +261,7 @@ class AeminaController extends Controller
             dd('Arquivo JSON não encontrado: ' . $jsonFilePath);
         }
     }
-
+    
     /**
      * ? Atualizar um novo filme, série, anime.
      */

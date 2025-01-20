@@ -9,77 +9,63 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use FFMpeg;
 use Log;
 
 class UploadMediaJob implements ShouldQueue
 {
     use Queueable, InteractsWithQueue, SerializesModels, Dispatchable;
 
-    protected $filePath;
+    protected $file_path;
+    protected $converted_path;
+
     protected $profileId;
     protected $mediaFileId;
+    protected $paths3;
 
-    public function __construct($filePath, $profileId, $mediaFileId)
+    public function __construct($file_path, $converted_path, $profileId, $mediaFileId, $paths3)
     {
-        $this->filePath = $filePath;
+        $this->file_path = $file_path;
+        $this->converted_path = $converted_path;
+
         $this->profileId = $profileId;
         $this->mediaFileId = $mediaFileId;
+        $this->paths3 = $paths3;
     }
 
     public function handle()
     {
-        ini_set('memory_limit', '-1');
-    
-        // Gerar o caminho correto para o arquivo recodificado
-        $recodedFilePath = storage_path("app/private/tus/recoded_" . basename($this->filePath));
-    
-        if (!file_exists($this->filePath)) {
-            Log::warning('Arquivo de entrada não encontrado: ' . $this->filePath);
-            return;
+        Log::info("CHEGOU AQUI");
+
+        $local_file_path = storage_path($this->file_path);
+        $converted_path = storage_path($this->converted_path);
+
+
+        $ffmpeg = FFMpeg\FFMpeg::create();
+
+        Log::info("Verificando arquivo de entrada: " . $local_file_path);
+        if (!file_exists($local_file_path)) {
+            Log::error("Arquivo não encontrado: " . $local_file_path);
         }
-        
-        // Construir o comando FFmpeg para recodificar o vídeo
-        // ffmpeg -i arquivo_entrada.mp4 -c:v libx264 -preset medium -crf 23 -profile:v high -c:a aac -b:a 128k arquivo_saida.mp4
-        // ffmpeg -i input.mp4 -c:v libx264 -profile:v high10 -pix_fmt yuv420p10le output.mp4
+        $video = $ffmpeg->open($local_file_path);
 
-        $command = "ffmpeg -loglevel debug -i {$this->filePath} -c:v libx264 -profile:v high10 -pix_fmt yuv420p10le {$recodedFilePath}";
+        $format = new FFMpeg\Format\Video\X264('aac', 'libx264');
+        $format->setAudioCodec('aac');
+        $format->setVideoCodec('libx264');
+        $format->setKiloBitrate(1500);
+        $format->setAudioKiloBitrate(256);
+        $format->setAdditionalParameters(['-profile:v', 'main', '-level:v', '4.0', '-pix_fmt', 'yuv420p']);
+        $format->on('progress', function ($video, $format, $percentage) {
+            Log::info($percentage);
+            // echo "$percentage % transcoded"s;
+        });
+        // Salvar o arquivo convertido
+        $video->save($format, $converted_path);
+        $converted_file_contents = file_get_contents($converted_path);
 
-        // $command = "ffmpeg -i {$this->filePath} -c:v libx264 -preset medium -crf 23 -profile:v main -c:a aac -b:a 128k -movflags +faststart {$recodedFilePath}";
-    
-        Log::info('Iniciando recodificação do vídeo: ' . $this->filePath);
-        $startTime = microtime(true);
-    
-        // Executar o FFmpeg
-        Log::info('Comando FFmpeg: ' . $command);
-        exec($command . ' 2>&1', $output, $return_var);
-        Log::info('Saída do FFmpeg: ' . implode("\n", $output));
-    
-        // Calcular o tempo de execução
-        $endTime = microtime(true);
-        $executionTime = $endTime - $startTime;
-        Log::info('Tempo de execução do FFmpeg: ' . $executionTime . ' segundos');
-    
-        if ($return_var !== 0) {
-            Log::warning('Erross ao recodificar o vídeo: ' . implode("\n", $output));
-            return;
-        }
+        Storage::disk('s3')->put($this->paths3, $converted_file_contents);
 
-
-    
-        // Recuperar a mídia associada
-        $mediaFile = MediaFiles::find($this->mediaFileId);
-    
-        if ($mediaFile) {
-            // Usar stream para enviar o arquivo recodificado para o S3
-            Storage::disk('s3')->put(
-                $mediaFile->file_path,
-                fopen($recodedFilePath, 'r')
-            );
-    
-            // Apagar o arquivo recodificado localmente após o upload
-            unlink($recodedFilePath);
-        } else {
-            Log::warning('Mídia não encontrada para ID: ' . $this->mediaFileId);
-        }
+        unlink($local_file_path);
+        unlink($converted_path);
     }
 }
