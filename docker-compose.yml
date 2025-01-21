@@ -47,6 +47,8 @@ services:
     restart: always
     networks:
       - laravel
+    devices:
+      - /dev/dri:/dev/dri 
 
   # queue:
   #   build:
@@ -72,7 +74,7 @@ services:
 
   horizon:
     build:
-      context: ./docker/php
+      context: ./docker/horizon
       dockerfile: Dockerfile
       args:
         - UID=${UID:-1000}

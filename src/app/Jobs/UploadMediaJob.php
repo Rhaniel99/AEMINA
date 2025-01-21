@@ -54,7 +54,8 @@ class UploadMediaJob implements ShouldQueue
         $format->setVideoCodec('libx264');
         $format->setKiloBitrate(1500);
         $format->setAudioKiloBitrate(256);
-        $format->setAdditionalParameters(['-profile:v', 'main', '-level:v', '4.0', '-pix_fmt', 'yuv420p']);
+        
+        // $format->setAdditionalParameters(['-profile:v', 'main', '-level:v', '4.0', '-pix_fmt', 'yuv420p']);
         $format->on('progress', function ($video, $format, $percentage) {
             Log::info($percentage);
             // echo "$percentage % transcoded"s;
