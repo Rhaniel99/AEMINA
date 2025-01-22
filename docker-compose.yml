@@ -1,6 +1,9 @@
 networks:
-  laravel:  # Rede interna específica do projeto
+  laravel:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
 
 services:
   nginx:
@@ -50,31 +53,9 @@ services:
     devices:
       - /dev/dri:/dev/dri 
 
-  # queue:
-  #   build:
-  #     context: ./docker/php
-  #     dockerfile: Dockerfile
-  #     args:
-  #       - UID=${UID:-1000}
-  #       - GID=${GID:-1000}
-  #       - USER=${USER:-laravel}
-  #   container_name: queue
-  #   volumes:
-  #     - ./src:/var/www/html
-  #     - .env:/var/www/html/.env
-  #   depends_on:
-  #     - pgsql
-  #     - horizon
-  #     - redis
-  #   restart: always
-  #   working_dir: /var/www/html
-  #   entrypoint: ['php', '/var/www/html/artisan', 'queue:work']
-  #   networks:
-  #     - laravel
-
   horizon:
     build:
-      context: ./docker/horizon
+      context: ./docker/php
       dockerfile: Dockerfile
       args:
         - UID=${UID:-1000}
@@ -92,6 +73,8 @@ services:
     restart: always
     networks:
       - laravel
+    devices:
+      - /dev/dri:/dev/dri 
 
   pgsql:
     build:
@@ -168,7 +151,7 @@ services:
     build:
       context: ./docker/node
       dockerfile: Dockerfile
-    container_name: node
+    container_name: aemina-node
     volumes:
       - ./src:/var/www/html
       - .env:/var/www/html/.env
@@ -181,7 +164,9 @@ services:
       - laravel
 
   minio:
-    image: minio/minio
+    build:
+      context: ./docker/minio
+      dockerfile: Dockerfile
     container_name: minio
     command: server /data --console-address ":9701"
     restart: always
@@ -194,7 +179,8 @@ services:
       - 9700:9700
       - 9701:9701
     networks:
-      - laravel
+      laravel:
+        ipv4_address: 172.18.0.10
         # networks:
         #     docker-laravel:
         #       ipv4_address: 172.16.238.10
