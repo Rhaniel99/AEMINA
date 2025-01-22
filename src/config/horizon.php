@@ -218,7 +218,7 @@ return [
             'maxTime' => 0,
             'maxJobs' => 100,
             'memory' => 256,
-            'timeout' => 600, // 10 minutos
+            'timeout' => 0,
             'tries' => 3,
             // 'tries' => 1,
             // 'timeout' => 0,  
