@@ -204,35 +204,12 @@ class AeminaController extends Controller
                 $extension = $jsonData['extension'];
                 // $localFilePath = storage_path("app/private/tus/{$fileBaseName}.{$extension}");
     
-                $localFilePath = storage_path("app/private/tus/{$fileBaseName}.{$extension}");
+                $local_file_path = "app/private/tus/{$fileBaseName}.{$extension}";
     
-                if (file_exists($localFilePath)) {
-                    // Usar php-ffmpeg para converter o vídeo
-                    // $ffmpeg = FFMpeg\FFMpeg::create();
-    
-                    // Abrir o vídeo original
-                    // $video = $ffmpeg->open($localFilePath);
-    
-                    // Definir o caminho para o arquivo convertido
+                if (file_exists(storage_path($local_file_path))) {
                     $titulo_normalizado = fPath($request->titulo_filme);
-                    $converted_path = storage_path("app/private/tus/{$titulo_normalizado}_converted.mp4");
-    
-                    // Converter o vídeo para H.264 (Main Profile) e AAC (Áudio)
-                    // $format = new FFMpeg\Format\Video\X264('aac', 'libx264');
-                    // $format->setAudioCodec('aac');
-                    // $format->setVideoCodec('libx264');
-                    // $format->setKiloBitrate(1500);
-                    // $format->setAudioKiloBitrate(256);
-                    // $format->setAdditionalParameters(['-profile:v', 'main', '-level:v', '4.0', '-pix_fmt', 'yuv420p']);
-                    // $format->on('progress', function ($video, $format, $percentage) {
-                    //     Log::info($percentage);
-                    //     // echo "$percentage % transcoded"s;
-                    // });
-                    // // Salvar o arquivo convertido
-                    // $video->save($format, $convertedPath);
-    
-                    // Salvar o arquivo convertido no S3
-                    // $convertedFileContents = file_get_contents($convertedPath);
+                    $converted_path = "app/private/tus/{$titulo_normalizado}_converted.mp4";
+
                     $path_file = "films/{$titulo_normalizado}/{$titulo_normalizado}_1080p.mp4";
     
                     $medial_file = MediaFiles::create([
@@ -242,17 +219,10 @@ class AeminaController extends Controller
                         'upload_progress' => 0
                     ]);
     
-                    // Armazenar no MinIO (S3)
-                    // Storage::disk('s3')->put($medial_file->file_path, $convertedFileContents);
-
-                    UploadMediaJob::dispatch("app/private/tus/{$fileBaseName}.{$extension}", "app/private/tus/{$titulo_normalizado}_converted.mp4", $profile_id, $medial_file->id, $path_file)->onQueue('media');
-    
-                    // Opcional: Apagar o arquivo local depois de transferido
-                    // unlink($localFilePath);
-                    // unlink($converted_path);
+                    UploadMediaJob::dispatch($local_file_path, $converted_path, $media->id, $medial_file->id, $path_file)->onQueue('media');
     
                 } else {
-                    dd('Arquivo não encontrado no diretório local: ' . $localFilePath);
+                    dd('Arquivo não encontrado no diretório local: ' . $local_file_path);
                 }
             } else {
                 dd('Extensão do arquivo não encontrada no arquivo JSON.');
@@ -360,13 +330,43 @@ class AeminaController extends Controller
             'media' => $media,]);
     }
 
-
-
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
-    }
+
+     public function destroy(string $id)
+     {
+         // Carrega o registro de mídia junto com os tipos de conteúdo e os arquivos relacionados
+         $media = Media::where('id', $id)
+             ->with('contentType')
+             ->with('files')
+             ->first();
+     
+         if (!$media) {
+             return to_route('aemina.list.media')->withErrors(['error' => 'Mídia não encontrada.']);
+         }
+     
+         // Deletar arquivos do MinIO
+         if ($media->files) {
+             foreach ($media->files as $file) {
+                 $filePath = $file->file_path;
+     
+                 // Verifica se o arquivo existe no MinIO
+                 if (Storage::disk('s3')->exists($filePath)) {
+                     Storage::disk('s3')->delete($filePath);
+                 }
+             }
+         }
+     
+         // Deletar imagem de capa (se existir)
+         if ($media->cover_image_path && Storage::disk('s3')->exists($media->cover_image_path)) {
+             Storage::disk('s3')->delete($media->cover_image_path);
+         }
+     
+         // Deletar o registro de mídia
+         $media->delete();
+     
+         // Retornar ao listar com mensagem de sucesso
+         return to_route('aemina.list.media')->with(['success' => "{$media->contentType->type} removido com sucesso!"]);
+     }
 }

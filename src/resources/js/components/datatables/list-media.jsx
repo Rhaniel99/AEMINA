@@ -33,15 +33,22 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 
-import { useForm } from "@inertiajs/react";
+import Content from "@/components/dialogs/Content";
 
 export function TableListMedia({ media, columns, handleSearch, data }) {
-
-
     const [sorting, setSorting] = React.useState([]);
     const [columnFilters, setColumnFilters] = React.useState([]);
     const [columnVisibility, setColumnVisibility] = React.useState({});
     const [rowSelection, setRowSelection] = React.useState({});
+
+    const [openDialog, setOpenDialog] = React.useState(false); // Controla o estado do diálogo
+    const [selectedContent, setSelectedContent] = React.useState(null); // Armazena o conteúdo selecionado
+
+    const handleContentClick = (content) => {
+        console.log(content);
+        setSelectedContent(content); // Define o conteúdo selecionado
+        setOpenDialog(true); // Abre o diálogo
+    };
 
     const table = useReactTable({
         data: media.data,
@@ -73,9 +80,39 @@ export function TableListMedia({ media, columns, handleSearch, data }) {
                         onChange={handleSearch}
                         className="max-w-sm"
                     />
+
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="ml-auto">
+                                Novo <ChevronDown />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuCheckboxItem
+                                className="capitalize"
+                                onClick={() => handleContentClick("Filme")}
+                                // onClick={() => console.log("Novo Filme")}
+                            >
+                                Filme
+                            </DropdownMenuCheckboxItem>
+                            <DropdownMenuCheckboxItem
+                                className="capitalize"
+                                onClick={() => console.log("Nova Série")}
+                            >
+                                Série
+                            </DropdownMenuCheckboxItem>
+                            <DropdownMenuCheckboxItem
+                                className="capitalize"
+                                onClick={() => console.log("Novo Anime")}
+                            >
+                                Anime
+                            </DropdownMenuCheckboxItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" className="ml-4">
                                 Colunas <ChevronDown />
                             </Button>
                         </DropdownMenuTrigger>
@@ -194,6 +231,12 @@ export function TableListMedia({ media, columns, handleSearch, data }) {
                     </div>
                 </div>
             </div>
+
+            <Content
+                open={openDialog}
+                onOpenChange={setOpenDialog}
+                content={selectedContent}
+            />
         </>
     );
 }
