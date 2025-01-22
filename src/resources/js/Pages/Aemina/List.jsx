@@ -10,11 +10,23 @@ import {
     DropdownMenu,
 } from "@/components/ui/dropdown-menu";
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 import { Button } from "@/components/ui/button";
 
 import EditMedia from "@/components/dialogs/edit-media";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import ProgressWind  from "@/components/bar/progress-wind";
+import ProgressWind from "@/components/bar/progress-wind";
 
 export default function Index({ media }) {
     const { data, setData } = useForm({
@@ -23,6 +35,7 @@ export default function Index({ media }) {
 
     const [openDialog, setOpenDialog] = useState(false); // Controla o estado do diálogo
     const [selectedContent, setSelectedContent] = useState(null); // Armazena o conteúdo selecionado
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     // ? Colunas da tabela
     const columns = [
@@ -71,9 +84,7 @@ export default function Index({ media }) {
         // ? Porcentual
         {
             accessorKey: "progress_upload",
-            header: () => (
-                <div className="text-center">Percentual</div>
-            ),
+            header: () => <div className="text-center">Percentual</div>,
             cell: ({ row }) => {
                 return (
                     <ProgressWind progress={row.getValue("progress_upload")} />
@@ -83,9 +94,7 @@ export default function Index({ media }) {
         // ? Status
         {
             accessorKey: "status_upload",
-            header: () => (
-                <div className="text-center">Status do Arquivo</div>
-            ),
+            header: () => <div className="text-center">Status do Arquivo</div>,
             cell: ({ row }) => {
                 return (
                     <div className="text-center font-medium capitalize">
@@ -155,7 +164,40 @@ export default function Index({ media }) {
                             >
                                 Editar
                             </DropdownMenuItem>
-                            <DropdownMenuItem>Deletar</DropdownMenuItem>
+                            {/* 
+                            <AlertDialog>
+                                <AlertDialogTrigger>Deletar</AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>
+                                            Tem certeza que deseja deletar?
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Esta ação não pode ser desfeita.
+                                            Isso irá excluir permanentemente.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>
+                                            Cancelar
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction>
+                                            Confirmar
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog> */}
+
+                            <DropdownMenuItem
+                                onSelect={() => {
+                                    setSelectedContent(content);
+                                    setIsDialogOpen(true);
+                                }}
+                            >
+                                Deletar
+                            </DropdownMenuItem>
+
+                            {/* <DropdownMenuItem>Deletar</DropdownMenuItem> */}
                         </DropdownMenuContent>
                     </DropdownMenu>
                 );
@@ -205,6 +247,41 @@ export default function Index({ media }) {
                 onOpenChange={setOpenDialog}
                 content={selectedContent}
             />
+
+            <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            Tem certeza que deseja deletar?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Esta ação não pode ser desfeita. Isso irá excluir
+                            permanentemente.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel
+                            onClick={() => setIsDialogOpen(false)}
+                        >
+                            Cancelar
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                            className="mt-2 sm:mt-0"
+                            onClick={() => {
+                                if (selectedContent && selectedContent.id) {
+                                    router.delete(route("aemina.destroy", selectedContent.id), {
+                                        onSuccess: () => setIsDialogOpen(false),
+                                    });
+                                } else {
+                                    console.error("Erro: Nenhum item selecionado para exclusão.");
+                                }
+                            }}
+                        >
+                            Confirmar
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </>
     );
 }

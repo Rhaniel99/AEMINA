@@ -11,7 +11,7 @@ import {
   import Movie  from "@/components/forms/aemina/Movie";
   export default function Content({ open, onOpenChange, content }) {
     const renderForm = () => {
-      switch (content?.name) {
+      switch (content?.name || content) {
         case "Filme":
           return (
             <>
@@ -84,7 +84,7 @@ import {
         <DialogContent className="sm:max-w-[850px]" onPointerDownOutside={(event) => event.preventDefault()}>
           <DialogHeader>
             <DialogTitle>
-              {content ? `Cadastrar ${content.name}` : "Cadastro"}
+              {content ? `Cadastrar ${content.name || content} ` : "Cadastro"}
             </DialogTitle>
             <DialogDescription>
               Preencha os campos abaixo para adicionar o novo conteúdo.
