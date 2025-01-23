@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Head, router, useForm, Link } from "@inertiajs/react";
+import { Head, router, useForm, Link, usePoll } from "@inertiajs/react";
 import { TableListMedia } from "@/components/datatables/list-media";
 import {
     DropdownMenuItem,
@@ -36,6 +36,25 @@ export default function Index({ media }) {
     const [openDialog, setOpenDialog] = useState(false); // Controla o estado do diálogo
     const [selectedContent, setSelectedContent] = useState(null); // Armazena o conteúdo selecionado
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    // Configurando polling para buscar progresso e status no servidor
+    // usePoll(2000, {
+    //     query() {
+    //         router.get(
+    //             route("aemina.list.media"),
+    //             { search: data.search },
+    //             // { search: searchTerm }, // Inclui o termo de pesquisa no polling
+    //             {
+    //                 onSuccess: (page) => {
+    //                     setUpdatedMedia(page.props.media); // Atualiza apenas a mídia
+    //                 },
+    //                 preserveState: true,
+    //                 preserveScroll: true,
+    //                 only: ["media"], // Recarrega apenas a propriedade 'media'
+    //             }
+    //         );
+    //     },
+    // });
 
     // ? Colunas da tabela
     const columns = [
@@ -164,29 +183,6 @@ export default function Index({ media }) {
                             >
                                 Editar
                             </DropdownMenuItem>
-                            {/* 
-                            <AlertDialog>
-                                <AlertDialogTrigger>Deletar</AlertDialogTrigger>
-                                <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle>
-                                            Tem certeza que deseja deletar?
-                                        </AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                            Esta ação não pode ser desfeita.
-                                            Isso irá excluir permanentemente.
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel>
-                                            Cancelar
-                                        </AlertDialogCancel>
-                                        <AlertDialogAction>
-                                            Confirmar
-                                        </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog> */}
 
                             <DropdownMenuItem
                                 onSelect={() => {
@@ -196,8 +192,6 @@ export default function Index({ media }) {
                             >
                                 Deletar
                             </DropdownMenuItem>
-
-                            {/* <DropdownMenuItem>Deletar</DropdownMenuItem> */}
                         </DropdownMenuContent>
                     </DropdownMenu>
                 );
@@ -206,6 +200,7 @@ export default function Index({ media }) {
     ];
 
     // ? Funções de Pesquisa
+    // Função para lidar com a pesquisa
     const handleSearchChange = (e) => {
         const searchValue = e.target.value;
 
@@ -234,9 +229,9 @@ export default function Index({ media }) {
 
             <div className="p-6">
                 <TableListMedia
-                    media={media}
+                    media={media} // Usa o estado atualizado
                     columns={columns}
-                    handleSearch={handleSearchChange}
+                    handleSearch={handleSearchChange} // Função de busca
                     data={data}
                 />
             </div>
@@ -269,11 +264,20 @@ export default function Index({ media }) {
                             className="mt-2 sm:mt-0"
                             onClick={() => {
                                 if (selectedContent && selectedContent.id) {
-                                    router.delete(route("aemina.destroy", selectedContent.id), {
-                                        onSuccess: () => setIsDialogOpen(false),
-                                    });
+                                    router.delete(
+                                        route(
+                                            "aemina.destroy",
+                                            selectedContent.id
+                                        ),
+                                        {
+                                            onSuccess: () =>
+                                                setIsDialogOpen(false),
+                                        }
+                                    );
                                 } else {
-                                    console.error("Erro: Nenhum item selecionado para exclusão.");
+                                    console.error(
+                                        "Erro: Nenhum item selecionado para exclusão."
+                                    );
                                 }
                             }}
                         >

@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use FFMpeg;
+use FFMpeg\Format\Video\X264;
 use App\Jobs\UploadMediaJob;
 use App\Models\Categories;
 use App\Models\ContentType;
 use App\Models\MediaCategory;
 use DB;
+use FFMpeg;
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\Media;
 use App\Models\MediaFiles;
 use Log;
+use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg as ProtoneFFMpeg;
 use Storage;
 
 class AeminaController extends Controller
@@ -146,7 +148,6 @@ class AeminaController extends Controller
         }
     }
 
-
     private function store_movie($request)
     {
         $request->validate([
@@ -157,10 +158,10 @@ class AeminaController extends Controller
             'dt_lancamento' => 'required',
             'arquivo_filme' => 'required',
         ]);
-    
+
         $profile_id = session()->get('selected_profile');
         $content = ContentType::where('type', 'filme')->first();
-    
+
         // Buscar ou criar categorias
         $categories = collect($request->categorias)->map(function ($categoria) {
             return Categories::firstOrCreate(
@@ -168,9 +169,9 @@ class AeminaController extends Controller
                 ['name' => $categoria]
             );
         });
-    
+
         $path_cover = genPathCover($request->titulo_filme, $request->capa_filme);
-    
+
         // Criar a mídia
         $media = Media::create([
             'profile_id' => $profile_id,
@@ -180,7 +181,7 @@ class AeminaController extends Controller
             'cover_image_path' => $path_cover,
             'content_type_id' => $content->id,
         ]);
-    
+
         // Associar as categorias à mídia sem duplicatas
         foreach ($categories as $category) {
             MediaCategory::firstOrCreate([
@@ -188,39 +189,79 @@ class AeminaController extends Controller
                 'category_id' => $category->id,
             ]);
         }
-    
+
         // Armazenar a capa
         $encoded_cover = file_get_contents($request->capa_filme);
         Storage::disk('s3')->put($path_cover, $encoded_cover);
-    
+
         $fileName = $request->arquivo_filme;
         $fileBaseName = basename($fileName);
         $jsonFilePath = storage_path("app/private/tus/{$fileBaseName}.json");
-    
+
         if (file_exists($jsonFilePath)) {
             $jsonData = json_decode(file_get_contents($jsonFilePath), true);
-    
+
             if (isset($jsonData['extension'])) {
                 $extension = $jsonData['extension'];
                 // $localFilePath = storage_path("app/private/tus/{$fileBaseName}.{$extension}");
-    
+
                 $local_file_path = "app/private/tus/{$fileBaseName}.{$extension}";
-    
+
                 if (file_exists(storage_path($local_file_path))) {
+
                     $titulo_normalizado = fPath($request->titulo_filme);
                     $converted_path = "app/private/tus/{$titulo_normalizado}_converted.mp4";
 
-                    $path_file = "films/{$titulo_normalizado}/{$titulo_normalizado}_1080p.mp4";
-    
+                    $path_file = "films/{$titulo_normalizado}/{$titulo_normalizado}.mp4";
+
                     $medial_file = MediaFiles::create([
                         'media_id' => $media->id,
                         'file_path' => $path_file,
                         'upload_status' => 'pending',
                         'upload_progress' => 0
                     ]);
-    
-                    UploadMediaJob::dispatch($local_file_path, $converted_path, $media->id, $medial_file->id, $path_file)->onQueue('media');
-    
+
+                    $localFilePath = "tus/{$fileBaseName}.{$extension}";
+
+                    $ffprobe = FFMpeg\FFProbe::create();
+
+                    // Analisar informações completas dos streams
+                    $video_info = $ffprobe->streams(Storage::disk('local')->path($localFilePath))
+                        ->videos()
+                        ->first();
+
+                    if(!$video_info) {
+                        throw new Exception('Nao conseguiu pegar as informacoes do video.');
+                    }
+
+                    $codec_name = $video_info->get('codec_name'); // Nome do codec (ex: h264)
+                    $profile = $video_info->get('profile'); // Perfil do codec (ex: High 10 Profile)
+
+                    if($codec_name === 'h264' && $profile === 'High 10'){
+                        UploadMediaJob::dispatch($local_file_path, $converted_path, $media->id, $medial_file->id, $path_file)->onQueue('media');
+                    }
+
+
+                    if($codec_name === 'h264' && $profile === 'High'){
+                        Log::warning(storage_path($local_file_path));
+                        $video = ProtoneFFMpeg::fromDisk('local')->open($localFilePath);
+
+                        // Exportar o vídeo com os parâmetros desejados
+                        $video->export()
+                            // Defina o formato, se necessário
+                            ->inFormat(new X264())  
+                            // Copiar o áudio sem reencode
+                            ->audioCodec('copy') 
+                            // Copiar o vídeo sem reencode
+                            ->videoCodec('copy') 
+                            // Codec para legendas, se presente
+                            ->subtitleCodec('mov_text') 
+                            // Direcionar para o S3
+                            ->toDisk('s3')
+                             // Salvar diretamente no S3
+                            ->save($path_file); 
+                    }
+
                 } else {
                     dd('Arquivo não encontrado no diretório local: ' . $local_file_path);
                 }
@@ -232,6 +273,7 @@ class AeminaController extends Controller
         }
     }
     
+
     /**
      * ? Atualizar um novo filme, série, anime.
      */
@@ -275,7 +317,7 @@ class AeminaController extends Controller
 
         $old_categories = MediaCategory::where('media_id', $media->id)->get(['category_id'])->pluck('category_id')->toArray();
 
-        $categoriesToRemove = array_diff( $old_categories, $categories);
+        $categoriesToRemove = array_diff($old_categories, $categories);
 
         $categoriesToAdd = array_diff($categories, $old_categories);
 
@@ -285,7 +327,7 @@ class AeminaController extends Controller
             $media->categories()->detach($categoriesToRemove);
         }
 
-        if(!empty($categoriesToAdd)){
+        if (!empty($categoriesToAdd)) {
             Log::info("Executou o ADD");
             Log::alert($categoriesToAdd);
             Log::warning($media);
@@ -301,14 +343,14 @@ class AeminaController extends Controller
             $encoded_cover = file_get_contents($request->capa_filme);
             Storage::disk('s3')->put($path_cover, $encoded_cover);
         }
-    
+
         if ($request->arquivo_filme) {
             $path_file = genPathFile($request->titulo_filme, $request->arquivo_filme);
             $encoded_file = file_get_contents($request->arquivo_filme);
             Storage::disk('s3')->put($path_file, $encoded_file);
         }
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -325,48 +367,49 @@ class AeminaController extends Controller
             'release_date' => $media->release_date,
             'description' => $media->description,
         ];
-        
+
         return inertia('Aemina/Edit', [
-            'media' => $media,]);
+            'media' => $media,
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
 
-     public function destroy(string $id)
-     {
-         // Carrega o registro de mídia junto com os tipos de conteúdo e os arquivos relacionados
-         $media = Media::where('id', $id)
-             ->with('contentType')
-             ->with('files')
-             ->first();
-     
-         if (!$media) {
-             return to_route('aemina.list.media')->withErrors(['error' => 'Mídia não encontrada.']);
-         }
-     
-         // Deletar arquivos do MinIO
-         if ($media->files) {
-             foreach ($media->files as $file) {
-                 $filePath = $file->file_path;
-     
-                 // Verifica se o arquivo existe no MinIO
-                 if (Storage::disk('s3')->exists($filePath)) {
-                     Storage::disk('s3')->delete($filePath);
-                 }
-             }
-         }
-     
-         // Deletar imagem de capa (se existir)
-         if ($media->cover_image_path && Storage::disk('s3')->exists($media->cover_image_path)) {
-             Storage::disk('s3')->delete($media->cover_image_path);
-         }
-     
-         // Deletar o registro de mídia
-         $media->delete();
-     
-         // Retornar ao listar com mensagem de sucesso
-         return to_route('aemina.list.media')->with(['success' => "{$media->contentType->type} removido com sucesso!"]);
-     }
+    public function destroy(string $id)
+    {
+        // Carrega o registro de mídia junto com os tipos de conteúdo e os arquivos relacionados
+        $media = Media::where('id', $id)
+            ->with('contentType')
+            ->with('files')
+            ->first();
+
+        if (!$media) {
+            return to_route('aemina.list.media')->withErrors(['error' => 'Mídia não encontrada.']);
+        }
+
+        // Deletar arquivos do MinIO
+        if ($media->files) {
+            foreach ($media->files as $file) {
+                $filePath = $file->file_path;
+
+                // Verifica se o arquivo existe no MinIO
+                if (Storage::disk('s3')->exists($filePath)) {
+                    Storage::disk('s3')->delete($filePath);
+                }
+            }
+        }
+
+        // Deletar imagem de capa (se existir)
+        if ($media->cover_image_path && Storage::disk('s3')->exists($media->cover_image_path)) {
+            Storage::disk('s3')->delete($media->cover_image_path);
+        }
+
+        // Deletar o registro de mídia
+        $media->delete();
+
+        // Retornar ao listar com mensagem de sucesso
+        return to_route('aemina.list.media')->with(['success' => "{$media->contentType->type} removido com sucesso!"]);
+    }
 }

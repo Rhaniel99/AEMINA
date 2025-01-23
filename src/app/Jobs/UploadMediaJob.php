@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Models\Media;
 use App\Models\MediaFiles;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -49,9 +48,20 @@ class UploadMediaJob implements ShouldQueue
             return;
         }
 
+        // Calcular o total de frames do vídeo
+        $this->total_frames = $this->getTotalFrames($local_file_path);
+        if ($this->total_frames === 0) {
+            Log::error("Falha ao obter o total de frames do arquivo: " . $local_file_path);
+            return;
+        }
+
+        Log::info("Total de frames no arquivo: " . $this->total_frames);
+
         // Construir comando FFmpeg
         $command = [
             'ffmpeg',
+            '-progress',
+            'pipe:1',
             '-vaapi_device',
             '/dev/dri/renderD128',
             '-i',
@@ -86,28 +96,23 @@ class UploadMediaJob implements ShouldQueue
 
         try {
             $process->mustRun(function ($type, $buffer) {
-                if ($type === Process::ERR) {
-                    // Captura do número de frames processados
-                    if (preg_match('/frame=\s*(\d+)/', $buffer, $matches)) {
-                        $frameCount = (int) $matches[1];
-
-                        // Calcular a porcentagem com base no número total de frames
-                        if ($this->total_frames > 0) {
-                            $progress = ($frameCount / $this->total_frames) * 100;
-                            $this->updateProgress($progress);
-                            // Log::info("Progresso de conversão: " . round($progress, 2) . "%");
-                        }
-
-                        // Log::info("Número de frames: " . $frameCount);
-                    }
-
-                    // Tamanho do arquivo processado
-                    if (preg_match('/size=\s*(\d+)kB/', $buffer, $matches)) {
-                        $size = $matches[1];
-                        Log::info("Tamanho do arquivo processado: " . $size . "kB");
-                    }
+                if (Process::ERR === $type) {
+                    // Log::alert($buffer);
                 } else {
-                    Log::info("Saída padrão (stdout): " . $buffer);
+                    $lines = explode("\n", $buffer);
+                    foreach ($lines as $line) {
+                        if (strpos($line, 'frame=') === 0) {
+                            $current_frame = (int) substr($line, 6);
+                            // Calcular progresso como valor inteiro
+                            if ($this->total_frames > 0) {
+                                $progress = round(($current_frame / $this->total_frames) * 100);
+                                // Log::info("Progresso: {$progress}% (Frames processados: {$current_frame})");
+
+                                // Atualizar progresso no banco de dados
+                                $this->updateProgress($progress);
+                            }
+                        }
+                    }
                 }
             });
 
@@ -130,16 +135,39 @@ class UploadMediaJob implements ShouldQueue
         }
     }
 
+    private function getTotalFrames($filePath)
+    {
+        $command = [
+            'ffprobe',
+            '-v',
+            'error',
+            '-select_streams',
+            'v:0',
+            '-show_entries',
+            'stream=nb_frames',
+            '-of',
+            'default=nokey=1:noprint_wrappers=1',
+            $filePath,
+        ];
+
+        $process = new Process($command);
+        $process->setTimeout(60); // Define um tempo limite razoável
+        $process->mustRun();
+
+        $output = trim($process->getOutput());
+
+        return is_numeric($output) ? (int) $output : 0;
+    }
+
+
     private function updateProgress($progress)
     {
         // Atualize o progresso no banco de dados
-        $mediaFile = MediaFiles::find($this->media_file_id);
-        Log::info(json_encode($mediaFile));
-        Log::warning(round($progress));
-        
-        if ($mediaFile) {
-            $mediaFile->update([
-                'upload_progress' => round($progress),
+        $media_file = MediaFiles::find($this->media_file_id);
+
+        if ($media_file) {
+            $media_file->update([
+                'upload_progress' => $progress,
                 'upload_status' => $progress >= 100 ? 'completed' : 'in_progress',
             ]);
         }
