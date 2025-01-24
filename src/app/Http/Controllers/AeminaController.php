@@ -248,18 +248,12 @@ class AeminaController extends Controller
 
                         // Exportar o vídeo com os parâmetros desejados
                         $video->export()
-                            // Defina o formato, se necessário
-                            ->inFormat(new X264())  
-                            // Copiar o áudio sem reencode
-                            ->audioCodec('copy') 
-                            // Copiar o vídeo sem reencode
-                            ->videoCodec('copy') 
-                            // Codec para legendas, se presente
-                            ->subtitleCodec('mov_text') 
-                            // Direcionar para o S3
-                            ->toDisk('s3')
-                             // Salvar diretamente no S3
-                            ->save($path_file); 
+                        ->inFormat(new X264())  // Defina o formato, se necessário
+                        ->audio('copy')  // Copiar o áudio sem reencode
+                        ->video('copy')  // Copiar o vídeo sem reencode
+                        ->subtitleCodec('mov_text')  // Codec para legendas, se presente
+                        ->toDisk('s3')  // Direcionar para o S3
+                        ->save($path_file);  // Salvar diretamente no S3
                     }
 
                 } else {
