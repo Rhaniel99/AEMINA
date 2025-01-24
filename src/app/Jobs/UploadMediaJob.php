@@ -12,7 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Log;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
-
+use App\Services\UploadService;
 
 class UploadMediaJob implements ShouldQueue
 {
@@ -20,156 +20,68 @@ class UploadMediaJob implements ShouldQueue
 
     protected $file_path;
     protected $converted_path;
-    protected $media_id;
+    protected $type;
     protected $media_file_id;
     protected $paths3;
-    protected $total_frames;
+    const CONVERT_CODEC = 'convertCodec';
+    const CONVERT_MP4 = 'convertMToMp4';
 
-    public function __construct($file_path, $converted_path, $media_id, $media_file_id, $paths3)
+    public function __construct($file_path, $converted_path, $type, $media_file_id, $paths3)
     {
         $this->file_path = $file_path;
         $this->converted_path = $converted_path;
-        $this->media_id = $media_id;
+        $this->type = $type;
         $this->media_file_id = $media_file_id;
         $this->paths3 = $paths3;
-        $this->total_frames = 0; // Defina o número total de frames ou tamanho do arquivo
     }
 
     public function handle()
     {
-        Log::info("Iniciando conversão com FFmpeg.");
+        $uploadService = new UploadService();
+
+        Log::info("Iniciando processo de conversão.");
 
         $local_file_path = storage_path($this->file_path);
         $converted_path = storage_path($this->converted_path);
 
-        // Verificar se o arquivo de entrada existe
         if (!file_exists($local_file_path)) {
             Log::error("Arquivo não encontrado: " . $local_file_path);
             return;
         }
 
-        // Calcular o total de frames do vídeo
-        $this->total_frames = $this->getTotalFrames($local_file_path);
-        if ($this->total_frames === 0) {
-            Log::error("Falha ao obter o total de frames do arquivo: " . $local_file_path);
-            return;
-        }
-
-        Log::info("Total de frames no arquivo: " . $this->total_frames);
-
-        // Construir comando FFmpeg
-        $command = [
-            'ffmpeg',
-            '-progress',
-            'pipe:1',
-            '-vaapi_device',
-            '/dev/dri/renderD128',
-            '-i',
-            $local_file_path,
-            '-vf',
-            'format=nv12,hwupload',
-            '-c:v',
-            'h264_vaapi',
-            '-qp',
-            '28',
-            '-preset',
-            'fast',
-            '-profile:v',
-            'main',
-            '-b:v',
-            '4M',
-            '-maxrate',
-            '4M',
-            '-bufsize',
-            '8M',
-            '-threads',
-            '6',
-            '-c:a',
-            'copy',
-            $converted_path,
-        ];
-
-        $process = new Process($command);
-
-        // Executar o processo
-        $process->setTimeout(null);
-
         try {
-            $process->mustRun(function ($type, $buffer) {
-                if (Process::ERR === $type) {
-                    // Log::alert($buffer);
-                } else {
-                    $lines = explode("\n", $buffer);
-                    foreach ($lines as $line) {
-                        if (strpos($line, 'frame=') === 0) {
-                            $current_frame = (int) substr($line, 6);
-                            // Calcular progresso como valor inteiro
-                            if ($this->total_frames > 0) {
-                                $progress = round(($current_frame / $this->total_frames) * 100);
-                                // Log::info("Progresso: {$progress}% (Frames processados: {$current_frame})");
-
-                                // Atualizar progresso no banco de dados
-                                $this->updateProgress($progress);
-                            }
-                        }
-                    }
-                }
-            });
-
-            Log::info("Arquivo convertido com sucesso: " . $converted_path);
-
-            // Enviar para o S3 usando stream
-            if (Storage::disk('s3')->put($this->paths3, fopen($converted_path, 'r'))) {
-                Log::info("Arquivo enviado para S3 com sucesso.");
-            } else {
-                Log::error("Falha ao enviar arquivo para S3.");
+            
+            switch ($this->type) {
+                case self::CONVERT_CODEC:
+                    $converted_path_final = $uploadService->uploadConvertCodecFile($local_file_path, $converted_path, $this->media_file_id);
+                    break;
+                case self::CONVERT_MP4:
+                    $converted_path_final = $uploadService->uploadConvertMToMp4($local_file_path, $converted_path, $this->media_file_id);
+                    break;
+                default:
+                    Log::error("Tipo de conversão desconhecido.");
+                    return;
             }
 
-            // Limpar arquivos locais
-            unlink($local_file_path);
-            unlink($converted_path);
+            $this->uploadToS3($converted_path_final);
 
-            Log::info("Arquivo enviado para S3 e limpo localmente.");
         } catch (ProcessFailedException $e) {
             Log::error("Erro durante a conversão: " . $e->getMessage());
         }
     }
 
-    private function getTotalFrames($filePath)
+    private function uploadToS3($converted_path)
     {
-        $command = [
-            'ffprobe',
-            '-v',
-            'error',
-            '-select_streams',
-            'v:0',
-            '-show_entries',
-            'stream=nb_frames',
-            '-of',
-            'default=nokey=1:noprint_wrappers=1',
-            $filePath,
-        ];
-
-        $process = new Process($command);
-        $process->setTimeout(60); // Define um tempo limite razoável
-        $process->mustRun();
-
-        $output = trim($process->getOutput());
-
-        return is_numeric($output) ? (int) $output : 0;
-    }
-
-
-    private function updateProgress($progress)
-    {
-        // Atualize o progresso no banco de dados
-        $media_file = MediaFiles::find($this->media_file_id);
-
-        if ($media_file) {
-            $media_file->update([
-                'upload_progress' => $progress,
-                'upload_status' => $progress >= 100 ? 'completed' : 'in_progress',
-            ]);
+        if (Storage::disk('s3')->put($this->paths3, fopen($converted_path, 'r'))) {
+            Log::info("Arquivo enviado para S3 com sucesso.");
+        } else {
+            Log::error("Falha ao enviar arquivo para S3.");
         }
+
+        // Limpar arquivos locais
+        unlink(storage_path($this->file_path));
+        unlink($converted_path);
+
+        Log::info("Arquivos limpos localmente.");
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use FFMpeg\Format\Video\X264;
 use App\Jobs\UploadMediaJob;
 use App\Models\Categories;
 use App\Models\ContentType;
@@ -14,7 +13,7 @@ use Illuminate\Http\Request;
 use App\Models\Media;
 use App\Models\MediaFiles;
 use Log;
-use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg as ProtoneFFMpeg;
+// use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg as ProtoneFFMpeg;
 use Storage;
 
 class AeminaController extends Controller
@@ -214,7 +213,7 @@ class AeminaController extends Controller
 
                     $path_file = "films/{$titulo_normalizado}/{$titulo_normalizado}.mp4";
 
-                    $medial_file = MediaFiles::create([
+                    $media_file = MediaFiles::create([
                         'media_id' => $media->id,
                         'file_path' => $path_file,
                         'upload_status' => 'pending',
@@ -229,6 +228,8 @@ class AeminaController extends Controller
                     $video_info = $ffprobe->streams(Storage::disk('local')->path($localFilePath))
                         ->videos()
                         ->first();
+                    
+                    // Log::info($video_info->all());
 
                     if(!$video_info) {
                         throw new Exception('Nao conseguiu pegar as informacoes do video.');
@@ -238,22 +239,13 @@ class AeminaController extends Controller
                     $profile = $video_info->get('profile'); // Perfil do codec (ex: High 10 Profile)
 
                     if($codec_name === 'h264' && $profile === 'High 10'){
-                        UploadMediaJob::dispatch($local_file_path, $converted_path, $media->id, $medial_file->id, $path_file)->onQueue('media');
+                        UploadMediaJob::dispatch($local_file_path, $converted_path, 'convertCodec', $media_file->id, $path_file)->onQueue('media');
                     }
 
-
                     if($codec_name === 'h264' && $profile === 'High'){
-                        Log::warning(storage_path($local_file_path));
-                        $video = ProtoneFFMpeg::fromDisk('local')->open($localFilePath);
-
-                        // Exportar o vídeo com os parâmetros desejados
-                        $video->export()
-                        ->inFormat(new X264())  // Defina o formato, se necessário
-                        ->audio('copy')  // Copiar o áudio sem reencode
-                        ->video('copy')  // Copiar o vídeo sem reencode
-                        ->subtitleCodec('mov_text')  // Codec para legendas, se presente
-                        ->toDisk('s3')  // Direcionar para o S3
-                        ->save($path_file);  // Salvar diretamente no S3
+                        // Disparar job para conversão e upload
+                        UploadMediaJob::dispatch($localFilePath, $converted_path, 'convertMToMp4', $media_file->id, $path_file)
+                            ->onQueue('media');
                     }
 
                 } else {
