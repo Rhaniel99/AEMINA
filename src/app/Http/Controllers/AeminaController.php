@@ -224,7 +224,7 @@ class AeminaController extends Controller
 
                     $ffprobe = FFMpeg\FFProbe::create();
 
-                    // Analisar informações completas dos streams
+                    // Analisar informações completas dos streams aa
                     $video_info = $ffprobe->streams(Storage::disk('local')->path($localFilePath))
                         ->videos()
                         ->first();
