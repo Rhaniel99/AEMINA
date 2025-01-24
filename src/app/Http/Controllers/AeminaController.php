@@ -116,14 +116,6 @@ class AeminaController extends Controller
     }
 
     /**
-     * ? Criar um novo filme, série, anime.
-     */
-    public function create()
-    {
-        return inertia('Aemina/Create');
-    }
-
-    /**
      * ? Salvar um novo filme, série, anime.
      */
 
@@ -228,21 +220,21 @@ class AeminaController extends Controller
                     $video_info = $ffprobe->streams(Storage::disk('local')->path($localFilePath))
                         ->videos()
                         ->first();
-                    
+
                     // Log::info($video_info->all());
 
-                    if(!$video_info) {
+                    if (!$video_info) {
                         throw new Exception('Nao conseguiu pegar as informacoes do video.');
                     }
 
                     $codec_name = $video_info->get('codec_name'); // Nome do codec (ex: h264)
                     $profile = $video_info->get('profile'); // Perfil do codec (ex: High 10 Profile)
 
-                    if($codec_name === 'h264' && $profile === 'High 10'){
+                    if ($codec_name === 'h264' && $profile === 'High 10') {
                         UploadMediaJob::dispatch($local_file_path, $converted_path, 'convertCodec', $media_file->id, $path_file)->onQueue('media');
                     }
 
-                    if($codec_name === 'h264' && $profile === 'High'){
+                    if ($codec_name === 'h264' && $profile === 'High') {
                         // Disparar job para conversão e upload
                         UploadMediaJob::dispatch($localFilePath, $converted_path, 'convertMToMp4', $media_file->id, $path_file)
                             ->onQueue('media');
@@ -258,7 +250,6 @@ class AeminaController extends Controller
             dd('Arquivo JSON não encontrado: ' . $jsonFilePath);
         }
     }
-    
 
     /**
      * ? Atualizar um novo filme, série, anime.
