@@ -120,25 +120,25 @@ class UploadService
 
     public function uploadConvertMToMp4($local_file_path, $converted_path, $media_file_id)
     {
-        $ffmpeg = FFMpegFFMpeg::create();
-
+        $ffmpeg = FFMpegFFMpeg::create([
+            'timeout'          => null, // Timeout em segundos
+            'ffmpeg.threads'   => 6,   // Número de threads para o ffmpeg
+        ]);
+    
         // Abrir o vídeo
-        $video = $ffmpeg->open(storage_path($local_file_path));
+        $video = $ffmpeg->open($local_file_path);
 
         // Definir o formato para MP4, reencodificando o vídeo com libx264 e mantendo o áudio como está
         $format = new X264();
         $format->on('progress', function ($video, $format, $percentage) use ($media_file_id) {
             $this->updateProgress($percentage, $media_file_id);
-
-            // echo "$percentage % transcoded";
-            // Log::info("Progresso: {$percentage}%");
         });
         $format->setAudioCodec('copy')  // Manter o áudio original sem reencodificar
             ->setVideoCodec('libx264')  // Reencodificar o vídeo com libx264
             ->setAdditionalParameters(['-c:s', 'mov_text']);  // Converter legendas para mov_text para MP4
 
         // Salvar o arquivo convertido
-        $video->save($format, storage_path($converted_path));
+        $video->save($format, $converted_path);
 
         Log::info("Arquivo convertido com sucesso: " . $converted_path);
 

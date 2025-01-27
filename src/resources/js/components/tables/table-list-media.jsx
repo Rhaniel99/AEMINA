@@ -35,7 +35,7 @@ import {
 
 import Content from "@/components/dialogs/Content";
 
-export function TableListMedia({ media, columns, handleSearch, data }) {
+export function TableMediaList({ media, columns, search, handleSearch, data }) {
     const [sorting, setSorting] = React.useState([]);
     const [columnFilters, setColumnFilters] = React.useState([]);
     const [columnVisibility, setColumnVisibility] = React.useState({});
@@ -45,7 +45,6 @@ export function TableListMedia({ media, columns, handleSearch, data }) {
     const [selectedContent, setSelectedContent] = React.useState(null); // Armazena o conteúdo selecionado
 
     const handleContentClick = (content) => {
-        console.log(content);
         setSelectedContent(content); // Define o conteúdo selecionado
         setOpenDialog(true); // Abre o diálogo
     };
@@ -76,7 +75,7 @@ export function TableListMedia({ media, columns, handleSearch, data }) {
                 <div className="flex items-center py-4">
                     <Input
                         placeholder="Filtrar por titulo..."
-                        value={data.search}
+                        value={search}
                         onChange={handleSearch}
                         className="max-w-sm"
                     />
@@ -91,7 +90,6 @@ export function TableListMedia({ media, columns, handleSearch, data }) {
                             <DropdownMenuCheckboxItem
                                 className="capitalize"
                                 onClick={() => handleContentClick("Filme")}
-                                // onClick={() => console.log("Novo Filme")}
                             >
                                 Filme
                             </DropdownMenuCheckboxItem>

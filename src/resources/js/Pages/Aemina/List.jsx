@@ -1,14 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Head, router, useForm, Link, usePoll } from "@inertiajs/react";
-import { TableListMedia } from "@/components/datatables/list-media";
-import {
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-    DropdownMenuContent,
-    DropdownMenu,
-} from "@/components/ui/dropdown-menu";
 
 import {
     AlertDialog,
@@ -22,205 +13,91 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-import { Button } from "@/components/ui/button";
-
 import EditMedia from "@/components/dialogs/edit-media";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import ProgressWind from "@/components/bar/progress-wind";
+
+import { tableColumnsMediaList } from "@/components/tables/columns-list-media";
+import { TableMediaList } from "@/components/tables/table-list-media";
+import { useDialog } from "@/hooks/use-dialog";
+import { debounce } from "lodash";
 
 export default function Index({ media }) {
     const { data, setData } = useForm({
         search: "",
     });
 
-    const [openDialog, setOpenDialog] = useState(false); // Controla o estado do diálogo
-    const [selectedContent, setSelectedContent] = useState(null); // Armazena o conteúdo selecionado
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [searchValue, setSearchValue] = useState(data.search);
 
-    // Configurando polling para buscar progresso e status no servidor
-    // usePoll(2000, {
-    //     query() {
-    //         router.get(
-    //             route("aemina.list.media"),
-    //             { search: data.search },
-    //             // { search: searchTerm }, // Inclui o termo de pesquisa no polling
-    //             {
-    //                 onSuccess: (page) => {
-    //                     setUpdatedMedia(page.props.media); // Atualiza apenas a mídia
-    //                 },
-    //                 preserveState: true,
-    //                 preserveScroll: true,
-    //                 only: ["media"], // Recarrega apenas a propriedade 'media'
-    //             }
-    //         );
-    //     },
-    // });
+    usePoll(5000, {
+        onFinish() {
+            router.reload({
+                preserveState: true,
+                preserveScroll: true,
+                preserveUrl: true,
+                async: true,
+                only: ['progress_upload']
+            });
+        },
+    });
 
-    // ? Colunas da tabela
-    const columns = [
-        // ? Conteúdo
-        {
-            accessorKey: "content_type",
-            header: "Tipo de Conteúdo",
-            cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("content_type")}</div>
-            ),
-        },
-        // ? Titulo
-        {
-            accessorKey: "title",
-            header: ({ column }) => (
-                <Button
-                    variant="ghost"
-                    onClick={() =>
-                        column.toggleSorting(column.getIsSorted() === "asc")
-                    }
-                >
-                    Titulo
-                    <ArrowUpDown />
-                </Button>
-            ),
-            cell: ({ row }) => <div>{row.getValue("title")}</div>,
-        },
-        // ? Categorias
-        {
-            accessorKey: "categories",
-            header: "Categorias",
-            cell: ({ row }) => (
-                <div className="capitalize">
-                    {row.getValue("categories").join(", ")}
-                </div>
-            ),
-        },
-        // ? Nome do Responsavel
-        {
-            accessorKey: "username",
-            header: "Responsável",
-            cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("username")}</div>
-            ),
-        },
-        // ? Porcentual
-        {
-            accessorKey: "progress_upload",
-            header: () => <div className="text-center">Percentual</div>,
-            cell: ({ row }) => {
-                return (
-                    <ProgressWind progress={row.getValue("progress_upload")} />
-                );
-            },
-        },
-        // ? Status
-        {
-            accessorKey: "status_upload",
-            header: () => <div className="text-center">Status do Arquivo</div>,
-            cell: ({ row }) => {
-                return (
-                    <div className="text-center font-medium capitalize">
-                        {row.getValue("status_upload")}
-                    </div>
-                );
-            },
-        },
-        // ? Data de Lançamento
-        {
-            accessorKey: "release_date",
-            header: () => <div className="text-right">Data de Lançamento</div>,
-            cell: ({ row }) => {
-                return (
-                    <div className="text-right font-medium">
-                        {new Date(
-                            row.getValue("release_date")
-                        ).toLocaleDateString()}
-                    </div>
-                );
-            },
-        },
-        // ? Ações
-        {
-            id: "actions",
-            enableHiding: false,
-            cell: ({ row }) => {
-                const content = {
-                    name:
-                        row.original.content_type.charAt(0).toUpperCase() +
-                        row.original.content_type.slice(1),
-                    title: row.original.title,
-                    descricao: row.original.descricao,
-                    dt_lancamento: row.original.release_date,
-                    id: row.original.id,
-                    categories: row.original.categories,
-                };
+    const {
+        isOpen: isEditDialogOpen,
+        content: selectedContent,
+        openDialog: openEditDialog,
+        closeDialog: closeEditDialog,
+    } = useDialog();
 
-                return (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                <span className="sr-only">Open menu</span>
-                                <MoreHorizontal />
-                            </Button>
-                        </DropdownMenuTrigger>
+    const {
+        isOpen: isAlertDialogOpen,
+        content: alertContent,
+        openDialog: openAlertDialog,
+        closeDialog: closeAlertDialog,
+    } = useDialog();
 
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                            <DropdownMenuItem
-                                onClick={() =>
-                                    navigator.clipboard.writeText(item.id)
-                                }
-                            >
-                                Visualizar
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-
-                            {/* <Link href={route("aemina.edit", row.original.id)}>
-                                <DropdownMenuItem>
-                                    Editar
-                                </DropdownMenuItem>
-                            </Link> */}
-
-                            <DropdownMenuItem
-                                onClick={() => handleContentClick(content)}
-                            >
-                                Editar
-                            </DropdownMenuItem>
-
-                            <DropdownMenuItem
-                                onSelect={() => {
-                                    setSelectedContent(content);
-                                    setIsDialogOpen(true);
-                                }}
-                            >
-                                Deletar
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                );
-            },
-        },
-    ];
-
-    // ? Funções de Pesquisa
-    // Função para lidar com a pesquisa
+    // ? Função de pesquisa
     const handleSearchChange = (e) => {
         const searchValue = e.target.value;
-
-        // Atualiza o valor no formulário
-        setData("search", searchValue);
-
-        // Faz a requisição para atualizar a página, garantindo que a URL seja atualizada
-        router.visit(route("aemina.list.media"), {
-            method: "get",
+        setSearchValue(searchValue); // Atualiza o valor local
+        setData("search", searchValue); // Atualiza o valor no formulário
+        router.reload({
             data: { search: searchValue },
-            preserveState: true, // Preserva o estado atual da página
-            preserveScroll: true, // Preserva a posição de rolagem
+            preserveState: true,
+            preserveScroll: true,
+            showProgress: true,
         });
     };
 
-    // ? Função para abrir o diálogo
-    const handleContentClick = (content) => {
-        setSelectedContent(content); // Define o conteúdo selecionado
-        setOpenDialog(true); // Abre o diálogo
+    // const handleSearchChange = (e) => {
+    //     const searchValue = e.target.value;
+
+    //     // ? Atualiza o valor no formulário
+    //     setData("search", searchValue);
+    //     router.reload({
+    //         data: { search: searchValue },
+    //         preserveState: true,
+    //         preserveScroll: true,
+    //     })
+    //     // ? Faz a requisição para atualizar a página
+    //     // router.visit(route("aemina.list.media"), {
+    //     //     method: "get",
+
+    //     // });
+    // };
+
+    // ? Função para confirmar exclusão
+    const handleDelete = () => {
+        if (alertContent && alertContent.id) {
+            router.delete(route("aemina.destroy", alertContent.id), {
+                onSuccess: closeAlertDialog,
+            });
+        } else {
+            console.error("Erro: Nenhum item selecionado para exclusão.");
+        }
     };
+
+    const columns = tableColumnsMediaList({
+        handleContentClick: openEditDialog,
+        handleDeleteClick: openAlertDialog, // Passando o diálogo de exclusão
+    });
 
     return (
         <>
@@ -228,9 +105,10 @@ export default function Index({ media }) {
             <h1 className="title p-6">Lista novos Recursos</h1>
 
             <div className="p-6">
-                <TableListMedia
+                <TableMediaList
                     media={media} // Usa o estado atualizado
                     columns={columns}
+                    search={searchValue}
                     handleSearch={handleSearchChange} // Função de busca
                     data={data}
                 />
@@ -238,12 +116,15 @@ export default function Index({ media }) {
 
             {/* Diálogo separado */}
             <EditMedia
-                open={openDialog}
-                onOpenChange={setOpenDialog}
+                open={isEditDialogOpen}
+                onOpenChange={(isOpen) => !isOpen && closeEditDialog()}
                 content={selectedContent}
             />
 
-            <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <AlertDialog
+                open={isAlertDialogOpen}
+                onOpenChange={(isOpen) => !isOpen && closeAlertDialog()}
+            >
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>
@@ -255,31 +136,12 @@ export default function Index({ media }) {
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel
-                            onClick={() => setIsDialogOpen(false)}
-                        >
+                        <AlertDialogCancel onClick={closeAlertDialog}>
                             Cancelar
                         </AlertDialogCancel>
                         <AlertDialogAction
                             className="mt-2 sm:mt-0"
-                            onClick={() => {
-                                if (selectedContent && selectedContent.id) {
-                                    router.delete(
-                                        route(
-                                            "aemina.destroy",
-                                            selectedContent.id
-                                        ),
-                                        {
-                                            onSuccess: () =>
-                                                setIsDialogOpen(false),
-                                        }
-                                    );
-                                } else {
-                                    console.error(
-                                        "Erro: Nenhum item selecionado para exclusão."
-                                    );
-                                }
-                            }}
+                            onClick={handleDelete}
                         >
                             Confirmar
                         </AlertDialogAction>

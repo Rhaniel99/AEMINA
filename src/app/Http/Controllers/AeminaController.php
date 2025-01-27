@@ -94,7 +94,6 @@ class AeminaController extends Controller
             })
         );
 
-        // dd($media);
         return inertia('Aemina/List', [
             'media' => $media,
         ]);
@@ -236,7 +235,7 @@ class AeminaController extends Controller
 
                     if ($codec_name === 'h264' && $profile === 'High') {
                         // Disparar job para conversão e upload
-                        UploadMediaJob::dispatch($localFilePath, $converted_path, 'convertMToMp4', $media_file->id, $path_file)
+                        UploadMediaJob::dispatch($local_file_path, $converted_path, 'convertMToMp4', $media_file->id, $path_file)
                             ->onQueue('media');
                     }
 
