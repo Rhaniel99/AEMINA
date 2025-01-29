@@ -26,6 +26,8 @@ services:
       - pgsql
       - redis
       - horizon
+      - reverb
+      - minio
     networks:
       - laravel
 
@@ -40,7 +42,6 @@ services:
     container_name: php
     ports:
       - "${PHP_PORT:-9000}:9000"
-      # - "8080:8080"
     volumes:
       - ./src:/var/www/html
       - .env:/var/www/html/.env
@@ -53,8 +54,8 @@ services:
 
   horizon:
     build:
-      context: ./docker/php
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./docker/horizon/Dockerfile
       args:
         - UID=${UID:-1000}
         - GID=${GID:-1000}
