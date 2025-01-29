@@ -1,41 +1,22 @@
-import FileUploader from "@/components/test/FileUpload";
-// import { useForm } from "@inertiajs/react";
-
+// import FileUploader from "@/components/test/FileUpload";
+import { useEffect } from 'react';
+// import Echo from "@/echo";
 export default function Index() {
-    // const { data, setData, post, reset } = useForm({
-    //     title: "",
-    //     file: null,
-    // });
-
-    // const submit = (e) => {
-    //     e.preventDefault();
-    //     post(route("test.store"), {
-    //         onSuccess: () => {
-    //             reset("title");
-    //         },
-    //         onError: () => {
-    //             // Não fechar o modal caso haja erros de validação
-    //             console.log("Erros de validação detectados.");
-    //         },
-    //     });
-    // };
+    const user = "d80d47a8-80ee-4724-b1da-561b65747d9a";
+    useEffect(() => {
+        // console.log(Echo)
+        Echo.private('App.Models.User.' + user)
+        .notification((notification) => {
+            console.log(notification);
+        });
+      }, []);
 
     return (
-        <div>
-            {/* <form
-                className="flex flex-col items-center justify-center h-full px-10 bg-white"
-                onSubmit={submit}
-            >
-                <input
-                    type="text"
-                    id="title"
-                    value={data.title}
-                    onChange={(e) => setData("title", e.target.value)}
-                    placeholder="nome do arquivo"
-                    className="bg-[#eee] border-none my-2 px-4 py-2.5 text-sm rounded-lg w-full outline-none"
-                /> */}
-                <FileUploader name="file" />
-            {/* </form> */}
-        </div>
+        <>
+            <div>
+                <h1>Teste</h1>
+                {/* <FileUploader name="file" /> */}
+            </div>
+        </>
     );
 }

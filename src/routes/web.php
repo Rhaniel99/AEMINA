@@ -13,7 +13,7 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return to_route('aemina.index');
+        return to_route('aemina.index', ['content' => 'filme','category' => 'lancamento']);
     } else {
         return inertia('Public/Home/Index');
     }
@@ -61,8 +61,18 @@ Route::controller(LoginController::class)->group(function () {
     Route::post('/logout', 'destroy')->name('login.logout');
 });
 
-// Route::resource('login', LoginController::class);
+Route::get('send', function () {
+    $message['status'] = request()->query('status', 'success');
+    $message['body'] = 'Mensagem padrao notificação...';
 
+    $u = \App\Models\User::first();
+
+    $u->notify(new \App\Notifications\MessageTestNotification($message));
+
+    return 'Notificacao enviada';
+});
+
+Route::get('login/{id}', fn ($id) => auth()->loginUsingId($id));
 
 // Route::get('/', function () {
 //     sleep(3);

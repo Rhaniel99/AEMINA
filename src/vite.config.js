@@ -11,20 +11,25 @@ export default defineConfig({
         react(),
     ],
     server: {
-       host: '0.0.0.0',
-       port: 3000,
-       open: false,
-       hmr: true,
+        host: '0.0.0.0',
+        port: 3000,
+        open: false,
+        hmr: true,
+        proxy: {
+            '/app': {
+              target: 'ws://reverb-test.test:8080', // Ou 'wss://', dependendo do seu servidor
+              ws: true,
+            },
+          },
     },
-
-    resolve : {
-        alias : {
-            "@" : "/resources/js",
-            shadcn: "/node_modules/@shadcn/ui", // Ajuste o caminho conforme necessário
+    resolve: {
+        alias: {
+            "@": "/resources/js",
+            shadcn: "/node_modules/@shadcn/ui",
             ziggy: '/vendor/tightenco/ziggy',
-            "css" : "/resources/css",
-            "uppy-css": "/node_modules/@uppy/core/dist/style.css",  // Alias para o CSS do Uppy
+            "css": "/resources/css",
+            "uppy-css": "/node_modules/@uppy/core/dist/style.css",
             "uppy-dashboard-css": "/node_modules/@uppy/dashboard/dist/style.css",
-        }
-    }
+        },
+    },
 });

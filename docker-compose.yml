@@ -26,13 +26,10 @@ services:
       - pgsql
       - redis
       - horizon
-      # - queue
     networks:
       - laravel
 
   php:
-    dns:
-    - 8.8.8.8  # ? Google DNS
     build:
       context: ./docker/php
       dockerfile: Dockerfile
@@ -43,6 +40,7 @@ services:
     container_name: php
     ports:
       - "${PHP_PORT:-9000}:9000"
+      - "8080:8080"
     volumes:
       - ./src:/var/www/html
       - .env:/var/www/html/.env
@@ -74,7 +72,7 @@ services:
     networks:
       - laravel
     devices:
-      - /dev/dri:/dev/dri 
+      - /dev/dri:/dev/dri
 
   pgsql:
     build:
@@ -141,7 +139,7 @@ services:
     working_dir: /var/www/html
     depends_on:
       - php
-    user: ${USER:-laravel} #system user
+    user: ${USER:-laravel}
     profiles: ["composer"]
     entrypoint: ['composer', '--ignore-platform-reqs']
     networks:
@@ -181,6 +179,3 @@ services:
     networks:
       laravel:
         ipv4_address: 172.18.0.10
-        # networks:
-        #     docker-laravel:
-        #       ipv4_address: 172.16.238.10
