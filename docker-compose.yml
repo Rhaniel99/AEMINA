@@ -40,7 +40,7 @@ services:
     container_name: php
     ports:
       - "${PHP_PORT:-9000}:9000"
-      - "8080:8080"
+      # - "8080:8080"
     volumes:
       - ./src:/var/www/html
       - .env:/var/www/html/.env
@@ -103,6 +103,21 @@ services:
       - "${REDIS_PORT:-6379}:6379"
     networks:
       - laravel
+
+  reverb:
+    build:
+      context: .
+      dockerfile: ./docker/reverb/Dockerfile
+    container_name: reverb
+    ports:
+      - "8080:8080"
+    working_dir: /var/www/html
+    networks:
+      - laravel
+    depends_on:
+      - php
+      - redis
+      - pgsql
 
   artisan:
     build:
