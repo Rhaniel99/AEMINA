@@ -119,6 +119,7 @@ services:
       - php
       - redis
       - pgsql
+    restart: always
 
   artisan:
     build:
