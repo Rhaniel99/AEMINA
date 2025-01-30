@@ -126,8 +126,7 @@ class AeminaController extends Controller
                     DB::beginTransaction();
                     $this->store_movie($request);
                     DB::commit();
-                    return to_route('aemina.index', ['content' => 'filme', 'category' => 'lancamento'])
-                        ->with(['success' => 'Filme enviado com sucesso!']);
+                    return to_route('aemina.list.media')->with(['success' => 'Filme enviado com sucesso!']);
                 default:
                     throw new Exception('Tipo de conteúdo não suportado.');
             }
@@ -204,7 +203,7 @@ class AeminaController extends Controller
 
                     $path_file = "films/{$titulo_normalizado}/{$titulo_normalizado}.mp4";
 
-                    $media_file = MediaFiles::create([
+                    MediaFiles::create([
                         'media_id' => $media->id,
                         'file_path' => $path_file,
                         'upload_status' => 'pending',
@@ -230,12 +229,12 @@ class AeminaController extends Controller
                     $profile = $video_info->get('profile'); // Perfil do codec (ex: High 10 Profile)
 
                     if ($codec_name === 'h264' && $profile === 'High 10') {
-                        UploadMediaJob::dispatch($local_file_path, $converted_path, 'convertCodec', $media_file->id, $path_file)->onQueue('media');
+                        UploadMediaJob::dispatch(storage_path($local_file_path), $converted_path, 'convertCodec', $media->id, $path_file, $profile_id)->onQueue('media');
                     }
 
                     if ($codec_name === 'h264' && $profile === 'High') {
                         // Disparar job para conversão e upload
-                        UploadMediaJob::dispatch($local_file_path, $converted_path, 'convertMToMp4', $media_file->id, $path_file)
+                        UploadMediaJob::dispatch(storage_path($local_file_path), $converted_path, 'convertMToMp4', $media->id, $path_file, $profile_id)
                             ->onQueue('media');
                     }
 

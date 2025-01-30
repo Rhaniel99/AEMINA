@@ -19,6 +19,7 @@ import { tableColumnsMediaList } from "@/components/tables/columns-list-media";
 import { TableMediaList } from "@/components/tables/table-list-media";
 import { useDialog } from "@/hooks/use-dialog";
 import { debounce } from "lodash";
+import NotificationListener from "@/components/notifications/notification-listener";
 
 export default function Index({ media }) {
     const { data, setData } = useForm({
@@ -101,6 +102,8 @@ export default function Index({ media }) {
 
     return (
         <>
+            <NotificationListener />
+            
             <Head title="LISTAR" />
             <h1 className="title p-6">Lista novos Recursos</h1>
 
