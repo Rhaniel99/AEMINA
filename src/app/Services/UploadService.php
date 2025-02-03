@@ -3,10 +3,8 @@
 namespace App\Services;
 
 use App\Models\MediaFiles;
-use Illuminate\Support\Facades\Storage;
 use Log;
 use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 use FFMpeg\FFMpeg as FFMpegFFMpeg;
 use FFMpeg\Format\Video\X264;
 
@@ -24,100 +22,74 @@ class UploadService
      */
     public function uploadConvertCodecFile($local_file_path, $converted_path, $media_file_id)
     {
-        try {
-
-            // Calcular o total de frames do vídeo
-            $this->total_frames = $this->getTotalFrames($local_file_path);
-
-            if ($this->total_frames === 0) {
-                Log::error("Falha ao obter o total de frames do arquivo: " . $local_file_path);
-                return;
-            }
-
-            Log::info("Total de frames no arquivo: " . $this->total_frames);
-
-            // Construir comando FFmpeg
-            $command = [
-                'ffmpeg',
-                '-progress',
-                'pipe:1',
-                '-vaapi_device',
-                '/dev/dri/renderD128',
-                '-i',
-                $local_file_path,
-                '-vf',
-                'format=nv12,hwupload',
-                '-c:v',
-                'h264_vaapi',
-                '-qp',
-                '28',
-                '-preset',
-                'fast',
-                '-profile:v',
-                'main',
-                '-b:v',
-                '4M',
-                '-maxrate',
-                '4M',
-                '-bufsize',
-                '8M',
-                '-threads',
-                '6',
-                '-c:a',
-                'copy',
-                $converted_path,
-            ];
-
-            $process = new Process($command);
-
-            // Executar o processo
-            $process->setTimeout(null);
-
-            $process->mustRun(function ($type, $buffer) use ($media_file_id) {
-                if (Process::ERR === $type) {
-                    // Log::alert($buffer);
-                } else {
-                    $lines = explode("\n", $buffer);
-                    foreach ($lines as $line) {
-                        if (strpos($line, 'frame=') === 0) {
-                            $current_frame = (int) substr($line, 6);
-                            // Calcular progresso como valor inteiro
-                            if ($this->total_frames > 0) {
-                                $progress = round(($current_frame / $this->total_frames) * 100);
-                                // Log::info("Progresso: {$progress}% (Frames processados: {$current_frame})");
-
-                                // Atualizar progresso no banco de dados
-                                $this->updateProgress($progress, $media_file_id);
-                            }
+        Log::warning("Convertendo para codec: {$media_file_id}");
+    
+        $this->total_frames = $this->getTotalFrames($local_file_path);
+        if ($this->total_frames === 0) {
+            Log::error("Falha ao obter o total de frames do arquivo: " . $local_file_path);
+            throw new \Exception("Falha ao obter total de frames.");
+        }
+    
+        Log::info("Total de frames no arquivo: " . $this->total_frames);
+    
+        $command = [
+            'ffmpeg',
+            '-progress',
+            'pipe:1',
+            '-vaapi_device',
+            '/dev/dri/renderD128',
+            '-i',
+            $local_file_path,
+            '-vf',
+            'format=nv12,hwupload',
+            '-c:v',
+            'h264_vaapi',
+            '-qp',
+            '28',
+            '-preset',
+            'fast',
+            '-profile:v',
+            'main',
+            '-b:v',
+            '4M',
+            '-maxrate',
+            '4M',
+            '-bufsize',
+            '8M',
+            '-threads',
+            '6',
+            '-c:a',
+            'copy',
+            $converted_path,
+        ];
+    
+        $process = new Process($command);
+        $process->setTimeout(null);
+    
+        $process->mustRun(function ($type, $buffer) use ($media_file_id) {
+            if (Process::ERR === $type) {
+                // Se desejar, pode registrar os erros aqui.
+            } else {
+                // Pode ser interessante tratar a quebra de linha e espaços.
+                $lines = explode("\n", $buffer);
+                foreach ($lines as $line) {
+                    $line = trim($line);
+                    if (strpos($line, 'frame=') === 0) {
+                        $current_frame = (int) substr($line, 6);
+                        if ($this->total_frames > 0) {
+                            $progress = round(($current_frame / $this->total_frames) * 100);
+                            // Log::info("Progresso: {$progress}% (Frames processados: {$current_frame})");
+                            $this->updateProgress($progress, $media_file_id);
                         }
                     }
                 }
-            });
-
-            Log::info("Arquivo convertido com sucesso: " . $converted_path);
-
-            return $converted_path;
-
-        } catch (ProcessFailedException $e) {
-            Log::error("Erro durante a conversão: " . $e->getMessage());
-        }
-
-
-        // // Enviar para o S3 usando stream
-        // if (Storage::disk('s3')->put($this->paths3, fopen($converted_path, 'r'))) {
-        //     Log::info("Arquivo enviado para S3 com sucesso.");
-        // } else {
-        //     Log::error("Falha ao enviar arquivo para S3.");
-        // }
-
-        // // Limpar arquivos locais
-        // unlink($local_file_path);
-        // unlink($converted_path);
-
-        // Log::info("Arquivo enviado para S3 e limpo localmente.");
-
+            }
+        });
+    
+        Log::info("Arquivo convertido com sucesso: " . $converted_path);
+        return $converted_path;
     }
-
+    
     public function uploadConvertMToMp4($local_file_path, $converted_path, $media_file_id)
     {
         $ffmpeg = FFMpegFFMpeg::create([
@@ -173,14 +145,7 @@ class UploadService
 
     private function updateProgress($progress, $media_file_id)
     {
-        // Atualize o progresso no banco de dados
-        $media_file = MediaFiles::find($media_file_id);
-
-        if ($media_file) {
-            $media_file->update([
-                'upload_progress' => $progress,
-                'upload_status' => $progress >= 100 ? 'completed' : 'in_progress',
-            ]);
-        }
+        MediaFiles::where('media_id', $media_file_id)
+            ->update(['upload_progress' => $progress, 'upload_status' => $progress >= 100 ? 'completed' : 'in_progress']);
     }
 }

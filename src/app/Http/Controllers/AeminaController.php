@@ -178,7 +178,6 @@ class AeminaController extends Controller
                 'category_id' => $category->id,
             ]);
         }
-
         // Armazenar a capa
         $encoded_cover = file_get_contents($request->capa_filme);
         Storage::disk('s3')->put($path_cover, $encoded_cover);
@@ -187,66 +186,61 @@ class AeminaController extends Controller
         $fileBaseName = basename($fileName);
         $jsonFilePath = storage_path("app/private/tus/{$fileBaseName}.json");
 
-        if (file_exists($jsonFilePath)) {
-            $jsonData = json_decode(file_get_contents($jsonFilePath), true);
-
-            if (isset($jsonData['extension'])) {
-                $extension = $jsonData['extension'];
-                // $localFilePath = storage_path("app/private/tus/{$fileBaseName}.{$extension}");
-
-                $local_file_path = "app/private/tus/{$fileBaseName}.{$extension}";
-
-                if (file_exists(storage_path($local_file_path))) {
-
-                    $titulo_normalizado = fPath($request->titulo_filme);
-                    $converted_path = "app/private/tus/{$titulo_normalizado}_converted.mp4";
-
-                    $path_file = "films/{$titulo_normalizado}/{$titulo_normalizado}.mp4";
-
-                    MediaFiles::create([
-                        'media_id' => $media->id,
-                        'file_path' => $path_file,
-                        'upload_status' => 'pending',
-                        'upload_progress' => 0
-                    ]);
-
-                    $localFilePath = "tus/{$fileBaseName}.{$extension}";
-
-                    $ffprobe = FFMpeg\FFProbe::create();
-
-                    // Analisar informações completas dos streams aa
-                    $video_info = $ffprobe->streams(Storage::disk('local')->path($localFilePath))
-                        ->videos()
-                        ->first();
-
-                    // Log::info($video_info->all());
-
-                    if (!$video_info) {
-                        throw new Exception('Nao conseguiu pegar as informacoes do video.');
-                    }
-
-                    $codec_name = $video_info->get('codec_name'); // Nome do codec (ex: h264)
-                    $profile = $video_info->get('profile'); // Perfil do codec (ex: High 10 Profile)
-
-                    if ($codec_name === 'h264' && $profile === 'High 10') {
-                        UploadMediaJob::dispatch($local_file_path, $converted_path, 'convertCodec', $media->id, $path_file, $profile_id)->onQueue('media');
-                    }
-
-                    if ($codec_name === 'h264' && $profile === 'High') {
-                        // Disparar job para conversão e upload
-                        UploadMediaJob::dispatch($local_file_path, $converted_path, 'convertMToMp4', $media->id, $path_file, $profile_id)
-                            ->onQueue('media');
-                    }
-
-                } else {
-                    dd('Arquivo não encontrado no diretório local: ' . $local_file_path);
-                }
-            } else {
-                dd('Extensão do arquivo não encontrada no arquivo JSON.');
-            }
-        } else {
-            dd('Arquivo JSON não encontrado: ' . $jsonFilePath);
+        if (!file_exists($jsonFilePath)) {
+            throw new Exception("Arquivo JSON não encontrado: {$jsonFilePath}");
         }
+
+        $jsonData = json_decode(file_get_contents($jsonFilePath), true);
+
+        if (!isset($jsonData['extension'])) {
+            throw new Exception('Extensão do arquivo não encontrada no arquivo JSON.');
+        }
+
+        $extension = $jsonData['extension'];
+        $local_file_path = "app/private/tus/{$fileBaseName}.{$extension}";
+
+        if (!file_exists(storage_path($local_file_path))) {
+            throw new Exception("Arquivo não encontrado no diretório local: {$local_file_path}");
+        }
+
+        $titulo_normalizado = fPath($request->titulo_filme);
+        $converted_path = "app/private/tus/{$titulo_normalizado}_converted.mp4";
+
+        $path_file = "films/{$titulo_normalizado}/{$titulo_normalizado}.mp4";
+
+        MediaFiles::create([
+            'media_id' => $media->id,
+            'file_path' => $path_file,
+            'upload_status' => 'pending',
+            'upload_progress' => 0
+        ]);
+
+        $localFilePath = "tus/{$fileBaseName}.{$extension}";
+
+        $ffprobe = FFMpeg\FFProbe::create();
+
+        // Analisar informações completas dos streams aa
+        $video_info = $ffprobe->streams(Storage::disk('local')->path($localFilePath))
+            ->videos()
+            ->first();
+
+        if (!$video_info) {
+            throw new Exception('Nao conseguiu pegar as informacoes do video.');
+        }
+
+        $codec_name = $video_info->get('codec_name'); // Nome do codec (ex: h264)
+        $profile = $video_info->get('profile'); // Perfil do codec (ex: High 10 Profile)
+
+        if ($codec_name === 'h264' && $profile === 'High 10') {
+            UploadMediaJob::dispatch($local_file_path, $converted_path, 'convertCodec', $media->id, $path_file, $profile_id)->onQueue('media');
+        }
+
+        if ($codec_name === 'h264' && $profile === 'High') {
+            // Disparar job para conversão e upload
+            UploadMediaJob::dispatch($local_file_path, $converted_path, 'convertMToMp4', $media->id, $path_file, $profile_id)
+                ->onQueue('media');
+        }
+
     }
 
     /**

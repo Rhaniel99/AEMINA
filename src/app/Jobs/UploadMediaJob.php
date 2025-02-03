@@ -71,7 +71,7 @@ class UploadMediaJob implements ShouldQueue
 
         } catch (ProcessFailedException $e) {
             MediaFiles::where('media_id', $this->media_file_id)->update(['upload_status' => 'failed']);
-            event(new JobFailedNotification($this->profile_id, "Erro durante a conversão: " . $e->getMessage()));
+            event(new JobFailedNotification($this->profile_id, "Erro durante a conversão... Solicite suporte."));
             Log::error("Erro durante a conversão: " . $e->getMessage());
         }
     }
