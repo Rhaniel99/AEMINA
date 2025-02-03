@@ -59,6 +59,8 @@ Route::controller(LoginController::class)->group(function () {
     Route::post('/login', 'store')->name('login.store');
     Route::post('/create', 'create')->name('login.create');
     Route::post('/logout', 'destroy')->name('login.logout');
+    Route::get('/auth/google', 'auth_google')->name('auth.google');
+    Route::get('/auth/google-callback', 'auth_google_callback')->name('auth.google.callback');
 });
 
 Route::get('send', function () {

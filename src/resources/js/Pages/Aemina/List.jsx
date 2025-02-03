@@ -66,23 +66,6 @@ export default function Index({ media }) {
         });
     };
 
-    // const handleSearchChange = (e) => {
-    //     const searchValue = e.target.value;
-
-    //     // ? Atualiza o valor no formulário
-    //     setData("search", searchValue);
-    //     router.reload({
-    //         data: { search: searchValue },
-    //         preserveState: true,
-    //         preserveScroll: true,
-    //     })
-    //     // ? Faz a requisição para atualizar a página
-    //     // router.visit(route("aemina.list.media"), {
-    //     //     method: "get",
-
-    //     // });
-    // };
-
     // ? Função para confirmar exclusão
     const handleDelete = () => {
         if (alertContent && alertContent.id) {

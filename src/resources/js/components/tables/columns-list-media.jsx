@@ -9,6 +9,7 @@ import {
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ProgressWind from "@/components/bar/progress-wind";
+import { Link } from "@inertiajs/react";
 
 export const tableColumnsMediaList = ({
     handleContentClick,
@@ -95,6 +96,8 @@ export const tableColumnsMediaList = ({
         id: "actions",
         enableHiding: false,
         cell: ({ row }) => {
+
+           console.log();
             const content = {
                 name:
                     row.original.content_type.charAt(0).toUpperCase() +
@@ -117,13 +120,12 @@ export const tableColumnsMediaList = ({
 
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                        <DropdownMenuItem
-                            onClick={() =>
-                                navigator.clipboard.writeText(item.id)
-                            }
-                        >
-                            Visualizar
-                        </DropdownMenuItem>
+                        {/*  */}
+                        <Link href={route("aemina.show", [row.original.content_type, row.original.categories[0], row.original.id])}>
+                            <DropdownMenuItem>
+                                Visualizar
+                            </DropdownMenuItem>
+                        </Link>
                         <DropdownMenuSeparator />
 
                         {/* <Link href={route("aemina.edit", row.original.id)}>

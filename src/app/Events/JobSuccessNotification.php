@@ -4,11 +4,11 @@ namespace App\Events;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast; // Adicione esta linha
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class JobFailedNotification implements ShouldBroadcast // Implemente a interface
+class JobSuccessNotification implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -28,14 +28,13 @@ class JobFailedNotification implements ShouldBroadcast // Implemente a interface
 
     public function broadcastAs()
     {
-        return 'job.failed'; // Nome do evento que será ouvido no frontend
+        return 'job.success'; // Nome do evento para o sucesso
     }
 
-    // Opcional: Personalize os dados enviados para o frontend
     public function broadcastWith()
     {
         return [
-            'message' => $this->message,
+            'message'    => $this->message,
             'profile_id' => $this->profile_id,
         ];
     }

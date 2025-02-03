@@ -142,10 +142,9 @@ class UploadService
         return is_numeric($output) ? (int) $output : 0;
     }
 
-
     private function updateProgress($progress, $media_file_id)
     {
         MediaFiles::where('media_id', $media_file_id)
-            ->update(['upload_progress' => $progress, 'upload_status' => $progress >= 100 ? 'completed' : 'in_progress']);
+            ->update(['upload_progress' => $progress >= 99 ? 100 : $progress, 'upload_status' => $progress >= 99 ? 'completed' : 'in_progress']);
     }
 }

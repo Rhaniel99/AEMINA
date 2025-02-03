@@ -17,6 +17,23 @@ export default function NotificationListener() {
         // );
 
         Echo.private(`profile.${auth.profile.id}`).listen(
+            ".job.success", // Note o ponto (.) antes do nome do evento
+            (notification) => {
+                toast.success(notification.message, {
+                    position: "top-right",
+                    autoClose: false,
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Flip,
+                });
+            }
+        );
+
+        Echo.private(`profile.${auth.profile.id}`).listen(
             ".job.failed", // Note o ponto (.) antes do nome do evento
             (notification) => {
                 // toast.error(notification.message || "Erro inesperado", { ... });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
+use Laravel\Socialite\Facades\Socialite;
 
 class LoginController extends Controller
 {
@@ -47,6 +48,15 @@ class LoginController extends Controller
         } else {
             return back()->withErrors(['errors' => "Email ou senha inválidos."]);
         }
+    }
+
+    public function auth_google(){
+        return Socialite::driver('google')->redirect();    
+    }
+
+    public function auth_google_callback(){
+        $googleUser = Socialite::driver('google')->user();
+        dd($googleUser);
     }
 
     /**

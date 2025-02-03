@@ -24,10 +24,6 @@ import NotificationListener from "@/components/notifications/notification-listen
 export default function Layout({ children }) {
     const { flash, errors } = usePage().props;
     const { content, category, movie, media } = usePage().props;
-    // const bounce = cssTransition({
-    //     enter: "animate__animated animate__bounceIn",
-    //     exit: "animate__animated animate__bounceOut"
-    //   });
 
     useEffect(() => {
         if (flash.success) {
@@ -40,7 +36,6 @@ export default function Layout({ children }) {
                     position: "top-right",
                     autoClose: 3000,
                     className: "bg-white-500 text-black",
-                    // transition: bounce,
                 });
             });
         }

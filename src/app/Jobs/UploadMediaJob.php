@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\JobSuccessNotification;
 use App\Models\MediaFiles;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -63,31 +64,18 @@ class UploadMediaJob implements ShouldQueue
                     $converted_path_final = $uploadService->uploadConvertMToMp4($local_file_path, $converted_path, $this->media_file_id);
                     break;
                 default:
-                    Log::error("Tipo de conversão desconhecido.");
-                    return;
+                    throw new \Exception("Tipo de conversão desconhecido.");
             }
-
-            $this->uploadToS3($converted_path_final);
+            // $this->uploadToS3($converted_path_final);
+            Storage::disk('s3')->put($this->paths3, fopen($converted_path_final, 'r'));
+            unlink(storage_path($this->file_path));
+            unlink($converted_path);
+            event(new JobSuccessNotification($this->profile_id, "Filme foi enviado e convertido com sucesso!"));
 
         } catch (ProcessFailedException $e) {
             MediaFiles::where('media_id', $this->media_file_id)->update(['upload_status' => 'failed']);
             event(new JobFailedNotification($this->profile_id, "Erro durante a conversão... Solicite suporte."));
             Log::error("Erro durante a conversão: " . $e->getMessage());
         }
-    }
-
-    private function uploadToS3($converted_path)
-    {
-        if (Storage::disk('s3')->put($this->paths3, fopen($converted_path, 'r'))) {
-            Log::info("Arquivo enviado para S3 com sucesso.");
-        } else {
-            Log::error("Falha ao enviar arquivo para S3.");
-        }
-
-        // Limpar arquivos locais
-        unlink(storage_path($this->file_path));
-        unlink($converted_path);
-
-        Log::info("Arquivos limpos localmente.");
     }
 }

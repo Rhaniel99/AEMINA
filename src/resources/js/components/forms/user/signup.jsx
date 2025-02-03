@@ -1,12 +1,9 @@
 import { useForm } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import ptBR from "date-fns/locale/pt-BR";
-import { Plus } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
-// import { registerLocale } from "react-datepicker";
-// registerLocale("pt-BR", ptBR);
+import SocialLinks from "@/components/social/social-links";
 
 export default function UserSignup({ isActive }) {
     const [date, setDate] = useState();
@@ -55,20 +52,7 @@ export default function UserSignup({ isActive }) {
                 >
                     <h1 className="text-xl font-semibold mb-1">Criar Conta</h1>
 
-                    <div className="my-5 flex space-x-2 mb-4">
-                        {["google", "facebook", "github", "linkedin"].map(
-                            (icon) => (
-                                <a
-                                    key={icon}
-                                    href="#"
-                                    className="border border-[#ccc] rounded-[20%] inline-flex justify-center items-center mx-0.5 w-10 h-10
-                                    text-sm text-gray-700 mt-3.75 mb-2.5 underline-none"
-                                >
-                                    <Plus name={icon} size={18} />
-                                </a>
-                            )
-                        )}
-                    </div>
+                    <SocialLinks />
 
                     <span className="text-sm mb-4">
                         ou use seu email para registro
@@ -93,7 +77,7 @@ export default function UserSignup({ isActive }) {
                         className="bg-[#eee] border-none my-2 px-4 py-2.5 text-sm rounded-lg w-full outline-none"
                         required
                     />
-                    
+
                     <input
                         type="password"
                         name="senha"
