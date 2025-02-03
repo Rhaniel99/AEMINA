@@ -28,7 +28,7 @@ class LoginController extends Controller
             'birth_date' => $validated_data['dt_nasc'],
             'password' => bcrypt($validated_data['senha']),
         ]);
-        
+
         return to_route('home')->with(["success" => "Criado com sucesso!"]);
     }
 
@@ -44,19 +44,41 @@ class LoginController extends Controller
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->senha])) {
 
-            return to_route('aemina.index', ['content' => 'filme','category' => 'lancamento'])->with(["success" => "Login efetuado com sucesso!"]);
+            return to_route('aemina.index', ['content' => 'filme', 'category' => 'lancamento'])->with(["success" => "Login efetuado com sucesso!"]);
         } else {
             return back()->withErrors(['errors' => "Email ou senha inválidos."]);
         }
     }
 
-    public function auth_google(){
-        return Socialite::driver('google')->redirect();    
+    public function auth_google()
+    {
+        return Socialite::driver('google')->redirect();
     }
 
-    public function auth_google_callback(){
-        $googleUser = Socialite::driver('google')->user();
-        dd($googleUser);
+    public function auth_google_callback()
+    {
+        $google_user = Socialite::driver('google')->user();
+
+        $user = User::where('provider', 'google')->where('provider_id', $google_user->id)->first();
+
+        if (!$user) {
+            $user_data = User::create(
+                [
+                    'name' => $google_user->name,
+                    'email' => $google_user->email,
+                    'email_verified_at' => now(),
+                    'provider' => 'google',
+                    'provider_id' => $google_user->id,
+                    'password' => null,
+                ]
+            );
+        }
+
+        Auth::login($user_data ?? $user);
+
+        return to_route('aemina.index', ['content' => 'filme', 'category' => 'lancamento'])->with(["success" => "Login efetuado com sucesso!"]);
+
+        // dd($googleUser);
     }
 
     /**

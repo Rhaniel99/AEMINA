@@ -38,6 +38,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('media_schema.content_and_categories_count');
+        DB::statement('DROP VIEW IF EXISTS media_schema.content_and_categories_count');
     }
 };

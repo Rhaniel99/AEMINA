@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up()
     {
+        
+        // Habilita a extensão 'unaccent' no PostgreSQL
+        DB::statement('CREATE EXTENSION IF NOT EXISTS "unaccent";');
+
         // Cria o esquema 'media' caso não exista
         DB::statement('CREATE SCHEMA IF NOT EXISTS media_schema');
 

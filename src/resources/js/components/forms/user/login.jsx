@@ -1,8 +1,6 @@
 import { useForm } from "@inertiajs/react";
 import { useRoute } from "ziggy";
-import { Plus } from "lucide-react";
-// import Modal from "@/components/modal";
-// import { useEffect, useState } from "react";
+import SocialLinks from "@/components/social/social-links";
 
 export default function UserLogin({ isActive }) {
     const route = useRoute();
@@ -39,20 +37,8 @@ export default function UserLogin({ isActive }) {
                     onSubmit={submit}
                 >
                     <h1 className="text-xl font-semibold mb-4">Entrar</h1>
-                    <div className="my-5 flex space-x-2 mb-4">
-                        {["google", "facebook", "github", "linkedin"].map(
-                            (icon) => (
-                                <a
-                                    key={icon}
-                                    href="#"
-                                    className="border border-[#ccc] rounded-[20%] inline-flex justify-center items-center mx-0.5 w-10 h-10
-                                    text-sm text-gray-700 mt-3.75 mb-2.5 underline-none"
-                                >
-                                    <Plus name={icon} size={18} />
-                                </a>
-                            )
-                        )}
-                    </div>
+
+                    <SocialLinks />
 
                     <span className="text-sm mb-4">
                         ou use seu email e senha
