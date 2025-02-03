@@ -19,6 +19,8 @@ import {
     SidebarTrigger,
 } from "@/components/ui/sidebar";
 
+import NotificationListener from "@/components/notifications/notification-listener";
+
 export default function Layout({ children }) {
     const { flash, errors } = usePage().props;
     const { content, category, movie, media } = usePage().props;
@@ -46,6 +48,9 @@ export default function Layout({ children }) {
 
     return (
         <SidebarProvider>
+
+            <NotificationListener />
+
             <ToastContainer />
 
             <AppSidebar />

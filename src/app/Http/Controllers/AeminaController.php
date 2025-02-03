@@ -229,12 +229,12 @@ class AeminaController extends Controller
                     $profile = $video_info->get('profile'); // Perfil do codec (ex: High 10 Profile)
 
                     if ($codec_name === 'h264' && $profile === 'High 10') {
-                        UploadMediaJob::dispatch(storage_path($local_file_path), $converted_path, 'convertCodec', $media->id, $path_file, $profile_id)->onQueue('media');
+                        UploadMediaJob::dispatch($local_file_path, $converted_path, 'convertCodec', $media->id, $path_file, $profile_id)->onQueue('media');
                     }
 
                     if ($codec_name === 'h264' && $profile === 'High') {
                         // Disparar job para conversão e upload
-                        UploadMediaJob::dispatch(storage_path($local_file_path), $converted_path, 'convertMToMp4', $media->id, $path_file, $profile_id)
+                        UploadMediaJob::dispatch($local_file_path, $converted_path, 'convertMToMp4', $media->id, $path_file, $profile_id)
                             ->onQueue('media');
                     }
 

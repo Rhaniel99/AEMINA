@@ -1,17 +1,11 @@
 import { useEffect } from "react";
 import { usePage } from "@inertiajs/react";
-import { toast, cssTransition } from "react-toastify";
+import { toast, Flip } from "react-toastify";
 
 export default function NotificationListener() {
     const { auth } = usePage().props;
-    const Bounce = cssTransition({
-        enter: 'animate__animated animate__bounceIn',
-        exit: 'animate__animated animate__bounceOut',
-      });
 
-    // Escuta o canal privado para o profileId do usuário autenticado
     useEffect(() => {
-        
         // Escuta o canal privado para o profileId
         // Echo.private(`profile.${auth.profile.id}`).listen(
         //     "JobFailedNotification",
@@ -25,8 +19,9 @@ export default function NotificationListener() {
         Echo.private(`profile.${auth.profile.id}`).listen(
             ".job.failed", // Note o ponto (.) antes do nome do evento
             (notification) => {
-                console.log(notification);
-                toast.error(notification, {
+                // toast.error(notification.message || "Erro inesperado", { ... });
+                // console.log(notification);
+                toast.error(notification.message, {
                     position: "top-right",
                     autoClose: false,
                     hideProgressBar: false,
@@ -35,14 +30,14 @@ export default function NotificationListener() {
                     draggable: true,
                     progress: undefined,
                     theme: "light",
-                    transition: Bounce,
-                    });
+                    transition: Flip,
+                });
             }
         );
 
         // Verificando se a conexão está funcionando
-        Echo.connector.pusher.connection.bind('connected', () => {
-            console.log('Conectado ao Pusher!');
+        Echo.connector.pusher.connection.bind("connected", () => {
+            console.log("Conectado ao Pusher!");
         });
 
         // Cleanup (para não ficar ouvindo o canal quando o componente for desmontado)
