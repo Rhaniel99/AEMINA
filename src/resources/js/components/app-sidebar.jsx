@@ -1,5 +1,5 @@
 import { usePage } from "@inertiajs/react";
-import { CirclePlay, Clapperboard, BookDown, Frame } from "lucide-react";
+import { CirclePlay, Clapperboard, BookDown, Frame, ShieldEllipsis } from "lucide-react";
 import { NavMain } from "@/components/nav/nav-main";
 import { NavProjects } from "@/components/nav/nav-projects";
 import { NavUser } from "@/components/nav/nav-user";
@@ -63,6 +63,11 @@ export function AppSidebar(props) {
                 name: "Repositório",
                 url: route("aemina.list.media"),
                 icon: BookDown,
+            },
+            {
+                name: "Usuários | Perfis",
+                url: '#',
+                icon: ShieldEllipsis,
             },
             {
                 name: "Test_Area",

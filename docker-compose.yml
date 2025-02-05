@@ -158,7 +158,7 @@ services:
       - php
     user: ${USER:-laravel}
     profiles: ["composer"]
-    entrypoint: ['composer', '--ignore-platform-reqs']
+    entrypoint: ['composer', '--ignore-platform-reqs', '--no-scripts']
     networks:
       - laravel
 
