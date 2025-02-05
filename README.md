@@ -6,7 +6,7 @@
 
 ## Resumo do Projeto
 
-Aemina é um projeto pessoal que explora diversas áreas de conhecimento adquiridas ao longo dos anos. Ele abrange desde a integração com AWS (Minio) e a importação de arquivos Excel até a criação de tabelas e operações CRUD. O projeto é desenvolvido em um ambiente totalmente dockerizado e utiliza tecnologias modernas para garantir eficiência e escalabilidade.
+Aemina é uma plataforma de streaming onde os usuários criam perfis e compartilham filmes, séries e animes. Utiliza **AWS Minio** para armazenamento, **FFmpeg** para conversão de vídeos e **Laravel Horizon** para processamento em segundo plano com filas e jobs. Recentemente, integrou o **Reverb** para notificações em tempo real via WebSocket. Desenvolvido em um ambiente dockerizado, o projeto prioriza eficiência, escalabilidade e uma experiência de usuário fluida, reunindo tecnologias modernas e conhecimentos técnicos adquiridos ao longo do tempo.
 
 ## Tecnologias Utilizadas
 
@@ -14,9 +14,11 @@ Aemina é um projeto pessoal que explora diversas áreas de conhecimento adquiri
 - **Laravel**
 - **PostgreSQL**
 - **Redis**
-- **Nginx** 
+- **Nginx**
+- **Reverb**
+- **Horizon** 
 - **Docker** 
-- **AWS** 
+- **AWS** (Minio) 
 
 ## Instalação
 
@@ -64,21 +66,38 @@ docker compose run --rm --service-ports node npm run dev
 > - Recuperar Senha
 > - ~~Logout~~
 > - ~~Instalar Laravel Horizon~~
-> - Criar um container para minio.
+> - ~~Criar um container para minio~~
 > - ~~Criar um container para Queues e Horizon.~~
 > - ~~Criar seed com usuário adm.~~
 > - ~~Importar XLS e Importar no banco com regras.~~
-
+> - ~~Importar Filme MP4 e MKV~~
+> - ~~Converter Filme MKV para Mp4~~
+> - ~~Converter Filme Mp4 Profile 10 para um mais comum~~
+> - ~~Executar Filmes~~
+> - ~~Selecionar Perfis~~
+> - ~~Inserir Reverb~~
+> - Notificação utilizando Reverb para Falhas
+> - Notificação utilizando Reverb para Sucesso
+> - Inserir Legendas
+> - Update Filmes 
+> - ~~Listagem de Filmes ( Administrador )~~
+> - ~~Listagem de Filmes usuário~~
+> - Pesquisa por Filmes usuário
+> - ~~Pesquisa por filmes administrador~~
+> - Avaliações
+> - Comentários
+> - Importar séries e Episódios
+> - Conversão de Séries e Episódios 
 
 > #### Melhorias
 > 
-> - ~~Utilizar Redis para Sessão, Queues e Cache.~~
+> - ~~Utilizar Redis para Sessão, Queues e Cache~~
 > - ~~Utilização de Modais ao invés de pages para criação e login de usuário.~~
-> - ~~Atualização para a ultima versão do inertia.~~
-> - Verificar uma melhoria para o container de Queue e Horizon
-> - Reformular o body da homepage
-> - Reformular a header, utilizar icons com dropdown para Login.
-> - Schemas Diferente para Gestão-Edu e Notes.
+> - ~~Atualização para a ultima versão do inertia~~
+> -  ~~Container do Horizon~~
+> - ~~Reformular o body da homepage~~
+> - ~~Reformular a header, utilizar icons com dropdown para Login~~
+> - ~~Schemas para cada projeto~~
 
 
 > #### Logs
