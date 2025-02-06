@@ -19,6 +19,13 @@ COPY ./src /var/www/html
 # Copia o arquivo .env da raiz para o container
 COPY .env /var/www/html/.env
 
+# Instalar a extensão zip e os comandos unzip e git no container
+RUN apt-get update && apt-get install -y \
+    unzip \
+    zip \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
 # Instala dependências do Laravel, ignorando pacotes que não são necessários para o Reverb
 RUN composer install --optimize-autoloader --no-dev --ignore-platform-reqs
 

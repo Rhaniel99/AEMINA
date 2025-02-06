@@ -18,7 +18,6 @@ import EditMedia from "@/components/dialogs/edit-media";
 import { tableColumnsMediaList } from "@/components/tables/columns-list-media";
 import { TableMediaList } from "@/components/tables/table-list-media";
 import { useDialog } from "@/hooks/use-dialog";
-import { debounce } from "lodash";
 
 export default function Index({ media }) {
     const { data, setData } = useForm({
