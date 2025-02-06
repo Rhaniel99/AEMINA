@@ -15,14 +15,14 @@ Route::get('/', function () {
     if (Auth::check()) {
         return to_route('aemina.index', ['content' => 'filme','category' => 'lancamento']);
     } else {
-        return inertia('Public/Home/Index');
+        return inertia('Public/Home/index');
     }
 })->name('home');
 
 Route::resource('posts', PostController::class);
 
 Route::middleware(['auth'])->group(function () {
-    Route::inertia('/create-profile', 'Public/Profile/Create')->name('profile.create');
+    Route::inertia('/create-profile', 'Public/Profile/create')->name('profile.create');
     Route::post('/create-profile/{id_user}', [ProfileController::class, 'store'])->name('profile.store');
 });
 

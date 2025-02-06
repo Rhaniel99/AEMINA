@@ -21,7 +21,7 @@ class ProfileController extends Controller
             return $profile;
         });
     
-        return inertia('Public/Profile/Index', [
+        return inertia('Public/Profile/index', [
             'profiles' => $profiles,
         ]);   
     }

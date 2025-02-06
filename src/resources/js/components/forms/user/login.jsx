@@ -1,13 +1,14 @@
 import { useForm } from "@inertiajs/react";
-import { useRoute } from "ziggy";
-import SocialLinks from "@/components/social/social-links";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { FaGoogle, FaFacebook } from "react-icons/fa";
+import { router } from "@inertiajs/react";
 
-export default function UserLogin({ isActive }) {
-    const route = useRoute();
-    
+export default function LoginForm() {
     const { data, setData, post, processing, reset } = useForm({
-        email: "",
-        senha: "",
+            email: "",
+            senha: "",
     });
 
     function submit(e) {
@@ -23,58 +24,67 @@ export default function UserLogin({ isActive }) {
         });
     }
 
+    const handleGoogleLogin = () => {
+        // route("auth.google")
+        router.get("/auth/google");
+    };
+
     return (
         <>
-            <div
-                className={`form-container absolute inset-0 w-1/2 bg-white transition-transform duration-300 ${
-                    !isActive
-                        ? "translate-x-0 z-10 opacity-100"
-                        : "-translate-x-full opacity-0 z-0"
-                }`}
-            >
-                <form
-                    className="flex flex-col items-center justify-center h-full px-10 bg-white"
-                    onSubmit={submit}
-                >
-                    <h1 className="text-xl font-semibold mb-4">Entrar</h1>
-
-                    <SocialLinks />
-
-                    <span className="text-sm mb-4">
-                        ou use seu email e senha
-                    </span>
-
-                    <input
-                        type="email"
-                        name="email"
+            <form onSubmit={submit} className="space-y-4">
+                <div>
+                    <Label htmlFor="email">Email</Label>
+                    <Input
                         id="email"
+                        type="email"
                         value={data.email}
                         onChange={(e) => setData("email", e.target.value)}
-                        placeholder="nome@examplo.com"
-                        className="bg-[#eee] border-none my-2 px-4 py-2.5 text-sm rounded-lg w-full outline-none"
                         required
+                        className="bg-[#A6907C] text-[#402E1F] placeholder-[#735848]"
                     />
-
-                    <input
+                </div>
+                <div>
+                    <Label htmlFor="password">Senha</Label>
+                    <Input
+                        id="password"
                         type="password"
-                        name="senha"
                         value={data.senha}
                         onChange={(e) => setData("senha", e.target.value)}
-                        id="senha"
-                        placeholder="••••••••"
-                        className="bg-[#eee] border-none my-2 px-4 py-2.5 text-sm rounded-lg w-full outline-none"
                         required
+                        className="bg-[#A6907C] text-[#402E1F] placeholder-[#735848]"
                     />
-
-                    <a className="underline-none text-sm text-gray-600 mb-4">
-                        Esqueceu sua senha?
+                </div>
+                <Button
+                    type="submit"
+                    className="w-full bg-[#735848] hover:bg-[#402E1F] text-[#D9CDBF]"
+                >
+                    Entrar
+                </Button>
+                <div className="text-center">
+                    <a
+                        href="#"
+                        className="text-sm text-[#402E1F] hover:text-[#735848]"
+                    >
+                        Esqueceu a senha?
                     </a>
-
-                    <button type="submit" className="btn-primary mt-5 bg-[#512da8] text-white text-xs px-11 py-2.5 border border-transparent rounded-lg font-semibold tracking-wide uppercase cursor-pointer">
-                        Entrar
-                    </button>
-                </form>
-            </div>
+                </div>
+                <div className="flex space-x-4">
+                    <Button
+                        type="button"
+                        className="flex-1 bg-[#735848] hover:bg-[#402E1F] text-[#D9CDBF]"
+                        onClick={handleGoogleLogin}
+                    >
+                        <FaGoogle className="mr-2" /> Google
+                    </Button>
+                    <Button
+                        type="button"
+                        className="flex-1 bg-[#735848] hover:bg-[#402E1F] text-[#D9CDBF]"
+                        onClick={() => console.log("Facebook login")}
+                    >
+                        <FaFacebook className="mr-2" /> Facebook
+                    </Button>
+                </div>
+            </form>
         </>
     );
 }
