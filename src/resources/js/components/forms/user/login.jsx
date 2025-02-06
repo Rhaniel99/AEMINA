@@ -26,7 +26,7 @@ export default function LoginForm() {
 
     const handleGoogleLogin = () => {
         // route("auth.google")
-        router.get("/auth/google");
+        window.location.href = route("auth.google");
     };
 
     return (
@@ -72,6 +72,7 @@ export default function LoginForm() {
                     <Button
                         type="button"
                         className="flex-1 bg-[#735848] hover:bg-[#402E1F] text-[#D9CDBF]"
+                        // href={route("auth.google")}
                         onClick={handleGoogleLogin}
                     >
                         <FaGoogle className="mr-2" /> Google
