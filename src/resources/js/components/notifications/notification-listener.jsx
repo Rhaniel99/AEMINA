@@ -15,6 +15,13 @@ export default function NotificationListener() {
         //         alert(notification.message); // Exibe a mensagem do erro
         //     }
         // );
+        
+        // ? Teste de conectividade do pusher
+        const user = "dafc366a-6c64-4c60-a17e-9d88444368ee";
+
+        Echo.private("App.Models.User." + user).notification((notification) => {
+            console.log(notification);
+        });
 
         Echo.private(`profile.${auth.profile.id}`).listen(
             ".job.success", // Note o ponto (.) antes do nome do evento

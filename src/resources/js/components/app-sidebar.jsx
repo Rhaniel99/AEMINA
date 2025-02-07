@@ -1,4 +1,4 @@
-import { usePage } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import { CirclePlay, Clapperboard, BookDown, Frame, ShieldEllipsis } from "lucide-react";
 import { NavMain } from "@/components/nav/nav-main";
 import { NavProjects } from "@/components/nav/nav-projects";
@@ -95,7 +95,7 @@ export function AppSidebar(props) {
                     <SidebarMenu>
                         <SidebarMenuItem>
                             <SidebarMenuButton size="lg" asChild>
-                                <a href="#">
+                                <Link href={route("aemina.index", { content: "filme", category: "lancamento" })}>
                                     <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                                         <CirclePlay className="size-4" />
                                     </div>
@@ -107,7 +107,7 @@ export function AppSidebar(props) {
                                             Filmes | Séries | Anime
                                         </span>
                                     </div>
-                                </a>
+                                </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     </SidebarMenu>
