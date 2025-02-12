@@ -13,6 +13,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import logo from "/public/img/logo/aemina-logo.png";
 
 export function AppSidebar(props) {
     const { auth, items_sidebar } = usePage().props;
@@ -35,6 +36,7 @@ export function AppSidebar(props) {
                 existingNav = {
                     title: item.title_content,
                     icon: Clapperboard, // Ícone genérico, pode ser alterado
+                    isActive: true,
                     url: "#", // URL principal (se necessário)
                     items: [
                         {
@@ -97,7 +99,8 @@ export function AppSidebar(props) {
                             <SidebarMenuButton size="lg" asChild>
                                 <Link href={route("aemina.index", { content: "filme", category: "lancamento" })}>
                                     <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                                        <CirclePlay className="size-4" />
+                                        <img src={logo} alt="Aemina" className="size-8" />
+                                        {/* <CirclePlay className="size-4" /> */}
                                     </div>
                                     <div className="flex flex-col gap-0.5 leading-none">
                                         <span className="font-semibold">
