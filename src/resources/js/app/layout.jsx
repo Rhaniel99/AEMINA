@@ -20,10 +20,9 @@ import {
 } from "@/components/ui/sidebar";
 
 import NotificationListener from "@/components/notifications/notification-listener";
-
+import DynamicBreadcrumb from "@/components/breadcrumbs/dynamic-breadcrumb.jsx";
 export default function Layout({ children }) {
-    const { flash, errors } = usePage().props;
-    const { content, category, movie, media } = usePage().props;
+    const { flash, errors, content, category, movie, media } = usePage().props;
 
     useEffect(() => {
         if (flash.success) {
@@ -51,63 +50,17 @@ export default function Layout({ children }) {
                     <div className="flex items-center gap-2 px-4">
                         <SidebarTrigger className="-ml-1" />
 
-                        <Separator orientation="vertical" className="mr-2 h-4" />
+                        <Separator
+                            orientation="vertical"
+                            className="mr-2 h-4"
+                        />
 
-                        <Breadcrumb>
-                            <BreadcrumbList>
-                                {/* ! */}
-                                {content && (
-                                    <>
-                                        <BreadcrumbItem>
-                                            <BreadcrumbPage>
-                                                {" "}
-                                                {content.toUpperCase()}
-                                            </BreadcrumbPage>
-                                        </BreadcrumbItem>
+                        <DynamicBreadcrumb />
 
-                                        <BreadcrumbSeparator className="hidden md:block" />
-                                    </>
-                                )}
-                                {category && (
-                                    <>
-                                        <BreadcrumbItem className="hidden md:block">
-                                            <BreadcrumbLink
-                                                href={route("aemina.index", [
-                                                    content,
-                                                    category,
-                                                ])}
-                                            >
-                                                {category.toUpperCase()}
-                                            </BreadcrumbLink>
-                                        </BreadcrumbItem>
-                                    </>
-                                )}
-                                {movie && (
-                                    <>
-                                        <BreadcrumbSeparator />
-                                        <BreadcrumbItem>
-                                            <BreadcrumbLink
-                                                href={route("aemina.show", [
-                                                    content,
-                                                    category,
-                                                    media.media_id,
-                                                ])}
-                                            >
-                                                {movie.toUpperCase()}
-                                            </BreadcrumbLink>
-                                        </BreadcrumbItem>
-                                    </>
-                                )}
-
-                                {/* ! */}
-                            </BreadcrumbList>
-                        </Breadcrumb>
                     </div>
                 </header>
-                
-                <div>
-                    {children}
-                </div>
+
+                <div>{children}</div>
             </SidebarInset>
         </SidebarProvider>
     );

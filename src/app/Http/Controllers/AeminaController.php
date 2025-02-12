@@ -301,8 +301,6 @@ class AeminaController extends Controller
             Log::alert($categoriesToAdd);
             Log::warning($media);
 
-
-
             $media->categories()->attach($categoriesToAdd);
         }
 

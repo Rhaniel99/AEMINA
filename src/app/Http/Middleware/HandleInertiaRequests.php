@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\BreadcrumbsEnum;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use App\Models\UserProfiles;
@@ -38,6 +39,11 @@ class HandleInertiaRequests extends Middleware
     {
 
         // Verifica se o usuário está autenticado
+        // \Log::info(json_encode($request->route()->getName()));
+        // 
+
+        // \Log::info($request->route()->parameters());
+
         if (auth()->check()) {
             $current_profile = null;
 
@@ -50,16 +56,16 @@ class HandleInertiaRequests extends Middleware
 
             // Obtem a contagem de mídias por categoria e tipo
             $content_categories = \DB::table('media_schema.content_and_categories_count')
-            ->select('content_type', 'category_name', 'category_name_normalized')
-            ->groupBy('content_type', 'category_name', 'category_name_normalized')
-            ->get();
+                ->select('content_type', 'category_name', 'category_name_normalized')
+                ->groupBy('content_type', 'category_name', 'category_name_normalized')
+                ->get();
 
             $content_categories->map(function ($item) {
                 $item->title_content = \Str::ucfirst($item->content_type);
                 $item->title_category = \Str::ucfirst($item->category_name);
                 return $item;
             });
-            
+
             // Retorna os dados compartilhados
             return array_merge(parent::share($request), [
                 'flash' => [
@@ -73,6 +79,7 @@ class HandleInertiaRequests extends Middleware
                     'avatar' => \Storage::url($current_profile->avatar),
                 ] : null,
                 'items_sidebar' => fn() => $content_categories,
+                'breadcrumbs' => fn() => $breadcrumbs = $this->generateBreadcrumbs($request),
             ]);
         }
 
@@ -83,5 +90,33 @@ class HandleInertiaRequests extends Middleware
                 'errors' => fn() => $request->session()->get('errors') ? $request->session()->get('errors')->getBag('default')->getMessages() : [],
             ],
         ]);
+    }
+
+    private function generateBreadcrumbs(Request $request): array
+    {
+        $route_name = $request->route()->getName();
+        $parameters = $request->route()->parameters();
+        $breadcrumbs = [];
+    
+        // Verifica se a rota tem um breadcrumb customizado no enum
+        if ($custom_breadcrumb = BreadcrumbsEnum::getLabel($route_name, $parameters)) {
+            return [$custom_breadcrumb]; // Retorna apenas o breadcrumb fixo
+        }
+        
+        if (isset($parameters['category']) && isset($parameters['content'])) {
+            $breadcrumbs[] = [
+                'label' => ucfirst($parameters['category']),
+                'url' => route('aemina.index', [$parameters['content'], $parameters['category']]),
+            ];
+        }
+
+        if (isset($parameters['movie'])) {
+            $breadcrumbs[] = [
+                'label' => ucfirst($parameters['movie']),
+                'url' => route('aemina.show', [$parameters['content'], $parameters['category'], $parameters['movie']]),
+            ];
+        }
+
+        return $breadcrumbs;
     }
 }
