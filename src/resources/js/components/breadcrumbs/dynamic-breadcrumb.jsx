@@ -7,7 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import React  from "react";
+import React from "react";
 
 export default function DynamicBreadcrumb() {
   const { breadcrumbs } = usePage().props;
@@ -20,7 +20,8 @@ export default function DynamicBreadcrumb() {
         {breadcrumbs.map((crumb, index) => (
           <React.Fragment key={index}>
             <BreadcrumbItem>
-              {crumb.url ? (
+              {/* Apenas o primeiro item terá link (se houver mais de um) */}
+              {index === 0 && crumb.url ? (
                 <BreadcrumbLink href={crumb.url}>{crumb.label}</BreadcrumbLink>
               ) : (
                 <BreadcrumbPage>{crumb.label}</BreadcrumbPage>

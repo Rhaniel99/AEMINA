@@ -12,11 +12,6 @@
         @apply bg-background text-foreground;
     }
 
-    .icon {
-        width: 1.25rem;
-        height: 1.25rem;
-      }
-
     /* Root Variables */
     :root {
         --background: 29 19% 57%;
@@ -93,52 +88,6 @@
 
 /* ========== COMPONENT STYLES ========== */
 @layer components {
-    /* .title {
-        @apply my-6 text-center text-3xl font-bold leading-9 text-slate-900;
-    }
-
-    .error {
-        @apply text-xs text-red-500 mt-1;
-    }
-
-    table {
-        @apply w-full text-sm text-left rounded-md shadow-lg overflow-hidden mb-6 table-auto bg-white;
-    }
-
-    thead {
-        @apply text-xs uppercase font-medium border-b border-slate-100 text-slate-600;
-    }
-
-    tbody tr {
-        @apply hover:bg-slate-100 w-full p-0;
-    }
-
-    th {
-        @apply px-6 py-4;
-    }
-
-    td {
-        @apply px-6 py-4 border-b border-slate-100;
-    }
-
-    .avatar {
-        @apply w-8 h-8 rounded-full overflow-hidden object-center object-cover;
-    } */
-
-    /* Button Styles (commented out for now) */
-    /*
-    .primary-btn {
-        @apply flex w-full justify-center rounded-md bg-blue-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:bg-slate-400 disabled:cursor-wait;
-    }
-
-    .text-link {
-        @apply font-semibold text-blue-500 hover:text-blue-600;
-    }
-
-    .nav-link {
-        @apply text-slate-200 hover:bg-slate-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium;
-    }
-    */
 }
 
 /* ========== UTILITIES ========== */

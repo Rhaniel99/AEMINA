@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Enums\BreadcrumbsEnum;
+use App\Models\Media;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use App\Models\UserProfiles;
@@ -98,25 +99,35 @@ class HandleInertiaRequests extends Middleware
         $parameters = $request->route()->parameters();
         $breadcrumbs = [];
     
-        // Verifica se a rota tem um breadcrumb customizado no enum
+        // Verifica se há um breadcrumb fixo no Enum
         if ($custom_breadcrumb = BreadcrumbsEnum::getLabel($route_name, $parameters)) {
-            return [$custom_breadcrumb]; // Retorna apenas o breadcrumb fixo
+            $breadcrumbs[] = $custom_breadcrumb;
         }
-        
+    
+        // Primeiro item: categoria
         if (isset($parameters['category']) && isset($parameters['content'])) {
             $breadcrumbs[] = [
                 'label' => ucfirst($parameters['category']),
                 'url' => route('aemina.index', [$parameters['content'], $parameters['category']]),
             ];
         }
-
-        if (isset($parameters['movie'])) {
+    
+        // Último item: filme (sem link)
+        if (isset($parameters['movie_id'])) {
+            $movie_title = Media::where('id', $parameters['movie_id'])->first('title')->title ?? 'Filme Desconhecido';
+    
             $breadcrumbs[] = [
-                'label' => ucfirst($parameters['movie']),
-                'url' => route('aemina.show', [$parameters['content'], $parameters['category'], $parameters['movie']]),
+                'label' => ucfirst($movie_title),
+                'url' => null, // Sem link
             ];
         }
-
+    
+        // Se houver apenas um item, remove a URL
+        if (count($breadcrumbs) === 1) {
+            $breadcrumbs[0]['url'] = null;
+        }
+    
         return $breadcrumbs;
     }
+    
 }
