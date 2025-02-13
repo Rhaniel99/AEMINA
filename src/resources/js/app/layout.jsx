@@ -1,16 +1,5 @@
-import { Link, usePage } from "@inertiajs/react";
-import { ToastContainer, toast, cssTransition } from "react-toastify";
-import { useState, useEffect } from "react";
-
+import { ToastContainer } from "react-toastify";
 import { AppSidebar } from "@/components/app-sidebar";
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 
 import {
@@ -21,27 +10,14 @@ import {
 
 import NotificationListener from "@/components/notifications/notification-listener";
 import DynamicBreadcrumb from "@/components/breadcrumbs/dynamic-breadcrumb.jsx";
+import Notification from "@/components/notifications/toastify";
+
 export default function Layout({ children }) {
-    const { flash, errors } = usePage().props;
-
-    useEffect(() => {
-        if (flash.success) {
-            toast.success(flash.success);
-        }
-
-        if (Object.keys(errors).length > 0) {
-            Object.values(errors).forEach((error) => {
-                toast.warn(error, {
-                    position: "top-right",
-                    autoClose: 3000,
-                    className: "bg-white-500 text-black",
-                });
-            });
-        }
-    }, [flash.success, errors]);
 
     return (
         <SidebarProvider>
+            <Notification />
+
             <NotificationListener />
             <ToastContainer />
             <AppSidebar />

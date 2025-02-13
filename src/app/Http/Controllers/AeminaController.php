@@ -28,7 +28,7 @@ class AeminaController extends Controller
         // if ($category === null) {
         //     $category = 'lancamento';
         // }
-        
+
         // $favorites = ProfileFavorites::where('profile_id', session()->get('selected_profile'))
         // ->pluck('media_id')
         // ->toArray();
@@ -136,7 +136,7 @@ class AeminaController extends Controller
                     DB::beginTransaction();
                     $this->store_movie($request);
                     DB::commit();
-                    return to_route('aemina.list.media')->with(['success' => 'Filme enviado com sucesso!']);
+                    return to_route('aemina.repository')->with(['success' => 'Filme enviado com sucesso!']);
                 default:
                     throw new Exception('Tipo de conteúdo não suportado.');
             }
@@ -332,21 +332,27 @@ class AeminaController extends Controller
     {
         $profile_id = session()->get('selected_profile');
 
+        $mensagem = "";
+
         switch ($request->type) {
             case 'set_favorite':
                 ProfileFavorites::create([
                     "profile_id" => $profile_id,
                     "media_id" => $media_id,
                 ]);
+                $mensagem = "Filme adicionado aos favoritos!";
                 break;
             case 'unset_favorite':
                 ProfileFavorites::where('profile_id', $profile_id)
                     ->where('media_id', $media_id)
                     ->delete();
+                $mensagem = "Filme removido dos favoritos!";
                 break;
             default:
                 break;
         }
+
+        return to_route('aemina.index')->with(["success" => $mensagem]);
     }
 
     /**

@@ -66,7 +66,7 @@ class ProfileController extends Controller
 
         session(['selected_profile' => $profile->id]);
 
-        return to_route('aemina.index', ['content' => 'filme','category' => 'lancamento'])->with(["success" => "Perfil criado com sucesso!"]);
+        return to_route('aemina.index', ['content' => 'filme'])->with(["success" => "Perfil criado com sucesso!"]);
     }
 
     /**
