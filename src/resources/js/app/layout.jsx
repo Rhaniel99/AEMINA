@@ -16,9 +16,12 @@ export default function Layout({ children }) {
 
     return (
         <SidebarProvider>
+            {/* Notificação padrão do Controller */}
             <Notification />
 
+            {/* Notificação usando Reverb */}
             <NotificationListener />
+
             <ToastContainer />
             <AppSidebar />
             <SidebarInset>
