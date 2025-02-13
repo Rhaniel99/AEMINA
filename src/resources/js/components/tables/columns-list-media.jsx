@@ -65,18 +65,6 @@ export const tableColumnsMediaList = ({
             return <ProgressWind progress={row.getValue("progress_upload")} />;
         },
     },
-    // ? Status
-    {
-        accessorKey: "status_upload",
-        header: () => <div className="text-center">Status do Arquivo</div>,
-        cell: ({ row }) => {
-            return (
-                <div className="text-center font-medium capitalize">
-                    {row.getValue("status_upload")}
-                </div>
-            );
-        },
-    },
     // ? Data de Lançamento
     {
         accessorKey: "release_date",
@@ -97,7 +85,6 @@ export const tableColumnsMediaList = ({
         enableHiding: false,
         cell: ({ row }) => {
 
-           console.log();
             const content = {
                 name:
                     row.original.content_type.charAt(0).toUpperCase() +

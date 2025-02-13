@@ -84,8 +84,7 @@ export default function Index({ media }) {
     return (
         <>
             
-            <Head title="LISTAR" />
-            <h1 className="title p-6">Lista novos Recursos</h1>
+            <Head title="REPÓSITORIO" />
 
             <div className="p-6">
                 <TableMediaList

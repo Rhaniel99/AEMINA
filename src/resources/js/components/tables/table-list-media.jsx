@@ -77,7 +77,7 @@ export function TableMediaList({ media, columns, search, handleSearch, data }) {
                         placeholder="Filtrar por titulo..."
                         value={search}
                         onChange={handleSearch}
-                        className="max-w-sm"
+                        className="max-w-sm bg-[#D9CDBF] text-black py-2 px-4 border-b"
                     />
 
                     <DropdownMenu>
@@ -85,7 +85,9 @@ export function TableMediaList({ media, columns, search, handleSearch, data }) {
                             <Button variant="outline" className="ml-auto">
                                 Novo <ChevronDown />
                             </Button>
+
                         </DropdownMenuTrigger>
+
                         <DropdownMenuContent align="end">
                             <DropdownMenuCheckboxItem
                                 className="capitalize"
@@ -114,6 +116,7 @@ export function TableMediaList({ media, columns, search, handleSearch, data }) {
                                 Colunas <ChevronDown />
                             </Button>
                         </DropdownMenuTrigger>
+                        
                         <DropdownMenuContent align="end">
                             {table
                                 .getAllColumns()
@@ -133,15 +136,15 @@ export function TableMediaList({ media, columns, search, handleSearch, data }) {
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
-
-                <div className="rounded-md border">
+                
+                <div className="rounded-md border bg-[#D9CDBF]">
                     {/* Body da tabela */}
                     <Table>
                         <TableHeader>
                             {table.getHeaderGroups().map((headerGroup) => (
                                 <TableRow key={headerGroup.id}>
                                     {headerGroup.headers.map((header) => (
-                                        <TableHead key={header.id}>
+                                        <TableHead key={header.id} className="bg-[#402E1F] text-white py-2 px-4 border-b">
                                             {header.isPlaceholder
                                                 ? null
                                                 : flexRender(
@@ -155,7 +158,7 @@ export function TableMediaList({ media, columns, search, handleSearch, data }) {
                             ))}
                         </TableHeader>
 
-                        <TableBody>
+                        <TableBody >
                             {table.getRowModel().rows?.length ? (
                                 table.getRowModel().rows.map((row) => (
                                     <TableRow
@@ -163,9 +166,14 @@ export function TableMediaList({ media, columns, search, handleSearch, data }) {
                                         data-state={
                                             row.getIsSelected() && "selected"
                                         }
+                                        className="hover:bg-[#735848]"
                                     >
                                         {row.getVisibleCells().map((cell) => (
-                                            <TableCell key={cell.id}>
+                                            <TableCell key={cell.id} className={`py-2 px-4 border-b ${
+                                                cell.row.index % 2 === 0 
+                                                  ? 'bg-[#D9CDBF]' 
+                                                  : 'bg-[#BFAC9B]'
+                                              }`}>
                                                 {flexRender(
                                                     cell.column.columnDef.cell,
                                                     cell.getContext()
@@ -178,7 +186,7 @@ export function TableMediaList({ media, columns, search, handleSearch, data }) {
                                 <TableRow>
                                     <TableCell
                                         colSpan={columns.length}
-                                        className="h-24 text-center"
+                                        className="h-24 text-center text-[#402E1F]"
                                     >
                                         Não há resultados.
                                     </TableCell>
@@ -190,44 +198,54 @@ export function TableMediaList({ media, columns, search, handleSearch, data }) {
 
                 {/* Paginação */}
                 <div className="flex items-center justify-end space-x-2 py-4">
-                    <div className="space-x-2">
-                        <Pagination>
-                            <PaginationContent>
-                                {media.links.map((link) =>
-                                    link.url ? (
-                                        <PaginationItem key={link.label}>
-                                            {link.label === "Próxima" ? (
-                                                <PaginationNext
-                                                    href={link.url}
-                                                />
-                                            ) : link.label === "Anterior" ? (
-                                                <PaginationPrevious
-                                                    href={link.url}
-                                                />
-                                            ) : (
-                                                <PaginationLink
-                                                    href={link.url}
-                                                    isActive={link.active}
-                                                >
-                                                    {link.label}
-                                                </PaginationLink>
-                                            )}
-                                        </PaginationItem>
-                                    ) : (
-                                        <span
-                                            key={link.label}
-                                            className={
-                                                "p-1 mx-1 text-slate-300"
-                                            }
-                                        >
-                                            {link.label} {">"}
-                                        </span>
-                                    )
-                                )}
-                            </PaginationContent>
-                        </Pagination>
-                    </div>
+                        <div className="space-x-2">
+                            <Pagination>
+                                <PaginationContent>
+                                    {media.links.map((link) =>
+                                        link.url ? (
+                                            <PaginationItem
+                                                key={link.label}
+                                                className={`rounded-full ${
+                                                    link.active
+                                                        ? 'bg-[#402E1F] text-white'
+                                                        : 'bg-[#A6907C] hover:bg-[#735848]'
+                                                }`}
+                                            >
+                                                {link.label === "Próxima" ? (
+                                                    <PaginationNext
+                                                        href={link.url}
+                                                        className="text-[#402E1F]"
+                                                    />
+                                                ) : link.label === "Anterior" ? (
+                                                    <PaginationPrevious
+                                                        href={link.url}
+                                                        className="text-[#402E1F]"
+                                                    />
+                                                ) : (
+                                                    <PaginationLink
+                                                        href={link.url}
+                                                        isActive={link.active}
+                                                        className="text-[#402E1F]"
+                                                    >
+                                                        {link.label}
+                                                    </PaginationLink>
+                                                )}
+                                            </PaginationItem>
+                                        ) : (
+                                            <span
+                                                key={link.label}
+                                                className="p-1 mx-1 text-[#BFAC9B]"
+                                            >
+                                                {link.label} {">"}
+                                            </span>
+                                        )
+                                    )}
+                                </PaginationContent>
+                            </Pagination>
+                        </div>
                 </div>
+
+                
             </div>
 
             <Content

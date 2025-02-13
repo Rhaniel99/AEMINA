@@ -6,6 +6,7 @@ use App\Jobs\UploadMediaJob;
 use App\Models\Categories;
 use App\Models\ContentType;
 use App\Models\MediaCategory;
+use App\Models\ProfileFavorites;
 use DB;
 use FFMpeg;
 use Exception;
@@ -24,6 +25,15 @@ class AeminaController extends Controller
     public function index($content, $category)
     {
         // Query básica
+        // if ($category === null) {
+        //     $category = 'lancamento';
+        // }
+        
+        // $favorites = ProfileFavorites::where('profile_id', session()->get('selected_profile'))
+        // ->pluck('media_id')
+        // ->toArray();
+
+
         $query = Media::ofContentType($content);
 
         if ($category === 'lancamento') {
@@ -62,7 +72,7 @@ class AeminaController extends Controller
         ]);
     }
 
-    public function list_media(Request $request)
+    public function repository(Request $request)
     {
         $search = fnStrings($request->input('search', ''));
 
@@ -255,7 +265,7 @@ class AeminaController extends Controller
                     DB::beginTransaction();
                     $this->update_movie($request, $id);
                     DB::commit();
-                    return to_route('aemina.list.media')->with(['success' => 'Filme Atualizado com sucesso!']);
+                    return to_route('aemina.repository')->with(['success' => 'Filme Atualizado com sucesso!']);
                 default:
                     break;
             }
@@ -315,6 +325,27 @@ class AeminaController extends Controller
             $path_file = genPathFile($request->titulo_filme, $request->arquivo_filme);
             $encoded_file = file_get_contents($request->arquivo_filme);
             Storage::disk('s3')->put($path_file, $encoded_file);
+        }
+    }
+
+    public function favorite(Request $request, $media_id)
+    {
+        $profile_id = session()->get('selected_profile');
+
+        switch ($request->type) {
+            case 'set_favorite':
+                ProfileFavorites::create([
+                    "profile_id" => $profile_id,
+                    "media_id" => $media_id,
+                ]);
+                break;
+            case 'unset_favorite':
+                ProfileFavorites::where('profile_id', $profile_id)
+                    ->where('media_id', $media_id)
+                    ->delete();
+                break;
+            default:
+                break;
         }
     }
 

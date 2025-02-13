@@ -22,7 +22,7 @@ import {
 import NotificationListener from "@/components/notifications/notification-listener";
 import DynamicBreadcrumb from "@/components/breadcrumbs/dynamic-breadcrumb.jsx";
 export default function Layout({ children }) {
-    const { flash, errors, content, category, movie, media } = usePage().props;
+    const { flash, errors } = usePage().props;
 
     useEffect(() => {
         if (flash.success) {

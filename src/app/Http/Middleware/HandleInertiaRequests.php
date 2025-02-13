@@ -99,6 +99,7 @@ class HandleInertiaRequests extends Middleware
         $parameters = $request->route()->parameters();
         $breadcrumbs = [];
     
+        // \Log::info($route_name);
         // Verifica se há um breadcrumb fixo no Enum
         if ($custom_breadcrumb = BreadcrumbsEnum::getLabel($route_name, $parameters)) {
             $breadcrumbs[] = $custom_breadcrumb;

@@ -4,7 +4,7 @@ namespace App\Enums;
 
 enum BreadcrumbsEnum: string
 {
-    case AEMINA_LIST_MEDIA = 'aemina.list.media';
+    case AEMINA_LIST_MEDIA = 'aemina.repository';
     // case AEMINA_INDEX = 'aemina.index';
     // case AEMINA_SHOW = 'aemina.show';
     // case DASHBOARD = 'dashboard';

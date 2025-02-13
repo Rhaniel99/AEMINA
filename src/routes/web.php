@@ -8,8 +8,6 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -38,13 +36,17 @@ Route::middleware(['auth', 'ensure.profile.exists', 'check.selected.profile'])->
     Route::resource('test', TestController::class);
     // Route::post('/tus/tus', [TestController::class, 'store'])->name('test.store');
 
-
-    Route::resource('aemina', AeminaController::class)->except(['index', 'show', 'store', 'update']);
-    Route::post('/aemina/{id_media}/{content}', [AeminaController::class, 'update'])->name('aemina.update');
-    Route::post('/aemina/{content}', [AeminaController::class, 'store'])->name('aemina.store');
-    Route::get('/aemina/{content}/{category}', [AeminaController::class, 'index'])->name('aemina.index');
-    Route::get('/aemina/list-media', [AeminaController::class, 'list_media'])->name('aemina.list.media');
-    Route::get('/aemina/{content}/{category}/{movie_id}', [AeminaController::class, 'show'])->name('aemina.show');
+    Route::controller(AeminaController::class)->group(function () {
+        //* Get
+        Route::get('/aemina/repository','repository')->name('aemina.repository');
+        Route::get('/aemina/{content}/{category?}', 'index')->defaults('category', 'lancamento')->name('aemina.index');
+        Route::get('/aemina/{content}/{category}/{movie_id}', 'show')->name('aemina.show');
+        
+        //* Post
+        Route::post('/aemina/favorite/{id_media}',  'favorite')->name('aemina.favorite');
+        Route::post('/aemina/{id_media}/{content}',  'update')->name('aemina.update');
+        Route::post('/aemina/{content}',  'store')->name('aemina.store');
+    });
 
     // ? Rotas de atualização para Plano de Acão antigo projeto!
     Route::controller(PlanoAcaoController::class)->group(function () {

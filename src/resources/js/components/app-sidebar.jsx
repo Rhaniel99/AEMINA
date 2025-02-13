@@ -43,7 +43,6 @@ export function AppSidebar(props) {
                             title: "Lançamentos",
                             url: route("aemina.index", [
                                 item.content_type,
-                                "lancamento",
                             ]),
                         },
                     ],
@@ -63,11 +62,11 @@ export function AppSidebar(props) {
         projects: [
             {
                 name: "Repositório",
-                url: route("aemina.list.media"),
+                url: route("aemina.repository"),
                 icon: BookDown,
             },
             {
-                name: "Usuários | Perfis",
+                name: "Usuários",
                 url: '#',
                 icon: ShieldEllipsis,
             },

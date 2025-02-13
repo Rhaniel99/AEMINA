@@ -12,12 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('media_schema.profile_favorites', function (Blueprint $table) {
-            $table->uuid('id')->primary();
             // Relacionamentos
             $table->uuid('profile_id');
             $table->uuid('media_id');
 
             $table->timestamps();
+            
+            // Chave única composta para evitar duplicatas
+            $table->unique(['profile_id', 'media_id']);
 
             // Chave estrangeira
             $table->foreign('profile_id')

@@ -1,38 +1,44 @@
 import React, { useEffect, useState } from "react";
 
-export default function ProgressWind({ progress }) {
-  const [currentProgress, setCurrentProgress] = useState(progress);
+  /**
+   * ProgressWind displays a progress bar with an animated fill and
+   * a status text below it. The filled part uses a gradient built from 
+   * the organization's color palette.
+   *
+   * Props:
+   *  - progress: number (0-100) indicating desired progress percentage.
+   */
+  export default function ProgressWind({ progress }) {
+    const [currentProgress, setCurrentProgress] = useState(progress);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (currentProgress < progress) {
-        setCurrentProgress((prev) => Math.min(prev + 1, progress));
-      } else if (currentProgress > progress) {
-        setCurrentProgress((prev) => Math.max(prev - 1, progress));
-      }
-    }, 50); // Ajuste a velocidade da animação (50ms por unidade de progresso)
+    useEffect(() => {
+      const interval = setInterval(() => {
+        if (currentProgress < progress) {
+          setCurrentProgress((prev) => Math.min(prev + 1, progress));
+        } else if (currentProgress > progress) {
+          setCurrentProgress((prev) => Math.max(prev - 1, progress));
+        }
+      }, 50); // Animation speed: 50ms per progress unit
 
-    return () => clearInterval(interval); // Limpa o intervalo quando o componente é desmontado
-  }, [progress, currentProgress]);
+      return () => clearInterval(interval); // Cleanup the interval on unmount
+    }, [progress, currentProgress]);
 
-  return (
-    <div className="flex w-full gap-2">
-      <label
-        id="p01e-label"
-        htmlFor="p01e"
-        className="order-2 mb-0 text-center text-xs text-slate-500"
-      >
-        <span className="sr-only">uploading</span> {currentProgress}%
-      </label>
-      <progress
-        aria-labelledby="p01e-label"
-        id="p01e"
-        max="100"
-        value={currentProgress}
-        className="block w-full overflow-hidden rounded bg-slate-100 transition-all ease-in-out duration-500"
-      >
-        {currentProgress}%
-      </progress>
-    </div>
-  );
-}
+    return (
+      <div className="flex flex-col items-center w-full">
+        {/* Custom progress bar with a gradient from the color palette */}
+        <div className="w-full h-4 bg-gray-300 rounded overflow-hidden">
+          <div
+            className="h-full rounded transition-all duration-500 ease-in-out"
+            style={{
+              width: `${currentProgress}%`,
+              background: "linear-gradient(90deg, #D9CDBF 0%, #402E1F 25%, #A6907C 50%, #BFAC9B 75%, #735848 100%)"
+            }}
+          ></div>
+        </div>
+        {/* Status text centered under the progress bar */}
+        <div className="mt-2 text-xs text-slate-500">
+          <span className="sr-only">uploading</span> {currentProgress}%
+        </div>
+      </div>
+    );
+  }
