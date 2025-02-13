@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Post;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -24,8 +23,6 @@ class DatabaseSeeder extends Seeder
                 'password' => bcrypt(748596)
             ]
         );
-
-        Post::factory(2)->create();
 
         // Chamar o NoteTableSeeder diretamente
         $noteSeeder = new NoteTableSeeder();

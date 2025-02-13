@@ -4,7 +4,6 @@ use App\Http\Controllers\AeminaController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\PlanoAcaoController;
-use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
@@ -16,8 +15,6 @@ Route::get('/', function () {
         return inertia('Public/Home/index');
     }
 })->name('home');
-
-Route::resource('posts', PostController::class);
 
 Route::middleware(['auth'])->group(function () {
     Route::inertia('/create-profile', 'Public/Profile/create')->name('profile.create');

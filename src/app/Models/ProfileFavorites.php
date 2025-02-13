@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ProfileFavorites extends Model
 {
     use HasFactory;
-    protected $table = 'media_schema.profile_favorites';
+    protected $table = 'profile_favorites';
     public $incrementing = false;
 
     protected $fillable = [

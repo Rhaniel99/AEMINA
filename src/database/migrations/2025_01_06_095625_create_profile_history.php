@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('media_schema.profile_history', function (Blueprint $table) {
+        Schema::create('profile_history', function (Blueprint $table) {
             $table->uuid('id')->primary();
             // Relacionamentos
             $table->uuid('profile_id');
@@ -47,6 +47,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('media_schema.profile_history');
+        Schema::dropIfExists('profile_history');
     }
 };

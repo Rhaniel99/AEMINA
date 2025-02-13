@@ -68,7 +68,7 @@ class Media extends Model
 
     public function userHistory()
     {
-        return $this->hasMany(UserHistory::class, 'media_id');
+        return $this->hasMany(ProfileHistory::class, 'media_id');
     }
 
     public function ratings()
@@ -78,7 +78,7 @@ class Media extends Model
 
     public function favorites()
     {
-        return $this->hasMany(UserFavorites::class, 'media_id');
+        return $this->hasMany(ProfileFavorites::class, 'media_id');
     }
 
     protected $keyType = 'uuid';

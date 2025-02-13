@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('media_schema.profile_favorites', function (Blueprint $table) {
+        Schema::create('profile_favorites', function (Blueprint $table) {
             // Relacionamentos
             $table->uuid('profile_id');
             $table->uuid('media_id');
@@ -41,6 +41,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('media_schema.profile_favorites');
+        Schema::dropIfExists('profile_favorites');
     }
 };
