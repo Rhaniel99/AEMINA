@@ -80,7 +80,7 @@ class HandleInertiaRequests extends Middleware
                     'avatar' => \Storage::url($current_profile->avatar),
                 ] : null,
                 'items_sidebar' => fn() => $content_categories,
-                'breadcrumbs' => fn() => $breadcrumbs = $this->generateBreadcrumbs($request),
+                'breadcrumbs' => fn() => $this->generateBreadcrumbs($request),
             ]);
         }
 

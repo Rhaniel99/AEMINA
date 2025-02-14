@@ -22,33 +22,29 @@ class AeminaController extends Controller
     /**
      * ? Listar todos os filmes, séries, animes.
      */
-    public function index($content, $category)
-    {
-        // Query básica
-        // if ($category === null) {
-        //     $category = 'lancamento';
-        // }
-
-        // $favorites = ProfileFavorites::where('profile_id', session()->get('selected_profile'))
-        // ->pluck('media_id')
-        // ->toArray();
-
-
+    public function index($content, $category){
         $query = Media::ofContentType($content);
+        $profile_id = session()->get('selected_profile');
 
-        if ($category === 'lancamento') {
-            // Ordenar por data de lançamento (mais recentes primeiro)
-            $query->orderBy('release_date', 'desc');
-        } elseif ($category) {
-            // Filtrar pela categoria fornecida
-            $query->whereHas('categories', function ($q) use ($category) {
-                $q->whereRaw('LOWER(UNACCENT(categories.name)) = ?', [$category]);
-            });
+        switch ($category) {
+            case 'lancamento':
+                $query->orderBy('release_date', 'desc');
+                break;
+            case 'favorito':
+                $query->whereHas('favorites', function ($q) use ($profile_id) {
+                    $q->where('profile_id', $profile_id);
+                });
+                break;
+            default:
+                $query->whereHas('categories', function ($q) use ($category) {
+                    $q->whereRaw('LOWER(UNACCENT(categories.name)) = ?', [$category]);
+                });
+                break;
         }
 
         $medias_collection = $query->with('categories')->get();
 
-        $medias = $medias_collection->map(function ($media) {
+        $medias = $medias_collection->map(function ($media) use ($profile_id) {
             // Formata a data para o padrão brasileiro
             $media->release_date = fDateBR($media->release_date);
 
@@ -61,6 +57,9 @@ class AeminaController extends Controller
                     'name' => $category->name,
                 ];
             });
+
+            // Adiciona a propriedade booleana para indicar se foi favoritado
+            $media->is_favorited = $media->favorites->contains('profile_id', $profile_id);
 
             return $media;
         });
@@ -104,7 +103,7 @@ class AeminaController extends Controller
             })
         );
 
-        return inertia('Aemina/List', [
+        return inertia('Aemina/repository', [
             'media' => $media,
         ]);
     }

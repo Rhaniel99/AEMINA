@@ -234,7 +234,7 @@ export function TableMediaList({ media, columns, search, handleSearch, data }) {
                                         ) : (
                                             <span
                                                 key={link.label}
-                                                className="p-1 mx-1 text-[#BFAC9B]"
+                                                className="p-1 mx-1 text-[#735848]"
                                             >
                                                 {link.label} {">"}
                                             </span>

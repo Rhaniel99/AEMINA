@@ -27,38 +27,42 @@ export function AppSidebar(props) {
             logout: route("login.logout"),
         },
         main: items_sidebar.reduce((navItems, item) => {
-            // Verifica se já existe um item para este tipo de mídia
+            // Verifica se já existe um grupo para este tipo de mídia
             let existingNav = navItems.find(
-                (nav) => nav.title === item.title_content
+              (nav) => nav.title === item.title_content
             );
             if (!existingNav) {
-                // Cria um novo grupo de navegação
-                existingNav = {
-                    title: item.title_content,
-                    icon: Clapperboard, // Ícone genérico, pode ser alterado
-                    isActive: true,
-                    url: "#", // URL principal (se necessário)
-                    items: [
-                        {
-                            title: "Lançamentos",
-                            url: route("aemina.index", [
-                                item.content_type,
-                            ]),
-                        },
-                    ],
-                };
-                navItems.push(existingNav);
+              // Cria um novo grupo de navegação com os dois primeiros itens fixos:
+              existingNav = {
+                title: item.title_content,
+                icon: Clapperboard, // Você pode alterar o ícone conforme necessário
+                isActive: true,
+                url: "#", // URL principal, se for utilizada
+                items: [
+                  {
+                    title: "Favoritos",
+                    // Se quiser filtrar por tipo de conteúdo, pode enviar o parâmetro
+                    url: route("aemina.index", [item.content_type, 'favorito']),
+                  },
+                  {
+                    title: "Lançamentos",
+                    url: route("aemina.index", [item.content_type]),
+                  },
+                ],
+              };
+              navItems.push(existingNav);
             }
-            // Adiciona a categoria específica
+            // Adiciona as categorias específicas a partir do item
             existingNav.items.push({
-                title: item.title_category,
-                url: route("aemina.index", [
-                    item.content_type,
-                    item.category_name_normalized,
-                ]),
+              title: item.title_category,
+              url: route("aemina.index", [
+                item.content_type,
+                item.category_name_normalized,
+              ]),
             });
             return navItems;
-        }, []),
+          }, []),
+          
         projects: [
             {
                 name: "Repositório",

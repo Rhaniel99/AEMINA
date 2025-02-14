@@ -29,8 +29,13 @@ export default function Index({
     medias,
 }) {
 
-    // Estado para controlar os filmes favoritados (key: media.id, value: boolean)
-    const [favorites, setFavorites] = useState({});
+    // Inicializa o estado de favoritos a partir dos dados recebidos
+    const [favorites, setFavorites] = useState(
+        medias.reduce((acc, media) => {
+            acc[media.id] = media.is_favorited;
+            return acc;
+        }, {})
+    );
 
     const handleFavorite = (media_id) => {
         const isFavorite = favorites[media_id];
