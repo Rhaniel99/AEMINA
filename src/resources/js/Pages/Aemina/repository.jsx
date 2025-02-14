@@ -17,6 +17,8 @@ import EditMedia from "@/components/dialogs/edit-media";
 
 import { tableColumnsMediaList } from "@/components/tables/columns-list-media";
 import { TableMediaList } from "@/components/tables/table-list-media";
+import { TableRepository } from "@/components/tables/table-repository";
+
 import { useDialog } from "@/hooks/use-dialog";
 
 export default function Index({ media }) {
@@ -66,15 +68,15 @@ export default function Index({ media }) {
     };
 
     // ? Função para confirmar exclusão
-    const handleDelete = () => {
-        if (alertContent && alertContent.id) {
-            router.delete(route("aemina.destroy", alertContent.id), {
-                onSuccess: closeAlertDialog,
-            });
-        } else {
-            console.error("Erro: Nenhum item selecionado para exclusão.");
-        }
-    };
+    // const handleDelete = () => {
+    //     if (alertContent && alertContent.id) {
+    //         router.delete(route("aemina.destroy", alertContent.id), {
+    //             onSuccess: closeAlertDialog,
+    //         });
+    //     } else {
+    //         console.error("Erro: Nenhum item selecionado para exclusão.");
+    //     }
+    // };
 
     const columns = tableColumnsMediaList({
         handleContentClick: openEditDialog,
@@ -87,23 +89,31 @@ export default function Index({ media }) {
             <Head title="REPÓSITORIO" />
 
             <div className="p-6">
-                <TableMediaList
+                <TableRepository 
+                media={media} // Usa o estado atualizado
+                columns={columns}
+                search={searchValue}
+                handleSearch={handleSearchChange} // Função de busca
+                />
+
+
+                {/* <TableMediaList
                     media={media} // Usa o estado atualizado
                     columns={columns}
                     search={searchValue}
                     handleSearch={handleSearchChange} // Função de busca
                     data={data}
-                />
+                /> */}
             </div>
 
             {/* Diálogo separado */}
-            <EditMedia
+            {/* <EditMedia
                 open={isEditDialogOpen}
                 onOpenChange={(isOpen) => !isOpen && closeEditDialog()}
                 content={selectedContent}
-            />
+            /> */}
 
-            <AlertDialog
+            {/* <AlertDialog
                 open={isAlertDialogOpen}
                 onOpenChange={(isOpen) => !isOpen && closeAlertDialog()}
             >
@@ -129,7 +139,7 @@ export default function Index({ media }) {
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
-            </AlertDialog>
+            </AlertDialog> */}
         </>
     );
 }
