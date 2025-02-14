@@ -350,8 +350,8 @@ class AeminaController extends Controller
             default:
                 break;
         }
-
-        return to_route('aemina.index')->with(["success" => $mensagem]);
+        return redirect()->back()->with(["success" => $mensagem]);
+        // return to_route('aemina.index')->with(["success" => $mensagem]);
     }
 
     /**
