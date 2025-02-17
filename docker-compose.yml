@@ -191,7 +191,7 @@ services:
     volumes:
       - ./docker/minio/data:/data
     ports:
-      - 9700:9700
+      - 9900:9000
       - 9701:9701
     networks:
       laravel:

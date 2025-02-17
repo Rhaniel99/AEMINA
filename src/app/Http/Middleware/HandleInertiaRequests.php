@@ -77,7 +77,10 @@ class HandleInertiaRequests extends Middleware
                 'auth.profile' => fn() => $current_profile ? [
                     'id' => $current_profile->id,
                     'username' => $current_profile->username,
-                    'avatar' => \Storage::url($current_profile->avatar),
+                    'avatar' => \Storage::disk('s3_public')->temporaryUrl(
+                        $current_profile->avatar,
+                        now()->addMinutes(120)
+                    ),
                 ] : null,
                 'items_sidebar' => fn() => $content_categories,
                 'breadcrumbs' => fn() => $this->generateBreadcrumbs($request),

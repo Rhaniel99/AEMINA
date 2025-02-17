@@ -16,7 +16,10 @@ class ProfileController extends Controller
     {
         $profiles = Auth::user()->profiles->map(function ($profile) {
             $profile->avatar_url = $profile->avatar 
-                ? Storage::url($profile->avatar) 
+            ? Storage::disk('s3_public')->temporaryUrl(
+                $profile->avatar,
+                now()->addMinutes(120)
+            )
                 : '/default-avatar.png'; // URL para avatar padrão
             return $profile;
         });
