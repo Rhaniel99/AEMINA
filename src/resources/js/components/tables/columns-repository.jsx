@@ -11,8 +11,8 @@ import { Button } from "@/components/ui/button";
 import ProgressWind from "@/components/bar/progress-wind";
 import { Link } from "@inertiajs/react";
 
-export const tableColumnsMediaList = ({
-    handleContentClick,
+export const ColumnsRepository = ({
+    // handleContentClick,
     handleDeleteClick,
 }) => [
     // ? Conteúdo
@@ -122,7 +122,7 @@ export const tableColumnsMediaList = ({
                         </Link> */}
 
                         <DropdownMenuItem
-                            onClick={() => handleContentClick(content)}
+                            // onClick={() => handleContentClick(content)}
                         >
                             Editar
                         </DropdownMenuItem>

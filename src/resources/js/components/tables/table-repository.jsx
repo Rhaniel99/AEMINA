@@ -7,15 +7,7 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table";
-import { ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+
 import {
     Table,
     TableBody,
@@ -33,27 +25,11 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 
-import Content from "@/components/dialogs/Content";
-
-export function TableRepository({
-    media,
-    columns,
-    search,
-    handleSearch,
-    data,
-}) {
+export function TableRepository({ media, columns }) {
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [columnVisibility, setColumnVisibility] = useState({});
     const [rowSelection, setRowSelection] = useState({});
-
-    const [openDialog, setOpenDialog] = useState(false); // Controla o estado do diálogo
-    const [selectedContent, setSelectedContent] = useState(null); // Armazena o conteúdo selecionado
-
-    const handleContentClick = (content) => {
-        setSelectedContent(content); // Define o conteúdo selecionado
-        setOpenDialog(true); // Abre o diálogo
-    };
 
     const table = useReactTable({
         data: media.data,
@@ -76,45 +52,7 @@ export function TableRepository({
 
     return (
         <>
-            <div className="w-full">
-                {/* Filtro e dropdown da coluna da tabela */}
-                <div className="flex items-center py-4">
-                    <Input
-                        placeholder="Pesquisar por..."
-                        value={search}
-                        onChange={handleSearch}
-                        className="max-w-sm bg-[#D9CDBF] text-black py-2 px-4 border-b"
-                    />
-
-                    {/* 
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline" className="ml-4">
-                                Colunas <ChevronDown />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        
-                        <DropdownMenuContent align="end">
-                            {table
-                                .getAllColumns()
-                                .filter((column) => column.getCanHide())
-                                .map((column) => (
-                                    <DropdownMenuCheckboxItem
-                                        key={column.id}
-                                        className="capitalize"
-                                        checked={column.getIsVisible()}
-                                        onCheckedChange={(value) =>
-                                            column.toggleVisibility(!!value)
-                                        }
-                                    >
-                                        {column.id}
-                                    </DropdownMenuCheckboxItem>
-                                ))}
-                        </DropdownMenuContent>
-                    </DropdownMenu> 
-                    */}
-                </div>
-
+            <div className="w-full z-0 mt-2">
                 {/* Body da tabela */}
                 <Table className="rounded-md border bg-[#D9CDBF]">
                     <TableHeader>
@@ -227,12 +165,6 @@ export function TableRepository({
                     </div>
                 </div>
             </div>
-
-            {/* <Content
-                open={openDialog}
-                onOpenChange={setOpenDialog}
-                content={selectedContent}
-            /> */}
         </>
     );
 }

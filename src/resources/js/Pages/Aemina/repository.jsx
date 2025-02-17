@@ -1,25 +1,12 @@
-import { useState, useEffect } from "react";
-import { Head, router, useForm, Link, usePoll } from "@inertiajs/react";
-
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-
-import EditMedia from "@/components/dialogs/edit-media";
-
-import { tableColumnsMediaList } from "@/components/tables/columns-list-media";
-import { TableMediaList } from "@/components/tables/table-list-media";
-import { TableRepository } from "@/components/tables/table-repository";
-
+import { useState } from "react";
+import { Head, router, useForm, usePoll } from "@inertiajs/react";
+import { Input } from "@/components/ui/input";
 import { useDialog } from "@/hooks/use-dialog";
+
+import AlertDelete from "@/components/dialogs/alert-delete";
+import MediaForm from "@/components/forms/aemina/media-form";
+import { TableRepository } from "@/components/tables/table-repository";
+import { ColumnsRepository } from "@/components/tables/columns-repository";
 
 export default function Index({ media }) {
     const { data, setData } = useForm({
@@ -28,6 +15,9 @@ export default function Index({ media }) {
 
     const [searchValue, setSearchValue] = useState(data.search);
 
+    // ? Controla o estado de expansão do formulário
+    const [isExpanded, setIsExpanded] = useState(false);
+
     usePoll(5000, {
         onFinish() {
             router.reload({
@@ -35,17 +25,10 @@ export default function Index({ media }) {
                 preserveScroll: true,
                 preserveUrl: true,
                 async: true,
-                only: ['progress_upload']
+                only: ["progress_upload"],
             });
         },
     });
-
-    const {
-        isOpen: isEditDialogOpen,
-        content: selectedContent,
-        openDialog: openEditDialog,
-        closeDialog: closeEditDialog,
-    } = useDialog();
 
     const {
         isOpen: isAlertDialogOpen,
@@ -68,78 +51,57 @@ export default function Index({ media }) {
     };
 
     // ? Função para confirmar exclusão
-    // const handleDelete = () => {
-    //     if (alertContent && alertContent.id) {
-    //         router.delete(route("aemina.destroy", alertContent.id), {
-    //             onSuccess: closeAlertDialog,
-    //         });
-    //     } else {
-    //         console.error("Erro: Nenhum item selecionado para exclusão.");
-    //     }
-    // };
+    const handleDelete = () => {
+        if (alertContent && alertContent.id) {
+            router.delete(route("aemina.destroy", alertContent.id), {
+                onSuccess: closeAlertDialog,
+            });
+        } else {
+            console.error("Erro: Nenhum item selecionado para exclusão.");
+        }
+    };
 
-    const columns = tableColumnsMediaList({
-        handleContentClick: openEditDialog,
+    const columns = ColumnsRepository({
         handleDeleteClick: openAlertDialog, // Passando o diálogo de exclusão
     });
 
     return (
         <>
-            
             <Head title="REPÓSITORIO" />
 
             <div className="p-6">
-                <TableRepository 
-                media={media} // Usa o estado atualizado
-                columns={columns}
-                search={searchValue}
-                handleSearch={handleSearchChange} // Função de busca
+                {/* Filtro e dropdown da coluna da tabela */}
+                <div className="flex items-center justify-between mb-4">
+                    <Input
+                        placeholder="Pesquisar por..."
+                        value={searchValue}
+                        onChange={handleSearchChange}
+                        className="max-w-sm bg-[#D9CDBF] text-black py-2 px-4 border-b"
+                    />
+
+                    {/* Botão de expandir/recolher o formulário */}
+                    <button
+                        className="bg-[#735848] text-white px-4 py-2 rounded"
+                        onClick={() => setIsExpanded(!isExpanded)}
+                    >
+                        {isExpanded ? "Ocultar" : "Cadastro"}
+                    </button>
+                </div>
+
+                <MediaForm isExpanded={isExpanded}  className="relative z-10"/>
+
+                <TableRepository
+                    media={media}
+                    columns={columns}
                 />
 
-
-                {/* <TableMediaList
-                    media={media} // Usa o estado atualizado
-                    columns={columns}
-                    search={searchValue}
-                    handleSearch={handleSearchChange} // Função de busca
-                    data={data}
-                /> */}
             </div>
 
-            {/* Diálogo separado */}
-            {/* <EditMedia
-                open={isEditDialogOpen}
-                onOpenChange={(isOpen) => !isOpen && closeEditDialog()}
-                content={selectedContent}
-            /> */}
-
-            {/* <AlertDialog
-                open={isAlertDialogOpen}
-                onOpenChange={(isOpen) => !isOpen && closeAlertDialog()}
-            >
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>
-                            Tem certeza que deseja deletar?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                            Esta ação não pode ser desfeita. Isso irá excluir
-                            permanentemente.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel onClick={closeAlertDialog}>
-                            Cancelar
-                        </AlertDialogCancel>
-                        <AlertDialogAction
-                            className="mt-2 sm:mt-0"
-                            onClick={handleDelete}
-                        >
-                            Confirmar
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog> */}
+            <AlertDelete
+                isOpen={isAlertDialogOpen}
+                onClose={closeAlertDialog}
+                onConfirm={handleDelete}
+            />
         </>
     );
 }
